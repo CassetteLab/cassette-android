@@ -24,3 +24,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Cassette"
 include(":app")
+include(":core")
+include(":domain")
+include(":data")
+include(":presentation")
