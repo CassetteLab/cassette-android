@@ -1,4 +1,4 @@
-package fr.cassette.cassette.ui.theme
+package fr.cassette.cassette.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
