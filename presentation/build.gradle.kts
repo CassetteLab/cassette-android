@@ -36,4 +36,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Koin (Dependency Injection)
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
 }

@@ -20,4 +20,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+
+    // Koin (Dependency Injection)
+    implementation(libs.koin.core)
 }
