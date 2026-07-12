@@ -29,6 +29,7 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 # Koin (Dependency Injection)
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
