@@ -1,0 +1,6 @@
+<resources>
+    <!-- OnBoardingWelcome -->
+    <string name="on_boarding_welcome_get_started">Get Started</string>
+    <string name="on_boarding_welcome_subtitle">Stream your library from your own server.\nNo subscriptions. No big tech.</string>
+    <string name="on_boarding_welcome_title">Your music.\nYour rules.</string>
+</resources>

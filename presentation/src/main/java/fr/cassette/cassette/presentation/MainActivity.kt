@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheScreen
-import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
+import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeScreen
+import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
 import fr.cassette.cassette.presentation.ui.theme.CassetteTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -17,9 +17,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CassetteTheme {
-                val viewModel = koinViewModel<OnBoardingCacheViewModel>()
+                val viewModel = koinViewModel<OnBoardingWelcomeViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                OnBoardingCacheScreen(uiState = uiState, onEvent = viewModel::onEvent)
+                OnBoardingWelcomeScreen(uiState = uiState, onEvent = viewModel::onEvent)
             }
         }
     }
