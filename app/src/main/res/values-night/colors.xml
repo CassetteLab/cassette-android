@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cassette_accent">#8060F7</color>
+    <color name="cassette_background_primary">#0F0D1A</color>
+    <color name="cassette_background_secondary">#1A1728</color>
+    <color name="cassette_text_primary">#F0EEF8</color>
+</resources>

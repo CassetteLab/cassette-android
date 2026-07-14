@@ -17,10 +17,10 @@ internal class OnBoardingWelcomeViewModel : ViewModel() {
 
             }
             OnBoardingWelcomeEvent.OnGetStartedClicked -> _uiState.update { uiState ->
-                uiState.copy(isServerFormVisible = true)
+                uiState.copy(isServerConfigurationVisible = true)
             }
-            OnBoardingWelcomeEvent.OnServerFormDismissed -> _uiState.update { uiState ->
-                uiState.copy(isServerFormVisible = false)
+            OnBoardingWelcomeEvent.OnServerConfigurationBackClicked -> _uiState.update { uiState ->
+                uiState.copy(isServerConfigurationVisible = false)
             }
         }
     }

@@ -3,4 +3,28 @@
     <string name="on_boarding_welcome_get_started">Get Started</string>
     <string name="on_boarding_welcome_subtitle">Stream your library from your own server.\nNo subscriptions. No big tech.</string>
     <string name="on_boarding_welcome_title">Your music.\nYour rules.</string>
+
+    <!-- ServerConfiguration -->
+    <string name="server_configuration_add_header">Add Header</string>
+    <string name="server_configuration_connect_and_save">Connect &amp; Save</string>
+    <string name="server_configuration_connecting">Connecting...</string>
+    <string name="server_configuration_credentials_section_title">Credentials</string>
+    <string name="server_configuration_custom_headers_footer">Optional headers sent with every request, useful for reverse-proxy authentication.</string>
+    <string name="server_configuration_custom_headers_section_title">Custom Headers</string>
+    <string name="server_configuration_header_name_error">Name contains characters not allowed by RFC 7230.</string>
+    <string name="server_configuration_header_name_label">Header name</string>
+    <string name="server_configuration_header_name_placeholder">e.g. CF-Access-Client-Id</string>
+    <string name="server_configuration_header_value_error">Value contains CR, LF, or NUL, which are not allowed in HTTP headers.</string>
+    <string name="server_configuration_header_value_hide">Hide</string>
+    <string name="server_configuration_header_value_label">Value</string>
+    <string name="server_configuration_header_value_show">Show</string>
+    <string name="server_configuration_http_warning">Unencrypted connection. Make sure you are on a trusted network.</string>
+    <string name="server_configuration_password_label">Password</string>
+    <string name="server_configuration_remove_header">Remove</string>
+    <string name="server_configuration_server_section_title">Server</string>
+    <string name="server_configuration_server_url_error">Enter a valid URL, including http:// or https://</string>
+    <string name="server_configuration_server_url_label">Server URL</string>
+    <string name="server_configuration_server_url_placeholder">https://music.example.com</string>
+    <string name="server_configuration_title">Add Server</string>
+    <string name="server_configuration_username_label">Username</string>
 </resources>
