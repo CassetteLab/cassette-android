@@ -8,6 +8,8 @@ internal data class ServerConfigurationUiState(
     val password: String = "",
     val customHeaders: List<ServerConfigurationHeaderUiState> = emptyList(),
     val isLoading: Boolean = false,
+    val error: ServerConfigurationError? = null,
+    val isSaved: Boolean = false,
 ) {
     val isUrlValid: Boolean = serverUrl.isBlank() || ServerConfigurationValidator.isValidUrl(serverUrl)
     val isHttp: Boolean = ServerConfigurationValidator.isHttpUrl(serverUrl)

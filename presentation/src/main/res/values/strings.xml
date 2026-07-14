@@ -4,10 +4,18 @@
     <string name="on_boarding_welcome_subtitle">Stream your library from your own server.\nNo subscriptions. No big tech.</string>
     <string name="on_boarding_welcome_title">Your music.\nYour rules.</string>
 
+    <!-- OnBoardingComplete -->
+    <string name="on_boarding_complete_settings_hint">You can adjust everything anytime in Settings.</string>
+    <string name="on_boarding_complete_start_listening">Start Listening</string>
+    <string name="on_boarding_complete_subtitle">Your library is waiting.\nTime to press play.</string>
+    <string name="on_boarding_complete_success_content_description">Configuration saved</string>
+    <string name="on_boarding_complete_title">You\'re all set.</string>
+
     <!-- ServerConfiguration -->
     <string name="server_configuration_add_header">Add Header</string>
     <string name="server_configuration_connect_and_save">Connect &amp; Save</string>
     <string name="server_configuration_connecting">Connecting...</string>
+    <string name="server_configuration_connection_failed">Unable to connect to the Subsonic server. Check the URL and credentials.</string>
     <string name="server_configuration_credentials_section_title">Credentials</string>
     <string name="server_configuration_custom_headers_footer">Optional headers sent with every request, useful for reverse-proxy authentication.</string>
     <string name="server_configuration_custom_headers_section_title">Custom Headers</string>

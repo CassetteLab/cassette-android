@@ -87,6 +87,15 @@ internal fun ServerConfigurationScreen(
                     style = MaterialTheme.typography.headlineMedium,
                 )
             }
+            uiState.error?.let { error ->
+                item {
+                    Text(
+                        text = error.asString(),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
             item {
                 ServerSection(uiState = uiState, onEvent = onEvent)
             }
