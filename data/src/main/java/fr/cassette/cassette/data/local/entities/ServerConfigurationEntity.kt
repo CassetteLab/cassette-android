@@ -9,5 +9,5 @@ internal data class ServerConfigurationEntity(
     val id: Long = 0,
     val serverUrl: String,
     val username: String,
-    val password: String,
+    val encryptedPassword: String,
 )

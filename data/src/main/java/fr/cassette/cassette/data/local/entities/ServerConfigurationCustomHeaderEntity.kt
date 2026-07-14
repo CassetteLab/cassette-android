@@ -22,5 +22,5 @@ internal data class ServerConfigurationCustomHeaderEntity(
     val id: Long = 0,
     val serverConfigurationId: Long,
     val name: String,
-    val value: String,
+    val encryptedValue: String,
 )
