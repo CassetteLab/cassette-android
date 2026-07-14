@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationScreen
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
+import fr.cassette.cassette.presentation.home.HomeScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteEvent
@@ -21,12 +22,15 @@ import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoarding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun CassetteNavigation(modifier: Modifier = Modifier) {
+internal fun CassetteNavigation(
+    startDestination: CassetteStartDestination,
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = CassetteRoute.OnBoardingWelcome,
+        startDestination = startDestination.route,
         modifier = modifier,
     ) {
         composable(CassetteRoute.OnBoardingWelcome) {
@@ -72,8 +76,8 @@ internal fun CassetteNavigation(modifier: Modifier = Modifier) {
                 onEvent = { event ->
                     when (event) {
                         OnBoardingCompleteEvent.OnStartListeningClicked -> {
-                            navController.navigate(CassetteRoute.OnBoardingCache) {
-                                popUpTo(CassetteRoute.OnBoardingWelcome) { inclusive = true }
+                            navController.navigate(CassetteRoute.Home) {
+                                popUpTo(navController.graph.id) { inclusive = true }
                             }
                         }
                     }
@@ -91,7 +95,16 @@ internal fun CassetteNavigation(modifier: Modifier = Modifier) {
                 onEvent = viewModel::onEvent,
             )
         }
+
+        composable(CassetteRoute.Home) {
+            HomeScreen()
+        }
     }
+}
+
+internal enum class CassetteStartDestination(internal val route: String) {
+    OnBoardingWelcome(CassetteRoute.OnBoardingWelcome),
+    Home(CassetteRoute.Home),
 }
 
 private object CassetteRoute {
@@ -99,4 +112,5 @@ private object CassetteRoute {
     const val ServerConfiguration = "server_configuration"
     const val OnBoardingComplete = "on_boarding_complete"
     const val OnBoardingCache = "on_boarding_cache"
+    const val Home = "home"
 }

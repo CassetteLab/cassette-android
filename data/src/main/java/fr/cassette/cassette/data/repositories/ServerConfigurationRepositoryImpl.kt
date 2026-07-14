@@ -62,4 +62,8 @@ internal class ServerConfigurationRepositoryImpl(
             },
         )
     }
+
+    override suspend fun hasServerConfiguration(): Boolean {
+        return serverConfigurationDao.hasServerConfiguration()
+    }
 }

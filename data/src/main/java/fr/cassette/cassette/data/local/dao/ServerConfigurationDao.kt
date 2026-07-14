@@ -40,4 +40,7 @@ internal interface ServerConfigurationDao {
     @Transaction
     @Query("SELECT * FROM server_configurations ORDER BY id ASC")
     fun observeServerConfigurations(): Flow<List<ServerConfigurationWithCustomHeaders>>
+
+    @Query("SELECT COUNT(*) > 0 FROM server_configurations")
+    suspend fun hasServerConfiguration(): Boolean
 }

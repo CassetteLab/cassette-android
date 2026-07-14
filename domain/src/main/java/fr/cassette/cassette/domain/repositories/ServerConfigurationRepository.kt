@@ -6,4 +6,6 @@ interface ServerConfigurationRepository {
     suspend fun pingServer(serverConfiguration: ServerConfiguration)
 
     suspend fun saveServerConfiguration(serverConfiguration: ServerConfiguration)
+
+    suspend fun hasServerConfiguration(): Boolean
 }
