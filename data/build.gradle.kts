@@ -29,6 +29,11 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
 
+    // Ktor
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.logging)
+
     // Room
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
