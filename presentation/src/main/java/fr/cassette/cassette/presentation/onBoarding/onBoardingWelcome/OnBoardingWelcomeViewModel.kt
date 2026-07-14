@@ -13,14 +13,12 @@ internal class OnBoardingWelcomeViewModel : ViewModel() {
 
     fun onEvent(event: OnBoardingWelcomeEvent) {
         when (event) {
-            OnBoardingWelcomeEvent.OnAppearing -> _uiState.update { uiState ->
-                uiState.copy(hasAppeared = true)
-            }
+            OnBoardingWelcomeEvent.OnAppearing -> {
 
+            }
             OnBoardingWelcomeEvent.OnGetStartedClicked -> _uiState.update { uiState ->
                 uiState.copy(isServerFormVisible = true)
             }
-
             OnBoardingWelcomeEvent.OnServerFormDismissed -> _uiState.update { uiState ->
                 uiState.copy(isServerFormVisible = false)
             }

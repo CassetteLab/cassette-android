@@ -14,34 +14,38 @@ private val DarkColorScheme = darkColorScheme(
     primary = CassetteAccent,
     onPrimary = CassetteOnAccent,
     primaryContainer = CassetteAccentContainer,
-    onPrimaryContainer = CassetteTextPrimary,
+    onPrimaryContainer = CassetteAccentForeground,
     secondary = CassetteTextSecondary,
     onSecondary = CassetteBackgroundPrimary,
-    tertiary = CassetteBackgroundTertiary,
+    tertiary = CassetteTextTertiary,
     background = CassetteBackgroundPrimary,
     onBackground = CassetteTextPrimary,
     surface = CassetteBackgroundPrimary,
     onSurface = CassetteTextPrimary,
+    onSurfaceVariant = CassetteTextSecondary,
     surfaceContainer = CassetteBackgroundSecondary,
     surfaceContainerHighest = CassetteBackgroundTertiary,
-    outline = CassetteOutline
+    outline = CassetteOutline,
+    outlineVariant = CassetteSeparator,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = CassetteAccent,
+    primary = CassetteLightAccent,
     onPrimary = CassetteOnAccent,
     primaryContainer = CassetteLightAccentContainer,
-    onPrimaryContainer = CassetteLightTextPrimary,
+    onPrimaryContainer = CassetteLightAccentForeground,
     secondary = CassetteLightTextSecondary,
     onSecondary = CassetteLightBackgroundPrimary,
-    tertiary = CassetteLightBackgroundTertiary,
+    tertiary = CassetteLightTextTertiary,
     background = CassetteLightBackgroundPrimary,
     onBackground = CassetteLightTextPrimary,
     surface = CassetteLightBackgroundPrimary,
     onSurface = CassetteLightTextPrimary,
+    onSurfaceVariant = CassetteLightTextSecondary,
     surfaceContainer = CassetteLightBackgroundSecondary,
     surfaceContainerHighest = CassetteLightBackgroundTertiary,
-    outline = CassetteLightOutline
+    outline = CassetteLightOutline,
+    outlineVariant = CassetteLightSeparator,
 )
 
 @Composable

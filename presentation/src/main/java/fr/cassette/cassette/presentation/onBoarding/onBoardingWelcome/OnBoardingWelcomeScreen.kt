@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -44,48 +47,50 @@ internal fun OnBoardingWelcomeScreen(
         onEvent(OnBoardingWelcomeEvent.OnAppearing)
     }
 
-    val heroAlpha by animateFloatAsState(
-        targetValue = if (uiState.hasAppeared) 1f else 0f,
-        animationSpec = tween(durationMillis = 600),
-    )
-    val contentAlpha by animateFloatAsState(
-        targetValue = if (uiState.hasAppeared) 1f else 0f,
-        animationSpec = tween(durationMillis = 500, delayMillis = 80),
-    )
-    val buttonAlpha by animateFloatAsState(
-        targetValue = if (uiState.hasAppeared) 1f else 0f,
-        animationSpec = tween(durationMillis = 500, delayMillis = 180),
-    )
     val hapticFeedback = LocalHapticFeedback.current
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-    ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(contentPadding)
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-
-            AnimatedCassetteHero(
-                modifier = Modifier
-                    .alpha(heroAlpha)
-                    .scale(0.7f + heroAlpha * 0.3f),
-            )
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Column(
-                modifier = Modifier
-                    .alpha(contentAlpha)
-                    .offset(y = ((1f - contentAlpha) * 24).dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                containerColor = MaterialTheme.colorScheme.background
             ) {
+                Button(
+                    onClick = {
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onEvent(OnBoardingWelcomeEvent.OnGetStartedClicked)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.on_boarding_welcome_get_started),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+        }
+    ) { contentPadding ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = contentPadding,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                AnimatedCassetteHero(
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+            }
+
+            item {
                 Text(
                     text = stringResource(R.string.on_boarding_welcome_title),
                     color = MaterialTheme.colorScheme.onBackground,
@@ -93,6 +98,9 @@ internal fun OnBoardingWelcomeScreen(
                     textAlign = TextAlign.Center,
                     lineHeight = MaterialTheme.typography.headlineLarge.lineHeight,
                 )
+            }
+
+            item {
                 Text(
                     text = stringResource(R.string.on_boarding_welcome_subtitle),
                     color = MaterialTheme.colorScheme.secondary,
@@ -101,33 +109,6 @@ internal fun OnBoardingWelcomeScreen(
                     lineHeight = MaterialTheme.typography.bodyLarge.lineHeight,
                 )
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = {
-                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onEvent(OnBoardingWelcomeEvent.OnGetStartedClicked)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .alpha(buttonAlpha)
-                    .offset(y = ((1f - buttonAlpha) * 30).dp),
-                enabled = uiState.isGetStartedEnabled,
-                shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.on_boarding_welcome_get_started),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -137,7 +118,7 @@ internal fun OnBoardingWelcomeScreen(
 internal fun OnBoardingWelcomeScreenPreview() {
     CassetteTheme {
         OnBoardingWelcomeScreen(
-            uiState = OnBoardingWelcomeUiState(hasAppeared = true),
+            uiState = OnBoardingWelcomeUiState(),
             onEvent = {},
         )
     }
