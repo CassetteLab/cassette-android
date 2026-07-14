@@ -1,12 +1,19 @@
 package fr.cassette.cassette.presentation.core.serverConfiguration
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import fr.cassette.cassette.domain.models.ServerConfiguration
+import fr.cassette.cassette.domain.models.ServerConfigurationCustomHeader
+import fr.cassette.cassette.domain.usecases.SaveServerConfigurationUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-internal class ServerConfigurationViewModel : ViewModel() {
+internal class ServerConfigurationViewModel(
+    private val saveServerConfigurationUseCase: SaveServerConfigurationUseCase,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ServerConfigurationUiState())
     val uiState: StateFlow<ServerConfigurationUiState> = _uiState.asStateFlow()
@@ -49,7 +56,33 @@ internal class ServerConfigurationViewModel : ViewModel() {
                 header.copy(isValueVisible = event.isVisible)
             }
 
-            ServerConfigurationEvent.OnConnectClicked -> Unit
+            ServerConfigurationEvent.OnConnectClicked -> saveServerConfiguration()
+        }
+    }
+
+    private fun saveServerConfiguration() {
+        val uiState = _uiState.value
+        if (!uiState.canSubmit) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                saveServerConfigurationUseCase(
+                    ServerConfiguration(
+                        serverUrl = uiState.serverUrl,
+                        username = uiState.username,
+                        password = uiState.password,
+                        customHeaders = uiState.customHeaders.map { header ->
+                            ServerConfigurationCustomHeader(
+                                name = header.name,
+                                value = header.value,
+                            )
+                        },
+                    ),
+                )
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 

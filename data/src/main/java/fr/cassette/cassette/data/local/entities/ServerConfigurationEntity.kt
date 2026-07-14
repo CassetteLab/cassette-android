@@ -1,4 +1,4 @@
-package fr.cassette.cassette.data.local.entity
+package fr.cassette.cassette.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

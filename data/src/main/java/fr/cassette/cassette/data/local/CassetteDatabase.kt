@@ -3,8 +3,8 @@ package fr.cassette.cassette.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
-import fr.cassette.cassette.data.local.entity.ServerConfigurationCustomHeaderEntity
-import fr.cassette.cassette.data.local.entity.ServerConfigurationEntity
+import fr.cassette.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
+import fr.cassette.cassette.data.local.entities.ServerConfigurationEntity
 
 @Database(
     entities = [
