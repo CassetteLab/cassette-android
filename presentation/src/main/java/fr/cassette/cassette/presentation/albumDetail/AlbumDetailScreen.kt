@@ -19,7 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import fr.cassette.cassette.domain.models.Album
+import fr.cassette.cassette.domain.models.AlbumDetail
+import fr.cassette.cassette.domain.models.Track
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumDetailContent
@@ -84,12 +85,28 @@ private fun AlbumDetailScreenPreview() {
         AlbumDetailScreen(
             uiState = AlbumDetailUiState(
                 albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
-                album = Album(
+                album = AlbumDetail(
                     id = "2YuwDgPuXhF5ir4SjAl6Iw",
                     name = "Discovery",
                     artist = "Daft Punk",
                     coverArt = "al-123",
                     created = "2026-07-15T12:00:00",
+                    tracks = listOf(
+                        Track(
+                            id = "track-1",
+                            title = "One More Time",
+                            artist = "Daft Punk",
+                            trackNumber = 1,
+                            durationSeconds = 320,
+                        ),
+                        Track(
+                            id = "track-2",
+                            title = "Aerodynamic",
+                            artist = "Daft Punk",
+                            trackNumber = 2,
+                            durationSeconds = 212,
+                        ),
+                    ),
                 ),
             ),
             onEvent = {},

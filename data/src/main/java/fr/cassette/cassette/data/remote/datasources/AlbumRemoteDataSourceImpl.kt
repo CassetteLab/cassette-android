@@ -2,7 +2,8 @@ package fr.cassette.cassette.data.remote.datasources
 
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.remote.dto.AlbumListResponseDto
-import fr.cassette.cassette.domain.models.Album
+import fr.cassette.cassette.domain.models.AlbumDetail
+import fr.cassette.cassette.domain.models.AlbumList
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -12,7 +13,7 @@ internal class AlbumRemoteDataSourceImpl(
     private val serverConfigurationDao: ServerConfigurationDao,
     private val httpClient: HttpClient,
 ) {
-    suspend fun getRecentlyAddedAlbums(size: Int): List<Album> {
+    suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> {
         val configuration = serverConfigurationDao.getFirstServerConfiguration()
             ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
@@ -27,10 +28,10 @@ internal class AlbumRemoteDataSourceImpl(
             throw IllegalStateException("Subsonic getAlbumList2 failed")
         }
 
-        return subsonicResponse.albumList2?.album.orEmpty().map { it.toDomain() }
+        return subsonicResponse.albumList2?.album.orEmpty().map { it.toListDomain() }
     }
 
-    suspend fun getAlbum(albumId: String): Album {
+    suspend fun getAlbum(albumId: String): AlbumDetail {
         val configuration = serverConfigurationDao.getFirstServerConfiguration()
             ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
@@ -44,7 +45,7 @@ internal class AlbumRemoteDataSourceImpl(
             throw IllegalStateException("Subsonic getAlbum failed")
         }
 
-        return subsonicResponse.album?.toDomain()
+        return subsonicResponse.album?.toDetailDomain()
             ?: throw IllegalStateException("Subsonic getAlbum returned no album")
     }
 }

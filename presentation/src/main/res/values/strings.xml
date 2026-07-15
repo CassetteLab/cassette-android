@@ -55,6 +55,8 @@
     <string name="album_detail_error_title">Unable to load album</string>
     <string name="album_detail_retry">Retry</string>
     <string name="album_detail_title">Album</string>
+    <string name="album_detail_tracks">Tracks</string>
+    <string name="album_detail_tracks_empty">No tracks found for this album.</string>
     <string name="album_detail_unknown_artist">Unknown artist</string>
 
     <!-- Settings -->

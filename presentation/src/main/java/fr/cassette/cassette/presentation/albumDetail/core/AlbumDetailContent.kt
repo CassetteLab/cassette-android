@@ -20,11 +20,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassette.cassette.domain.models.Album
+import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.presentation.R
 
 @Composable
-internal fun AlbumDetailContent(album: Album) {
+internal fun AlbumDetailContent(album: AlbumDetail) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,6 +73,20 @@ internal fun AlbumDetailContent(album: Album) {
         }
         album.coverArt?.let { coverArt ->
             AlbumDetailMetadata(label = stringResource(R.string.album_detail_cover_art), value = coverArt)
+        }
+        if (album.tracks.isEmpty()) {
+            AlbumDetailMetadata(
+                label = stringResource(R.string.album_detail_tracks),
+                value = stringResource(R.string.album_detail_tracks_empty),
+            )
+        } else {
+            AlbumDetailMetadata(
+                label = stringResource(R.string.album_detail_tracks),
+                value = album.tracks.size.toString(),
+            )
+            album.tracks.forEach { track ->
+                AlbumDetailTrackRow(track = track)
+            }
         }
     }
 }

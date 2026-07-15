@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import fr.cassette.cassette.domain.models.Album
+import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.core.AlbumRow
@@ -93,14 +93,14 @@ private fun HomeScreenPreview() {
             uiState = HomeUiState(
                 isLoading = false,
                 albums = listOf(
-                    Album(
+                    AlbumList(
                         id = "1",
                         name = "Discovery",
                         artist = "Daft Punk",
                         coverArt = null,
                         created = null,
                     ),
-                    Album(
+                    AlbumList(
                         id = "2",
                         name = "In Rainbows",
                         artist = "Radiohead",
