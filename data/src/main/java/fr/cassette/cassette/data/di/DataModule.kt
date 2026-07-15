@@ -5,6 +5,8 @@ import fr.cassette.cassette.data.local.CassetteDatabase
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassette.cassette.data.remote.ktor.KtorClientProviderImpl
+import fr.cassette.cassette.data.remote.ktor.plugins.CassetteRequestAuthenticationPluginProvider
+import fr.cassette.cassette.data.remote.ktor.plugins.CassetteRequestDefaultsPluginProvider
 import fr.cassette.cassette.data.repositories.AlbumRepositoryImpl
 import fr.cassette.cassette.data.repositories.ServerConfigurationRepositoryImpl
 import fr.cassette.cassette.domain.repositories.AlbumRepository
@@ -31,6 +33,8 @@ val dataModule = module {
     single<HttpClient> {
         get<KtorClientProviderImpl>().getClient()
     }
+    singleOf(::CassetteRequestDefaultsPluginProvider)
+    singleOf(::CassetteRequestAuthenticationPluginProvider)
 
     // Remote data sources
     singleOf(::AlbumRemoteDataSourceImpl)
