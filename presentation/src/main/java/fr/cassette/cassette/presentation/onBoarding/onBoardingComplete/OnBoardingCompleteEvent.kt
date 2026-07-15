@@ -1,5 +1,7 @@
 package fr.cassette.cassette.presentation.onBoarding.onBoardingComplete
 
-internal sealed interface OnBoardingCompleteEvent {
+import fr.cassette.cassette.presentation.core.mvi.Event
+
+internal sealed interface OnBoardingCompleteEvent : Event {
     data object OnStartListeningClicked : OnBoardingCompleteEvent
 }

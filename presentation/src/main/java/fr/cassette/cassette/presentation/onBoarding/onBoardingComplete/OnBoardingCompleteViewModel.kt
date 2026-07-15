@@ -1,20 +1,20 @@
 package fr.cassette.cassette.presentation.onBoarding.onBoardingComplete
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 
-internal class OnBoardingCompleteViewModel : ViewModel() {
+internal class OnBoardingCompleteViewModel(
+    logger: Logger,
+) : BaseViewModel<OnBoardingCompleteUiState, OnBoardingCompleteEvent>(
+    viewModelName = "OnBoardingCompleteViewModel",
+    logger = logger,
+    initialState = OnBoardingCompleteUiState(),
+) {
 
-    private val _uiState = MutableStateFlow(OnBoardingCompleteUiState())
-    val uiState: StateFlow<OnBoardingCompleteUiState> = _uiState.asStateFlow()
-
-    fun onEvent(event: OnBoardingCompleteEvent) {
+    override fun handleEvent(event: OnBoardingCompleteEvent) {
         when (event) {
             OnBoardingCompleteEvent.OnStartListeningClicked -> {
-                _uiState.update { it.copy(isLoading = true) }
+                updateState { it.copy(isLoading = true) }
             }
         }
     }

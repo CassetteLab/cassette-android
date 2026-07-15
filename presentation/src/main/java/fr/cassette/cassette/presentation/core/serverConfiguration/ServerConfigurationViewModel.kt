@@ -1,42 +1,41 @@
 package fr.cassette.cassette.presentation.core.serverConfiguration
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fr.cassette.cassette.core.logger.Logger
 import fr.cassette.cassette.domain.models.ServerConfiguration
 import fr.cassette.cassette.domain.models.ServerConfigurationCustomHeader
 import fr.cassette.cassette.domain.usecases.PingServerUseCase
 import fr.cassette.cassette.domain.usecases.SaveServerConfigurationUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.launch
 
 internal class ServerConfigurationViewModel(
     private val pingServerUseCase: PingServerUseCase,
     private val saveServerConfigurationUseCase: SaveServerConfigurationUseCase,
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ServerConfigurationUiState())
-    val uiState: StateFlow<ServerConfigurationUiState> = _uiState.asStateFlow()
+    logger: Logger,
+) : BaseViewModel<ServerConfigurationUiState, ServerConfigurationEvent>(
+    viewModelName = "ServerConfigurationViewModel",
+    logger = logger,
+    initialState = ServerConfigurationUiState(),
+) {
 
     private var nextHeaderId = 0L
 
-    fun onEvent(event: ServerConfigurationEvent) {
+    override fun handleEvent(event: ServerConfigurationEvent) {
         when (event) {
-            is ServerConfigurationEvent.OnServerUrlChanged -> _uiState.update { uiState ->
+            is ServerConfigurationEvent.OnServerUrlChanged -> updateState { uiState ->
                 uiState.copy(serverUrl = event.value, error = null, isSaved = false)
             }
 
-            is ServerConfigurationEvent.OnUsernameChanged -> _uiState.update { uiState ->
+            is ServerConfigurationEvent.OnUsernameChanged -> updateState { uiState ->
                 uiState.copy(username = event.value, error = null, isSaved = false)
             }
 
-            is ServerConfigurationEvent.OnPasswordChanged -> _uiState.update { uiState ->
+            is ServerConfigurationEvent.OnPasswordChanged -> updateState { uiState ->
                 uiState.copy(password = event.value, error = null, isSaved = false)
             }
 
-            ServerConfigurationEvent.OnAddHeaderClicked -> _uiState.update { uiState ->
+            ServerConfigurationEvent.OnAddHeaderClicked -> updateState { uiState ->
                 uiState.copy(
                     customHeaders = uiState.customHeaders + ServerConfigurationHeaderUiState(id = nextHeaderId++),
                     error = null,
@@ -44,7 +43,7 @@ internal class ServerConfigurationViewModel(
                 )
             }
 
-            is ServerConfigurationEvent.OnRemoveHeaderClicked -> _uiState.update { uiState ->
+            is ServerConfigurationEvent.OnRemoveHeaderClicked -> updateState { uiState ->
                 uiState.copy(
                     customHeaders = uiState.customHeaders.filterNot { it.id == event.id },
                     error = null,
@@ -69,18 +68,18 @@ internal class ServerConfigurationViewModel(
     }
 
     private fun saveServerConfiguration() {
-        val uiState = _uiState.value
-        if (!uiState.canSubmit) return
-        val serverConfiguration = uiState.toServerConfiguration()
+        val currentUiState = uiState.value
+        if (!currentUiState.canSubmit) return
+        val serverConfiguration = currentUiState.toServerConfiguration()
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, isSaved = false) }
+            updateState { it.copy(isLoading = true, error = null, isSaved = false) }
             try {
                 pingServerUseCase(serverConfiguration)
                 saveServerConfigurationUseCase(serverConfiguration)
-                _uiState.update { it.copy(isLoading = false, isSaved = true) }
+                updateState { it.copy(isLoading = false, isSaved = true) }
             } catch (_: Exception) {
-                _uiState.update {
+                updateState {
                     it.copy(
                         isLoading = false,
                         error = ServerConfigurationError.ConnectionFailed,
@@ -95,7 +94,7 @@ internal class ServerConfigurationViewModel(
         id: Long,
         transform: (ServerConfigurationHeaderUiState) -> ServerConfigurationHeaderUiState,
     ) {
-        _uiState.update { uiState ->
+        updateState { uiState ->
             uiState.copy(
                 customHeaders = uiState.customHeaders.map { header ->
                     if (header.id == id) transform(header) else header
