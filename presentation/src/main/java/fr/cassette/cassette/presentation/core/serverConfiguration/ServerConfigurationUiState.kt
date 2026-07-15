@@ -1,5 +1,6 @@
 package fr.cassette.cassette.presentation.core.serverConfiguration
 
+import fr.cassette.cassette.presentation.core.mvi.UiState
 import fr.cassette.cassette.presentation.core.serverConfiguration.core.ServerConfigurationValidator
 
 internal data class ServerConfigurationUiState(
@@ -8,7 +9,9 @@ internal data class ServerConfigurationUiState(
     val password: String = "",
     val customHeaders: List<ServerConfigurationHeaderUiState> = emptyList(),
     val isLoading: Boolean = false,
-) {
+    val error: ServerConfigurationError? = null,
+    val isSaved: Boolean = false,
+) : UiState {
     val isUrlValid: Boolean = serverUrl.isBlank() || ServerConfigurationValidator.isValidUrl(serverUrl)
     val isHttp: Boolean = ServerConfigurationValidator.isHttpUrl(serverUrl)
     val areHeadersValid: Boolean = customHeaders.all { it.isValid }

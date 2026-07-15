@@ -1,6 +1,8 @@
 package fr.cassette.cassette.presentation.core.serverConfiguration
 
-internal sealed interface ServerConfigurationEvent {
+import fr.cassette.cassette.presentation.core.mvi.Event
+
+internal sealed interface ServerConfigurationEvent : Event {
     data class OnServerUrlChanged(val value: String) : ServerConfigurationEvent
     data class OnUsernameChanged(val value: String) : ServerConfigurationEvent
     data class OnPasswordChanged(val value: String) : ServerConfigurationEvent

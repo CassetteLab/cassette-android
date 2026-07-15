@@ -1,17 +1,18 @@
 package fr.cassette.cassette.presentation.onBoarding.onBoardingCache
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 
-internal class OnBoardingCacheViewModel : ViewModel() {
+internal class OnBoardingCacheViewModel(
+    logger: Logger,
+) : BaseViewModel<OnBoardingCacheUiState, OnBoardingCacheEvent>(
+    viewModelName = "OnBoardingCacheViewModel",
+    logger = logger,
+    initialState = OnBoardingCacheUiState(),
+) {
 
-    private val _uiState = MutableStateFlow(OnBoardingCacheUiState())
-    val uiState: StateFlow<OnBoardingCacheUiState> = _uiState.asStateFlow()
-
-    fun onEvent(event: OnBoardingCacheEvent){
-        when(event){
+    override fun handleEvent(event: OnBoardingCacheEvent) {
+        when (event) {
             OnBoardingCacheEvent.OnAppearing -> Unit
         }
     }
