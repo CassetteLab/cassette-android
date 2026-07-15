@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import fr.cassette.cassette.domain.usecases.HasServerConfigurationUseCase
-import fr.cassette.cassette.presentation.navigation.CassetteNavigation
-import fr.cassette.cassette.presentation.navigation.CassetteStartDestination
+import fr.cassette.cassette.presentation.core.navigation.CassetteNavigation
+import fr.cassette.cassette.presentation.core.navigation.Screens
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -24,9 +24,9 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             val startDestination = if (hasServerConfigurationUseCase()) {
-                CassetteStartDestination.Home
+                Screens.Home
             } else {
-                CassetteStartDestination.OnBoardingWelcome
+                Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen
             }
 
             setContent {

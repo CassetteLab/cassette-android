@@ -45,6 +45,7 @@ internal fun OnBoardingCompleteScreen(
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
                 PrimaryButton(
+                    isLoading = uiState.isLoading,
                     onClick = {
                         onEvent(OnBoardingCompleteEvent.OnStartListeningClicked)
                     },

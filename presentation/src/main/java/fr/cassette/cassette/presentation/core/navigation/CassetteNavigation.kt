@@ -1,4 +1,4 @@
-package fr.cassette.cassette.presentation.navigation
+package fr.cassette.cassette.presentation.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,17 +23,17 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun CassetteNavigation(
-    startDestination: CassetteStartDestination,
+    startDestination: Screens,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = startDestination.route,
+        startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable(CassetteRoute.OnBoardingWelcome) {
+        composable<Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen> {
             val viewModel = koinViewModel<OnBoardingWelcomeViewModel>()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -43,7 +43,7 @@ internal fun CassetteNavigation(
                     viewModel.onEvent(event)
                     when (event) {
                         OnBoardingWelcomeEvent.OnGetStartedClicked -> {
-                            navController.navigate(CassetteRoute.ServerConfiguration){
+                            navController.navigate(Screens.OnBoardingScreens.OnBoardingScreensServerConfigurationScreen){
                                 popUpTo(navController.graph.id)
                             }
                         }
@@ -53,13 +53,15 @@ internal fun CassetteNavigation(
             )
         }
 
-        composable(CassetteRoute.ServerConfiguration) {
+        composable<Screens.OnBoardingScreens.OnBoardingScreensServerConfigurationScreen> {
             val viewModel = koinViewModel<ServerConfigurationViewModel>()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             LaunchedEffect(uiState.isSaved) {
                 if (uiState.isSaved) {
-                    navController.navigate(CassetteRoute.OnBoardingComplete)
+                    navController.navigate(Screens.OnBoardingScreens.OnBoardingScreensCompleteScreen) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
                 }
             }
 
@@ -69,7 +71,7 @@ internal fun CassetteNavigation(
             )
         }
 
-        composable(CassetteRoute.OnBoardingComplete) {
+        composable<Screens.OnBoardingScreens.OnBoardingScreensCompleteScreen> {
             val viewModel = koinViewModel<OnBoardingCompleteViewModel>()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -78,7 +80,7 @@ internal fun CassetteNavigation(
                 onEvent = { event ->
                     when (event) {
                         OnBoardingCompleteEvent.OnStartListeningClicked -> {
-                            navController.navigate(CassetteRoute.Home) {
+                            navController.navigate(Screens.Home) {
                                 popUpTo(navController.graph.id) { inclusive = true }
                             }
                         }
@@ -88,31 +90,8 @@ internal fun CassetteNavigation(
             )
         }
 
-        composable(CassetteRoute.OnBoardingCache) {
-            val viewModel = koinViewModel<OnBoardingCacheViewModel>()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            OnBoardingCacheScreen(
-                uiState = uiState,
-                onEvent = viewModel::onEvent,
-            )
-        }
-
-        composable(CassetteRoute.Home) {
+        composable<Screens.Home> {
             HomeScreen()
         }
     }
-}
-
-internal enum class CassetteStartDestination(internal val route: String) {
-    OnBoardingWelcome(CassetteRoute.OnBoardingWelcome),
-    Home(CassetteRoute.Home),
-}
-
-private object CassetteRoute {
-    const val OnBoardingWelcome = "on_boarding_welcome"
-    const val ServerConfiguration = "server_configuration"
-    const val OnBoardingComplete = "on_boarding_complete"
-    const val OnBoardingCache = "on_boarding_cache"
-    const val Home = "home"
 }
