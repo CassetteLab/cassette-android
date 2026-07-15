@@ -1,6 +1,5 @@
 package fr.cassette.cassette.presentation.main
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +17,7 @@ import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -35,6 +31,7 @@ import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.navigation.Screens
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.HomeScreen
+import fr.cassette.cassette.presentation.home.HomeViewModel
 import fr.cassette.cassette.presentation.main.core.MainTab
 import fr.cassette.cassette.presentation.settings.SettingsEvent
 import fr.cassette.cassette.presentation.settings.SettingsScreen
@@ -90,7 +87,12 @@ internal fun MainScreen(
             navController = navController
         ) {
             composable<Screens.Home> {
-                HomeScreen()
+                val viewModel: HomeViewModel = koinViewModel()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                HomeScreen(
+                    uiState = uiState,
+                    onEvent = viewModel::onEvent,
+                )
             }
 
             composable<Screens.Settings> {

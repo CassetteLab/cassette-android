@@ -37,7 +37,14 @@
 
     <!-- Home -->
     <string name="home_open_settings">Settings</string>
+    <string name="home_recent_albums_empty_description">New albums from your server will appear here.</string>
+    <string name="home_recent_albums_empty_title">No recent albums yet</string>
+    <string name="home_recent_albums_error_description">Check your server connection and try again.</string>
+    <string name="home_recent_albums_error_title">Unable to load albums</string>
+    <string name="home_recent_albums_retry">Retry</string>
+    <string name="home_recent_albums_title">Recently Added</string>
     <string name="home_title">Home</string>
+    <string name="home_unknown_artist">Unknown artist</string>
 
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>

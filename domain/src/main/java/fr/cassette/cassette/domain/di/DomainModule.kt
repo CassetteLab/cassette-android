@@ -1,5 +1,6 @@
 package fr.cassette.cassette.domain.di
 
+import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.domain.usecases.HasServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.PingServerUseCase
 import fr.cassette.cassette.domain.usecases.SaveServerConfigurationUseCase
@@ -11,4 +12,7 @@ val domainModule = module {
     singleOf(::PingServerUseCase)
     singleOf(::SaveServerConfigurationUseCase)
     singleOf(::HasServerConfigurationUseCase)
+
+    // Albums
+    singleOf(::GetRecentlyAddedAlbumsUseCase)
 }
