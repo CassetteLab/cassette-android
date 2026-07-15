@@ -1,4 +1,4 @@
-package fr.cassette.cassette.presentation.ui.theme
+package fr.cassette.cassette.presentation.core.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

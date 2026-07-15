@@ -1,8 +1,5 @@
 package fr.cassette.cassette.presentation.onBoarding.onBoardingComplete
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,32 +9,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.cassette.cassette.presentation.R
-import fr.cassette.cassette.presentation.ui.theme.CassetteTheme
-import kotlinx.coroutines.delay
+import fr.cassette.cassette.presentation.core.PrimaryButton
+import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun OnBoardingCompleteScreen(
@@ -54,22 +44,13 @@ internal fun OnBoardingCompleteScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
-                Button(
-                    onClick = { onEvent(OnBoardingCompleteEvent.OnStartListeningClicked) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(18.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.on_boarding_complete_start_listening),
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
+                PrimaryButton(
+                    onClick = {
+                        onEvent(OnBoardingCompleteEvent.OnStartListeningClicked)
+                    },
+                    text = stringResource(R.string.on_boarding_complete_start_listening),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         },
     ) { contentPadding ->
@@ -137,7 +118,7 @@ internal fun OnBoardingCompleteScreen(
 }
 
 @Composable
-@Preview
+@PreviewLightDark
 private fun OnBoardingCompleteScreenPreview() {
     CassetteTheme {
         OnBoardingCompleteScreen(

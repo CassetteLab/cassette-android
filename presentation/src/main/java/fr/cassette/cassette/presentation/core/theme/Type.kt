@@ -1,4 +1,4 @@
-package fr.cassette.cassette.presentation.ui.theme
+package fr.cassette.cassette.presentation.core.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

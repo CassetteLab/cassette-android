@@ -40,12 +40,14 @@ internal fun CassetteNavigation(
             OnBoardingWelcomeScreen(
                 uiState = uiState,
                 onEvent = { event ->
+                    viewModel.onEvent(event)
                     when (event) {
                         OnBoardingWelcomeEvent.OnGetStartedClicked -> {
-                            navController.navigate(CassetteRoute.ServerConfiguration)
+                            navController.navigate(CassetteRoute.ServerConfiguration){
+                                popUpTo(navController.graph.id)
+                            }
                         }
-
-                        else -> viewModel.onEvent(event)
+                        else -> Unit
                     }
                 },
             )

@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import fr.cassette.cassette.domain.usecases.HasServerConfigurationUseCase
 import fr.cassette.cassette.presentation.navigation.CassetteNavigation
 import fr.cassette.cassette.presentation.navigation.CassetteStartDestination
-import fr.cassette.cassette.presentation.ui.theme.CassetteTheme
+import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 

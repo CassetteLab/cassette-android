@@ -14,7 +14,6 @@
     <!-- ServerConfiguration -->
     <string name="server_configuration_add_header">Add Header</string>
     <string name="server_configuration_connect_and_save">Connect &amp; Save</string>
-    <string name="server_configuration_connecting">Connecting...</string>
     <string name="server_configuration_connection_failed">Unable to connect to the Subsonic server. Check the URL and credentials.</string>
     <string name="server_configuration_credentials_section_title">Credentials</string>
     <string name="server_configuration_custom_headers_footer">Optional headers sent with every request, useful for reverse-proxy authentication.</string>

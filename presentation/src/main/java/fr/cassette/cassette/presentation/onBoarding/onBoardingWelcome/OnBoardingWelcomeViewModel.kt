@@ -5,6 +5,7 @@ import fr.cassette.cassette.core.logger.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 internal class OnBoardingWelcomeViewModel(
     private val logger: Logger
@@ -24,6 +25,7 @@ internal class OnBoardingWelcomeViewModel(
             }
             OnBoardingWelcomeEvent.OnGetStartedClicked -> {
                 logger.i("User clicked on get started")
+                _uiState.update { it.copy(isLoading = true) }
             }
         }
     }
