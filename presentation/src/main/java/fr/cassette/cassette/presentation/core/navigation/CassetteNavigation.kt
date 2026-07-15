@@ -94,10 +94,6 @@ internal fun CassetteNavigation(
             )
         }
 
-        composable<Screens.Home> {
-            HomeScreen()
-        }
-
         composable<Screens.Main> {
             MainScreen(
                 onNavigateToRootScreen = { screen ->

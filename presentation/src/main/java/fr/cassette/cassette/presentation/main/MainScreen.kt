@@ -19,13 +19,18 @@ import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.navigation.Screens
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
@@ -41,7 +46,9 @@ import org.koin.androidx.compose.koinViewModel
 internal fun MainScreen(
     onNavigateToRootScreen: (Screens) -> Unit
 ){
-    var selectedTab by remember { mutableStateOf(MainTab.Home) }
+    val startDestination = MainTab.Home
+    var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
+    val navController = rememberNavController()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -53,8 +60,14 @@ internal fun MainScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     MainTab.entries.forEach { tab ->
                         NavigationBarItem(
-                            selected = selectedTab == tab,
-                            onClick = { selectedTab = tab },
+                            selected = tab == selectedDestination,
+                            onClick = {
+                                selectedDestination = tab
+                                navController.navigate(tab.destination){
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.id)
+                                }
+                            },
                             icon = {
                                 Icon(
                                     imageVector = tab.iconRes,
@@ -70,31 +83,32 @@ internal fun MainScreen(
             }
         },
     ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
+
+        NavHost(
+            modifier = Modifier.padding(contentPadding),
+            startDestination = startDestination.destination,
+            navController = navController
         ) {
-            when (selectedTab) {
-                MainTab.Home -> HomeScreen()
+            composable<Screens.Home> {
+                HomeScreen()
+            }
 
-                MainTab.Settings -> {
-                    val viewModel : SettingsViewModel = koinViewModel()
-                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                    SettingsScreen(
-                        uiState = uiState,
-                        onEvent = { event ->
-                            when(event){
-                                SettingsEvent.OnServerConfigurationClicked -> { onNavigateToRootScreen(
-                                    Screens.SettingsServerConfiguration)
-                                }
-                                else -> Unit
+            composable<Screens.Settings> {
+                val viewModel : SettingsViewModel = koinViewModel()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                SettingsScreen(
+                    uiState = uiState,
+                    onEvent = { event ->
+                        when(event){
+                            SettingsEvent.OnServerConfigurationClicked -> { onNavigateToRootScreen(
+                                Screens.SettingsServerConfiguration)
                             }
-
-                            viewModel.onEvent(event)
+                            else -> Unit
                         }
-                    )
-                }
+
+                        viewModel.onEvent(event)
+                    }
+                )
             }
         }
     }
