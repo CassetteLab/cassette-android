@@ -1,35 +1,67 @@
 package fr.cassette.cassette.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.settings.core.SettingsActionRow
+import fr.cassette.cassette.presentation.settings.core.SettingsInformationRow
 import fr.cassette.cassette.presentation.settings.core.SettingsSection
 import fr.cassette.cassette.presentation.settings.core.SettingsSwitchRow
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsScreen(
     uiState: SettingsUiState,
     onEvent: (SettingsEvent) -> Unit,
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            LargeTopAppBar(
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.settings_title)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onEvent(SettingsEvent.OnBackClicked) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.settings_back)
+                        )
+                    }
+                },
+            )
+        }
     ) { contentPadding ->
         LazyColumn(
             contentPadding = PaddingValues(
@@ -40,33 +72,6 @@ internal fun SettingsScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TextButton(
-                        onClick = { onEvent(SettingsEvent.OnBackClicked) },
-                    ) {
-                        Text(text = stringResource(R.string.settings_back))
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        text = stringResource(R.string.settings_title),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
-                    Text(
-                        text = stringResource(R.string.settings_subtitle),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            }
             item {
                 SettingsSection(title = stringResource(R.string.settings_server_section_title)) {
                     SettingsActionRow(
@@ -97,6 +102,36 @@ internal fun SettingsScreen(
                         onCheckedChange = { isEnabled ->
                             onEvent(SettingsEvent.OnNotificationsChanged(isEnabled))
                         },
+                    )
+                }
+            }
+            item {
+                SettingsSection(title = stringResource(R.string.settings_about_section_title)) {
+                    SettingsInformationRow(
+                        title = stringResource(R.string.settings_version_name_title),
+                        value = uiState.versionName,
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+                    SettingsInformationRow(
+                        title = stringResource(R.string.settings_version_code_title),
+                        value = uiState.versionCode,
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+                    SettingsInformationRow(
+                        title = stringResource(R.string.settings_build_type_title),
+                        value = stringResource(
+                            if (uiState.isDebugBuild) {
+                                R.string.settings_build_type_debug
+                            } else {
+                                R.string.settings_build_type_release
+                            }
+                        ),
                     )
                 }
             }

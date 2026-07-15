@@ -1,6 +1,8 @@
 package fr.cassette.cassette.core.di
 
+import fr.cassette.cassette.core.helpers.ApplicationInformationHelper
 import fr.cassette.cassette.core.helpers.CipherHelper
+import fr.cassette.cassette.core.helpers.implementations.AndroidApplicationInformationHelperImpl
 import fr.cassette.cassette.core.helpers.implementations.AndroidKeystoreCipherHelperImpl
 import fr.cassette.cassette.core.logger.Logger
 import fr.cassette.cassette.core.logger.implementations.LogcatLoggerImpl
@@ -11,5 +13,6 @@ import org.koin.dsl.module
 
 val coreModule = module {
     factoryOf(::LogcatLoggerImpl) bind Logger::class
+    singleOf(::AndroidApplicationInformationHelperImpl) bind ApplicationInformationHelper::class
     singleOf(::AndroidKeystoreCipherHelperImpl) bind CipherHelper::class
 }
