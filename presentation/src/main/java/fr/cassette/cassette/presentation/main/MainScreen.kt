@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.navigation.Screens
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
+import fr.cassette.cassette.presentation.home.HomeEvent
 import fr.cassette.cassette.presentation.home.HomeScreen
 import fr.cassette.cassette.presentation.home.HomeViewModel
 import fr.cassette.cassette.presentation.main.core.MainTab
@@ -91,7 +92,16 @@ internal fun MainScreen(
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 HomeScreen(
                     uiState = uiState,
-                    onEvent = viewModel::onEvent,
+                    onEvent = { event ->
+                        when (event) {
+                            is HomeEvent.OnAlbumClicked -> onNavigateToRootScreen(
+                                Screens.AlbumDetail(albumId = event.albumId),
+                            )
+
+                            else -> Unit
+                        }
+                        viewModel.onEvent(event)
+                    },
                 )
             }
 

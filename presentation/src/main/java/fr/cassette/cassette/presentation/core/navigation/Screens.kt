@@ -28,4 +28,7 @@ internal sealed interface Screens {
 
     @Serializable
     data object SettingsServerConfiguration : Screens
+
+    @Serializable
+    data class AlbumDetail(val albumId: String) : Screens
 }

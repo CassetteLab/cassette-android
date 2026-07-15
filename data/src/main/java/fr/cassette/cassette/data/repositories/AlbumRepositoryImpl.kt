@@ -10,4 +10,8 @@ internal class AlbumRepositoryImpl(
     override suspend fun getRecentlyAddedAlbums(size: Int): List<Album> {
         return albumRemoteDataSource.getRecentlyAddedAlbums(size)
     }
+
+    override suspend fun getAlbum(albumId: String): Album {
+        return albumRemoteDataSource.getAlbum(albumId)
+    }
 }

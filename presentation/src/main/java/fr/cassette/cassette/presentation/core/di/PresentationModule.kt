@@ -1,5 +1,6 @@
 package fr.cassette.cassette.presentation.core.di
 
+import fr.cassette.cassette.presentation.albumDetail.AlbumDetailViewModel
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
 import fr.cassette.cassette.presentation.home.HomeViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
@@ -16,4 +17,5 @@ val presentationModule = module {
     viewModelOf(::OnBoardingWelcomeViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::AlbumDetailViewModel)
 }

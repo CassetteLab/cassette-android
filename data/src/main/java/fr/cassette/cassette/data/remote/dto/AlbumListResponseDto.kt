@@ -14,6 +14,7 @@ internal data class AlbumListResponseDto(
 internal data class AlbumListSubsonicResponseDto(
     val status: String,
     val albumList2: AlbumListDto? = null,
+    val album: AlbumDto? = null,
 )
 
 @Serializable

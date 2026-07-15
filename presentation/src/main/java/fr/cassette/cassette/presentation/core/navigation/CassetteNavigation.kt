@@ -8,6 +8,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import fr.cassette.cassette.presentation.albumDetail.AlbumDetailEvent
+import fr.cassette.cassette.presentation.albumDetail.AlbumDetailScreen
+import fr.cassette.cassette.presentation.albumDetail.AlbumDetailViewModel
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
 import fr.cassette.cassette.presentation.home.HomeScreen
@@ -24,6 +28,7 @@ import fr.cassette.cassette.presentation.settings.SettingsScreen
 import fr.cassette.cassette.presentation.settings.SettingsViewModel
 import fr.cassette.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 internal fun CassetteNavigation(
@@ -122,6 +127,25 @@ internal fun CassetteNavigation(
                     }
                     viewModel.onEvent(event)
                 }
+            )
+        }
+
+        composable<Screens.AlbumDetail> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screens.AlbumDetail>()
+            val viewModel = koinViewModel<AlbumDetailViewModel>(
+                parameters = { parametersOf(route.albumId) },
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            AlbumDetailScreen(
+                uiState = uiState,
+                onEvent = { event ->
+                    when (event) {
+                        AlbumDetailEvent.OnBackClicked -> navController.navigateUp()
+                        else -> Unit
+                    }
+                    viewModel.onEvent(event)
+                },
             )
         }
     }

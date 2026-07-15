@@ -75,7 +75,10 @@ internal fun HomeScreen(
                     items = uiState.albums,
                     key = { album -> album.id },
                 ) { album ->
-                    AlbumRow(album = album)
+                    AlbumRow(
+                        album = album,
+                        onClick = { onEvent(HomeEvent.OnAlbumClicked(album.id)) },
+                    )
                 }
             }
         }

@@ -20,6 +20,7 @@ internal class HomeViewModel(
 
     override fun handleEvent(event: HomeEvent) {
         when (event) {
+            is HomeEvent.OnAlbumClicked -> Unit
             HomeEvent.OnRetryClicked -> loadRecentlyAddedAlbums()
         }
     }

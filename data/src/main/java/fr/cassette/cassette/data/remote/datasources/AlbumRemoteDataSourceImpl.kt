@@ -29,4 +29,22 @@ internal class AlbumRemoteDataSourceImpl(
 
         return subsonicResponse.albumList2?.album.orEmpty().map { it.toDomain() }
     }
+
+    suspend fun getAlbum(albumId: String): Album {
+        val configuration = serverConfigurationDao.getFirstServerConfiguration()
+            ?: throw IllegalStateException("No server configuration found")
+        val server = configuration.serverConfiguration
+
+        val response = httpClient.get("${server.serverUrl.trimEnd('/')}/rest/getAlbum.view") {
+            parameter("id", albumId)
+        }.body<AlbumListResponseDto>()
+
+        val subsonicResponse = response.subsonicResponse
+        if (subsonicResponse.status != "ok") {
+            throw IllegalStateException("Subsonic getAlbum failed")
+        }
+
+        return subsonicResponse.album?.toDomain()
+            ?: throw IllegalStateException("Subsonic getAlbum returned no album")
+    }
 }
