@@ -51,15 +51,7 @@ internal fun SettingsScreen(
                     Text(
                         text = stringResource(R.string.settings_title)
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onEvent(SettingsEvent.OnBackClicked) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.settings_back)
-                        )
-                    }
-                },
+                }
             )
         }
     ) { contentPadding ->

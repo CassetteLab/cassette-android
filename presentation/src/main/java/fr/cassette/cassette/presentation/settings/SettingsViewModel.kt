@@ -18,7 +18,6 @@ internal class SettingsViewModel(
 ) {
     override fun handleEvent(event: SettingsEvent) {
         when (event) {
-            SettingsEvent.OnBackClicked -> Unit
             SettingsEvent.OnServerConfigurationClicked -> Unit
             is SettingsEvent.OnWifiOnlyDownloadsChanged -> updateState { uiState ->
                 uiState.copy(isWifiOnlyDownloadsEnabled = event.isEnabled)

@@ -15,9 +15,7 @@ import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.presentation.R
 
 @Composable
-internal fun HomeScreen(
-    onSettingsClicked: () -> Unit,
-) {
+internal fun HomeScreen() {
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -31,9 +29,6 @@ internal fun HomeScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.headlineMedium,
             )
-            Button(onClick = onSettingsClicked) {
-                Text(text = stringResource(R.string.home_open_settings))
-            }
         }
     }
 }

@@ -18,6 +18,9 @@ internal sealed interface Screens {
     }
 
     @Serializable
+    data object Main : Screens
+
+    @Serializable
     data object Home : Screens
 
     @Serializable

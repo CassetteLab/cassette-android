@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
 import fr.cassette.cassette.presentation.home.HomeScreen
+import fr.cassette.cassette.presentation.main.MainScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
@@ -83,7 +84,7 @@ internal fun CassetteNavigation(
                 onEvent = { event ->
                     when (event) {
                         OnBoardingCompleteEvent.OnStartListeningClicked -> {
-                            navController.navigate(Screens.Home) {
+                            navController.navigate(Screens.Main) {
                                 popUpTo(navController.graph.id) { inclusive = true }
                             }
                         }
@@ -94,29 +95,15 @@ internal fun CassetteNavigation(
         }
 
         composable<Screens.Home> {
-            HomeScreen(
-                onSettingsClicked = {
-                    navController.navigate(Screens.Settings)
-                },
-            )
+            HomeScreen()
         }
 
-        composable<Screens.Settings> {
-            val viewModel = koinViewModel<SettingsViewModel>()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        composable<Screens.Main> {
+            MainScreen(
+                onNavigateToRootScreen = { screen ->
+                    navController.navigate(screen)
 
-            SettingsScreen(
-                uiState = uiState,
-                onEvent = { event ->
-                    when (event) {
-                        SettingsEvent.OnBackClicked -> navController.popBackStack()
-                        SettingsEvent.OnServerConfigurationClicked -> {
-                            navController.navigate(Screens.SettingsServerConfiguration)
-                        }
-                        else -> Unit
-                    }
-                    viewModel.onEvent(event)
-                },
+                }
             )
         }
 
