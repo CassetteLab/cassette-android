@@ -34,4 +34,22 @@
     <string name="server_configuration_server_url_placeholder">https://music.example.com</string>
     <string name="server_configuration_title">Add Server</string>
     <string name="server_configuration_username_label">Username</string>
+
+    <!-- Home -->
+    <string name="home_open_settings">Settings</string>
+    <string name="home_title">Home</string>
+
+    <!-- Settings -->
+    <string name="settings_back">Back</string>
+    <string name="settings_notifications_description">Show useful updates while Cassette is playing in the background.</string>
+    <string name="settings_notifications_section_title">Notifications</string>
+    <string name="settings_notifications_title">Playback notifications</string>
+    <string name="settings_playback_section_title">Playback</string>
+    <string name="settings_server_configuration_description">Update your Subsonic URL, credentials, and custom headers.</string>
+    <string name="settings_server_configuration_title">Server configuration</string>
+    <string name="settings_server_section_title">Server</string>
+    <string name="settings_subtitle">Tune Cassette for your library and listening habits.</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_wifi_only_downloads_description">Avoid mobile data when caching music for offline listening.</string>
+    <string name="settings_wifi_only_downloads_title">Wi-Fi only downloads</string>
 </resources>

@@ -19,6 +19,9 @@ import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardin
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
+import fr.cassette.cassette.presentation.settings.SettingsEvent
+import fr.cassette.cassette.presentation.settings.SettingsScreen
+import fr.cassette.cassette.presentation.settings.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -43,7 +46,7 @@ internal fun CassetteNavigation(
                     viewModel.onEvent(event)
                     when (event) {
                         OnBoardingWelcomeEvent.OnGetStartedClicked -> {
-                            navController.navigate(Screens.OnBoardingScreens.OnBoardingScreensServerConfigurationScreen){
+                            navController.navigate(Screens.OnBoardingScreens.OnBoardingScreensServerConfigurationScreen) {
                                 popUpTo(navController.graph.id)
                             }
                         }
@@ -91,7 +94,46 @@ internal fun CassetteNavigation(
         }
 
         composable<Screens.Home> {
-            HomeScreen()
+            HomeScreen(
+                onSettingsClicked = {
+                    navController.navigate(Screens.Settings)
+                },
+            )
+        }
+
+        composable<Screens.Settings> {
+            val viewModel = koinViewModel<SettingsViewModel>()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            SettingsScreen(
+                uiState = uiState,
+                onEvent = { event ->
+                    when (event) {
+                        SettingsEvent.OnBackClicked -> navController.popBackStack()
+                        SettingsEvent.OnServerConfigurationClicked -> {
+                            navController.navigate(Screens.ServerConfiguration)
+                        }
+                        else -> Unit
+                    }
+                    viewModel.onEvent(event)
+                },
+            )
+        }
+
+        composable<Screens.ServerConfiguration> {
+            val viewModel = koinViewModel<ServerConfigurationViewModel>()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(uiState.isSaved) {
+                if (uiState.isSaved) {
+                    navController.popBackStack()
+                }
+            }
+
+            ServerConfigurationScreen(
+                uiState = uiState,
+                onEvent = viewModel::onEvent,
+            )
         }
     }
 }

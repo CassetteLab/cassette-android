@@ -4,6 +4,7 @@ import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigur
 import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
+import fr.cassette.cassette.presentation.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -12,4 +13,5 @@ val presentationModule = module {
     viewModelOf(::OnBoardingCacheViewModel)
     viewModelOf(::OnBoardingCompleteViewModel)
     viewModelOf(::OnBoardingWelcomeViewModel)
+    viewModelOf(::SettingsViewModel)
 }
