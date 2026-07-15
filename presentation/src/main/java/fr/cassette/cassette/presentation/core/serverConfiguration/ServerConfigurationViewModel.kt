@@ -64,6 +64,7 @@ internal class ServerConfigurationViewModel(
             }
 
             ServerConfigurationEvent.OnConnectClicked -> saveServerConfiguration()
+            ServerConfigurationEvent.OnBackClicked -> Unit
         }
     }
 

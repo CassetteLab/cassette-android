@@ -57,4 +57,8 @@
     <string name="settings_version_name_title">Version</string>
     <string name="settings_wifi_only_downloads_description">Avoid mobile data when caching music for offline listening.</string>
     <string name="settings_wifi_only_downloads_title">Wi-Fi only downloads</string>
+
+    <!-- Server Configuration Settings -->
+    <string name="server_configuration_settings_title">Server configuration</string>
+
 </resources>

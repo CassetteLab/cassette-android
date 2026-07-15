@@ -26,73 +26,48 @@ import fr.cassette.cassette.presentation.core.serverConfiguration.core.ServerSec
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
-internal fun ServerConfigurationScreen(
+internal fun ServerConfigurationScreenContent(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     uiState: ServerConfigurationUiState,
     onEvent: (ServerConfigurationEvent) -> Unit,
 ) {
-    Scaffold(
-        modifier = Modifier.imePadding(),
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                containerColor = MaterialTheme.colorScheme.background
-            ) {
-                PrimaryButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        onEvent(ServerConfigurationEvent.OnConnectClicked)
-                    },
-                    isEnabled = uiState.canSubmit,
-                    isLoading = uiState.isLoading,
-                    text = stringResource(R.string.server_configuration_connect_and_save)
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(
+            start = contentPadding.calculateStartPadding(layoutDirection = LayoutDirection.Ltr) + 16.dp,
+            end = contentPadding.calculateEndPadding(layoutDirection = LayoutDirection.Ltr) + 16.dp,
+            top = contentPadding.calculateTopPadding() + 20.dp,
+            bottom = contentPadding.calculateBottomPadding()
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        uiState.error?.let { error ->
+            item {
+                Text(
+                    text = error.asString(),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
-    ) { contentPadding ->
-        LazyColumn(
-            contentPadding = PaddingValues(
-                start = contentPadding.calculateStartPadding(layoutDirection = LayoutDirection.Ltr) + 16.dp,
-                end = contentPadding.calculateEndPadding(layoutDirection = LayoutDirection.Ltr) + 16.dp,
-                top = contentPadding.calculateTopPadding() + 20.dp,
-                bottom = contentPadding.calculateBottomPadding()
-            ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                Text(
-                    text = stringResource(R.string.server_configuration_title),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.headlineMedium,
-                )
-            }
-            uiState.error?.let { error ->
-                item {
-                    Text(
-                        text = error.asString(),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            }
-            item {
-                ServerSection(uiState = uiState, onEvent = onEvent)
-            }
-            item {
-                CredentialsSection(uiState = uiState, onEvent = onEvent)
-            }
-            item {
-                CustomHeadersSection(uiState = uiState, onEvent = onEvent)
-            }
+        item {
+            ServerSection(uiState = uiState, onEvent = onEvent)
+        }
+        item {
+            CredentialsSection(uiState = uiState, onEvent = onEvent)
+        }
+        item {
+            CustomHeadersSection(uiState = uiState, onEvent = onEvent)
         }
     }
 }
 
 @Composable
 @PreviewLightDark
-private fun ServerConfigurationScreenPreview() {
+private fun ServerConfigurationScreenContentPreview() {
     CassetteTheme {
-        ServerConfigurationScreen(
+        ServerConfigurationScreenContent(
             uiState = ServerConfigurationUiState(
                 serverUrl = "https://music.example.com",
                 username = "cassette",

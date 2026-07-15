@@ -8,20 +8,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationScreen
+import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
 import fr.cassette.cassette.presentation.home.HomeScreen
-import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheScreen
-import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
+import fr.cassette.cassette.presentation.onBoarding.onBoardingServerConfiguration.OnBoardingServerConfigurationScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
 import fr.cassette.cassette.presentation.settings.SettingsEvent
 import fr.cassette.cassette.presentation.settings.SettingsScreen
 import fr.cassette.cassette.presentation.settings.SettingsViewModel
+import fr.cassette.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -68,7 +68,7 @@ internal fun CassetteNavigation(
                 }
             }
 
-            ServerConfigurationScreen(
+            OnBoardingServerConfigurationScreen(
                 uiState = uiState,
                 onEvent = viewModel::onEvent,
             )
@@ -111,7 +111,7 @@ internal fun CassetteNavigation(
                     when (event) {
                         SettingsEvent.OnBackClicked -> navController.popBackStack()
                         SettingsEvent.OnServerConfigurationClicked -> {
-                            navController.navigate(Screens.ServerConfiguration)
+                            navController.navigate(Screens.SettingsServerConfiguration)
                         }
                         else -> Unit
                     }
@@ -120,19 +120,25 @@ internal fun CassetteNavigation(
             )
         }
 
-        composable<Screens.ServerConfiguration> {
+        composable<Screens.SettingsServerConfiguration> {
             val viewModel = koinViewModel<ServerConfigurationViewModel>()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             LaunchedEffect(uiState.isSaved) {
                 if (uiState.isSaved) {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             }
 
-            ServerConfigurationScreen(
+            SettingsServerConfigurationScreen(
                 uiState = uiState,
-                onEvent = viewModel::onEvent,
+                onEvent = { event ->
+                    when(event){
+                        ServerConfigurationEvent.OnBackClicked -> navController.navigateUp()
+                        else -> {}
+                    }
+                    viewModel.onEvent(event)
+                }
             )
         }
     }
