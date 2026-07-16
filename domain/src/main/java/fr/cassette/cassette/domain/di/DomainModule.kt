@@ -1,6 +1,6 @@
 package fr.cassette.cassette.domain.di
 
-import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtRequestUseCase
+import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
 import fr.cassette.cassette.domain.usecases.GetServerConfigurationUseCase
@@ -19,6 +19,6 @@ val domainModule = module {
 
     // Albums
     singleOf(::GetAlbumUseCase)
-    singleOf(::GetAlbumCoverArtRequestUseCase)
+    singleOf(::GetAlbumCoverArtUseCase)
     singleOf(::GetRecentlyAddedAlbumsUseCase)
 }

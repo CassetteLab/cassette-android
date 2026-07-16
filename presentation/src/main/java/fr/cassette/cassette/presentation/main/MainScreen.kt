@@ -60,6 +60,8 @@ internal fun MainScreen(
                         NavigationBarItem(
                             selected = tab == selectedDestination,
                             onClick = {
+                                if (selectedDestination == tab) return@NavigationBarItem
+
                                 selectedDestination = tab
                                 navController.navigate(tab.destination){
                                     launchSingleTop = true

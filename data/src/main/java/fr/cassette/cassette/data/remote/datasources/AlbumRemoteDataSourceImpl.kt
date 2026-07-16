@@ -1,22 +1,22 @@
 package fr.cassette.cassette.data.remote.datasources
 
+import android.content.Context
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.remote.dto.AlbumListResponseDto
-import fr.cassette.cassette.core.helpers.CipherHelper
 import fr.cassette.cassette.domain.models.AlbumDetail
-import fr.cassette.cassette.domain.models.AlbumCoverArtRequest
+import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.AlbumList
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.http.URLBuilder
+import java.io.File
 import java.security.MessageDigest
 
 internal class AlbumRemoteDataSourceImpl(
+    private val context: Context,
     private val serverConfigurationDao: ServerConfigurationDao,
     private val httpClient: HttpClient,
-    private val cipherHelper: CipherHelper,
 ) {
     suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> {
         val configuration = serverConfigurationDao.getServerConfiguration()
@@ -26,6 +26,7 @@ internal class AlbumRemoteDataSourceImpl(
         val response = httpClient.get("${server.serverUrl.trimEnd('/')}/rest/getAlbumList2.view") {
             parameter("type", "newest")
             parameter("size", size)
+            parameter("f", "json")
         }.body<AlbumListResponseDto>()
 
         val subsonicResponse = response.subsonicResponse
@@ -43,6 +44,7 @@ internal class AlbumRemoteDataSourceImpl(
 
         val response = httpClient.get("${server.serverUrl.trimEnd('/')}/rest/getAlbum.view") {
             parameter("id", albumId)
+            parameter("f", "json")
         }.body<AlbumListResponseDto>()
 
         val subsonicResponse = response.subsonicResponse
@@ -54,32 +56,46 @@ internal class AlbumRemoteDataSourceImpl(
             ?: throw IllegalStateException("Subsonic getAlbum returned no album")
     }
 
-    suspend fun getAlbumCoverArtRequest(coverArtId: String, size: Int?): AlbumCoverArtRequest {
+    suspend fun getAlbumCoverArt(coverArtId: String, size: Int?): AlbumCoverArt {
         val configuration = serverConfigurationDao.getServerConfiguration()
             ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
-        val salt = System.currentTimeMillis().toString(16)
-        val password = cipherHelper.decrypt(server.encryptedPassword)
-        val url = URLBuilder("${server.serverUrl.trimEnd('/')}/rest/getCoverArt.view").apply {
-            parameters.append("id", coverArtId)
-            size?.let { parameters.append("size", it.toString()) }
-            parameters.append("u", server.username)
-            parameters.append("t", md5(password + salt))
-            parameters.append("s", salt)
-            parameters.append("v", "1.16.1")
-            parameters.append("c", "Cassette")
-        }.buildString()
 
-        val headers = configuration.customHeaders
-            .filter { it.name.isNotBlank() }
-            .associate { customHeader ->
-                customHeader.name to cipherHelper.decrypt(customHeader.encryptedValue)
-            }
+        val cacheFile = File(coverArtCacheDirectory(), "${coverArtCacheKey(server.serverUrl, coverArtId, size)}.img")
+        if (cacheFile.exists() && cacheFile.length() > 0L) {
+            return AlbumCoverArt(filePath = cacheFile.absolutePath)
+        }
 
-        return AlbumCoverArtRequest(url = url, headers = headers)
+        val bytes = httpClient.get("${server.serverUrl.trimEnd('/')}/rest/getCoverArt.view") {
+            parameter("id", coverArtId)
+            size?.let { parameter("size", it) }
+        }.body<ByteArray>()
+
+        val temporaryFile = File(cacheFile.parentFile, "${cacheFile.name}.tmp")
+        temporaryFile.writeBytes(bytes)
+        if (!temporaryFile.renameTo(cacheFile)) {
+            temporaryFile.copyTo(cacheFile, overwrite = true)
+            temporaryFile.delete()
+        }
+
+        return AlbumCoverArt(filePath = cacheFile.absolutePath)
     }
 
-    private fun md5(value: String): String = MessageDigest.getInstance("MD5")
+    private fun coverArtCacheDirectory(): File {
+        return File(context.cacheDir, COVER_ART_CACHE_DIRECTORY).apply { mkdirs() }
+    }
+
+    private fun coverArtCacheKey(serverUrl: String, coverArtId: String, size: Int?): String {
+        return sha256("${serverUrl.trimEnd('/')}|$coverArtId|${size.orEmpty()}")
+    }
+
+    private fun Int?.orEmpty(): String = this?.toString().orEmpty()
+
+    private fun sha256(value: String): String = MessageDigest.getInstance("SHA-256")
         .digest(value.toByteArray())
         .joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+    private companion object {
+        const val COVER_ART_CACHE_DIRECTORY = "cover_art"
+    }
 }

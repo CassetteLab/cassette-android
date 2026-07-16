@@ -8,7 +8,6 @@ internal class CassetteRequestDefaultsPluginProvider : KtorPluginProvider<Unit>{
         onRequest { request, _ ->
             request.appendParameterIfAbsent("v", "1.16.1")
             request.appendParameterIfAbsent("c", "Cassette")
-            request.appendParameterIfAbsent("f", "json")
         }
     }
 

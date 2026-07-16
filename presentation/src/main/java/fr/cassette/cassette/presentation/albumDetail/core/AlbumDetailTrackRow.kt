@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.Track
+import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun AlbumDetailTrackRow(
@@ -37,20 +39,6 @@ internal fun AlbumDetailTrackRow(
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = track.trackNumber?.toString() ?: "-",
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -73,12 +61,22 @@ internal fun AlbumDetailTrackRow(
                 )
             }
         }
-        track.durationSeconds?.let { durationSeconds ->
-            Text(
-                text = "%d:%02d".format(durationSeconds / 60, durationSeconds % 60),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun AlbumDetailTrackRowPreview(){
+    CassetteTheme {
+        AlbumDetailTrackRow(
+            track = Track(
+                id = "",
+                title = "Hand It Over",
+                artist = "MGMT",
+                trackNumber = 1,
+                durationSeconds = 146
+            ),
+            onClick = {}
+        )
     }
 }

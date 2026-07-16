@@ -27,6 +27,7 @@ internal class ServerConfigurationRepositoryImpl(
             parameter("u", serverConfiguration.username)
             parameter("t", md5(serverConfiguration.password + salt))
             parameter("s", salt)
+            parameter("f", "json")
 
             serverConfiguration.customHeaders
                 .filter { it.name.isNotBlank() }

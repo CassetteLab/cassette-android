@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassette.cassette.domain.models.AlbumCoverArtRequest
+import fr.cassette.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.AlbumCoverArt
@@ -32,7 +32,7 @@ import fr.cassette.cassette.presentation.core.AlbumCoverArt
 @Composable
 internal fun AlbumRow(
     album: AlbumList,
-    coverArtRequest: AlbumCoverArtRequest?,
+    coverArt: AlbumCoverArtModel?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -54,7 +54,7 @@ internal fun AlbumRow(
                 .aspectRatio(1f),
         ) {
             AlbumCoverArt(
-                coverArtRequest = coverArtRequest,
+                coverArt = coverArt,
                 modifier = Modifier.matchParentSize(),
             )
             Box(

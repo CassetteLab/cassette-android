@@ -2,14 +2,14 @@ package fr.cassette.cassette.presentation.home
 
 import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
-import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtRequestUseCase
+import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
     private val getRecentlyAddedAlbumsUseCase: GetRecentlyAddedAlbumsUseCase,
-    private val getAlbumCoverArtRequestUseCase: GetAlbumCoverArtRequestUseCase,
+    private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     logger: Logger,
 ) : BaseViewModel<HomeUiState, HomeEvent>(
     viewModelName = "HomeViewModel",
@@ -32,22 +32,25 @@ internal class HomeViewModel(
             updateState { it.copy(isLoading = true, hasError = false) }
             try {
                 val albums = getRecentlyAddedAlbumsUseCase(size = RECENT_ALBUMS_SIZE)
-                val coverArtRequests = albums.associateNotNull { album ->
+                updateState { it.copy(isLoading = false, albums = albums, albumCoverArts = emptyMap()) }
+
+                albums.forEach { album ->
                     val coverArtId = album.coverArt ?: album.id
                     runCatching {
-                        album.id to getAlbumCoverArtRequestUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE)
-                    }.getOrNull()
+                        getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE)
+                    }.onSuccess { coverArt ->
+                        updateState { state ->
+                            state.copy(albumCoverArts = state.albumCoverArts + (album.id to coverArt))
+                        }
+                    }.onFailure { exception ->
+                        logger.w("Unable to load cover art for album ${album.id}", exception)
+                    }
                 }
-                updateState { it.copy(isLoading = false, albums = albums, albumCoverArtRequests = coverArtRequests) }
             } catch (exception: Exception) {
                 logger.w("Unable to load recently added albums", exception)
                 updateState { it.copy(isLoading = false, hasError = true) }
             }
         }
-    }
-
-    private inline fun <T, K, V> Iterable<T>.associateNotNull(transform: (T) -> Pair<K, V>?): Map<K, V> {
-        return mapNotNull(transform).toMap()
     }
 
     private companion object {
