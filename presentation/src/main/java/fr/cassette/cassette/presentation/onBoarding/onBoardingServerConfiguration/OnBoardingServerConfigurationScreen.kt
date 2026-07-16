@@ -1,13 +1,10 @@
 package fr.cassette.cassette.presentation.onBoarding.onBoardingServerConfiguration
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,7 +33,9 @@ internal fun OnBoardingServerConfigurationScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .imePadding(),
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
@@ -48,15 +47,7 @@ internal fun OnBoardingServerConfigurationScreen(
                     Text(
                         text = stringResource(R.string.server_configuration_title)
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onEvent(ServerConfigurationEvent.OnBackClicked) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.settings_back)
-                        )
-                    }
-                },
+                }
             )
         },
         bottomBar = {
