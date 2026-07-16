@@ -5,66 +5,49 @@
     android:viewportWidth="1024"
     android:viewportHeight="1024">
   <path
-      android:pathData="M343,512m-240,0a240,240 0,1 1,480 0a240,240 0,1 1,-480 0">
+      android:pathData="M343,512m-240.6,0a240.6,240.6 0,1 1,481.3 0a240.6,240.6 0,1 1,-481.3 0">
     <aapt:attr name="android:fillColor">
       <gradient
-          android:startX="260"
-          android:startY="289"
-          android:endX="436"
-          android:endY="731"
-          android:type="linear">
-        <item android:offset="0" android:color="#FF8366F4"/>
-        <item android:offset="0.5" android:color="#FF7350F2"/>
-        <item android:offset="1" android:color="#FF5E35E7"/>
+          android:centerX="270.9"
+          android:centerY="425.1"
+          android:gradientRadius="386.3"
+          android:type="radial">
+        <item android:offset="0" android:color="#FFA58DF9"/>
+        <item android:offset="0.6" android:color="#FF6C47F5"/>
+        <item android:offset="1" android:color="#FF5232D8"/>
       </gradient>
     </aapt:attr>
   </path>
   <path
-      android:pathData="M681,512m-240,0a240,240 0,1 1,480 0a240,240 0,1 1,-480 0">
+      android:pathData="M681,512m-240.6,0a240.6,240.6 0,1 1,481.3 0a240.6,240.6 0,1 1,-481.3 0">
     <aapt:attr name="android:fillColor">
       <gradient
-          android:startX="585"
-          android:startY="293"
-          android:endX="763"
-          android:endY="731"
-          android:type="linear">
-        <item android:offset="0" android:color="#FF9E85F7"/>
-        <item android:offset="0.5" android:color="#FF8C6AF4"/>
-        <item android:offset="1" android:color="#FF6A46E8"/>
+          android:centerX="753.2"
+          android:centerY="425.1"
+          android:gradientRadius="386.3"
+          android:type="radial">
+        <item android:offset="0" android:color="#FFA58DF9"/>
+        <item android:offset="0.6" android:color="#FF8060F7"/>
+        <item android:offset="1" android:color="#FF5232D8"/>
       </gradient>
     </aapt:attr>
   </path>
   <path
-      android:pathData="M512,342C557.5,385.8 583,446.3 583,512C583,577.7 557.5,638.2 512,682C466.5,638.2 441,577.7 441,512C441,446.3 466.5,385.8 512,342Z">
-    <aapt:attr name="android:fillColor">
-      <gradient
-          android:startX="512"
-          android:startY="330"
-          android:endX="512"
-          android:endY="694"
-          android:type="linear">
-        <item android:offset="0" android:color="#FFB08BF8"/>
-        <item android:offset="0.5" android:color="#FFA67AF8"/>
-        <item android:offset="1" android:color="#FF8C62F2"/>
-      </gradient>
-    </aapt:attr>
-  </path>
+      android:pathData="M343,512m-87,0a87,87 0,1 1,174.1 0a87,87 0,1 1,-174.1 0"
+      android:strokeAlpha="0.55"
+      android:strokeWidth="18.432"
+      android:fillColor="#00000000"
+      android:strokeColor="#0F0D1A"/>
   <path
-      android:pathData="M343,512m-88,0a88,88 0,1 1,176 0a88,88 0,1 1,-176 0"
-      android:fillColor="#4A3D79"/>
+      android:pathData="M681,512m-87,0a87,87 0,1 1,174.1 0a87,87 0,1 1,-174.1 0"
+      android:strokeAlpha="0.55"
+      android:strokeWidth="18.432"
+      android:fillColor="#00000000"
+      android:strokeColor="#0F0D1A"/>
   <path
-      android:pathData="M343,512m-77,0a77,77 0,1 1,154 0a77,77 0,1 1,-154 0"
-      android:fillColor="#906CFA"/>
+      android:pathData="M343,512m-53.2,0a53.2,53.2 0,1 1,106.5 0a53.2,53.2 0,1 1,-106.5 0"
+      android:fillColor="#0F0D1A"/>
   <path
-      android:pathData="M343,512m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"
-      android:fillColor="#100D1D"/>
-  <path
-      android:pathData="M681,512m-88,0a88,88 0,1 1,176 0a88,88 0,1 1,-176 0"
-      android:fillColor="#4A3D79"/>
-  <path
-      android:pathData="M681,512m-77,0a77,77 0,1 1,154 0a77,77 0,1 1,-154 0"
-      android:fillColor="#9B7BFA"/>
-  <path
-      android:pathData="M681,512m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"
-      android:fillColor="#100D1D"/>
+      android:pathData="M681,512m-53.2,0a53.2,53.2 0,1 1,106.5 0a53.2,53.2 0,1 1,-106.5 0"
+      android:fillColor="#0F0D1A"/>
 </vector>

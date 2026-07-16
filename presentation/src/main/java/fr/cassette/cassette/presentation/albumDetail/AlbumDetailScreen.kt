@@ -73,6 +73,7 @@ internal fun AlbumDetailScreen(
                 uiState.album != null -> item {
                     AlbumDetailContent(
                         album = uiState.album,
+                        coverArtRequest = uiState.coverArtRequest,
                         onTrackClick = { track -> onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
                     )
                 }

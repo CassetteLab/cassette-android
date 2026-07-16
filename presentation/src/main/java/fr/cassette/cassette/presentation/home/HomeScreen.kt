@@ -77,6 +77,7 @@ internal fun HomeScreen(
                 ) { album ->
                     AlbumRow(
                         album = album,
+                        coverArtRequest = uiState.albumCoverArtRequests[album.id],
                         onClick = { onEvent(HomeEvent.OnAlbumClicked(album.id)) },
                     )
                 }
