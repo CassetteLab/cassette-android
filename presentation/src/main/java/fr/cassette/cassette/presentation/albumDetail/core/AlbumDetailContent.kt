@@ -21,10 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.AlbumDetail
+import fr.cassette.cassette.domain.models.Track
 import fr.cassette.cassette.presentation.R
 
 @Composable
-internal fun AlbumDetailContent(album: AlbumDetail) {
+internal fun AlbumDetailContent(
+    album: AlbumDetail,
+    onTrackClick: (Track) -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,7 +89,10 @@ internal fun AlbumDetailContent(album: AlbumDetail) {
                 value = album.tracks.size.toString(),
             )
             album.tracks.forEach { track ->
-                AlbumDetailTrackRow(track = track)
+                AlbumDetailTrackRow(
+                    track = track,
+                    onClick = { onTrackClick(track) },
+                )
             }
         }
     }

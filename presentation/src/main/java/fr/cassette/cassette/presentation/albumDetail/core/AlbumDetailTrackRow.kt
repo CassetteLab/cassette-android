@@ -1,6 +1,7 @@
 package fr.cassette.cassette.presentation.albumDetail.core
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +22,14 @@ import fr.cassette.cassette.domain.models.Track
 @Composable
 internal fun AlbumDetailTrackRow(
     track: Track,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(14.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

@@ -23,6 +23,9 @@ import fr.cassette.cassette.presentation.onBoarding.onBoardingServerConfiguratio
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
+import fr.cassette.cassette.presentation.nowPlaying.NowPlayingEvent
+import fr.cassette.cassette.presentation.nowPlaying.NowPlayingScreen
+import fr.cassette.cassette.presentation.nowPlaying.NowPlayingViewModel
 import fr.cassette.cassette.presentation.settings.SettingsEvent
 import fr.cassette.cassette.presentation.settings.SettingsScreen
 import fr.cassette.cassette.presentation.settings.SettingsViewModel
@@ -142,6 +145,26 @@ internal fun CassetteNavigation(
                 onEvent = { event ->
                     when (event) {
                         AlbumDetailEvent.OnBackClicked -> navController.navigateUp()
+                        is AlbumDetailEvent.OnTrackClicked -> navController.navigate(Screens.NowPlaying(event.trackId))
+                        else -> Unit
+                    }
+                    viewModel.onEvent(event)
+                },
+            )
+        }
+
+        composable<Screens.NowPlaying> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screens.NowPlaying>()
+            val viewModel = koinViewModel<NowPlayingViewModel>(
+                parameters = { parametersOf(route.trackId) },
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            NowPlayingScreen(
+                uiState = uiState,
+                onEvent = { event ->
+                    when (event) {
+                        NowPlayingEvent.OnBackClicked -> navController.navigateUp()
                         else -> Unit
                     }
                     viewModel.onEvent(event)

@@ -71,7 +71,10 @@ internal fun AlbumDetailScreen(
                 }
 
                 uiState.album != null -> item {
-                    AlbumDetailContent(album = uiState.album)
+                    AlbumDetailContent(
+                        album = uiState.album,
+                        onTrackClick = { track -> onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
+                    )
                 }
             }
         }

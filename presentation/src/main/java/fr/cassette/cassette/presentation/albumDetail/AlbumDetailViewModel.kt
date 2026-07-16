@@ -23,6 +23,7 @@ internal class AlbumDetailViewModel(
         when (event) {
             AlbumDetailEvent.OnBackClicked -> Unit
             AlbumDetailEvent.OnRetryClicked -> loadAlbum()
+            is AlbumDetailEvent.OnTrackClicked -> Unit
         }
     }
 

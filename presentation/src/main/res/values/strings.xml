@@ -59,6 +59,19 @@
     <string name="album_detail_tracks_empty">No tracks found for this album.</string>
     <string name="album_detail_unknown_artist">Unknown artist</string>
 
+    <!-- Now Playing -->
+    <string name="now_playing_back">Back</string>
+    <string name="now_playing_favorite">Favorite</string>
+    <string name="now_playing_next">Next</string>
+    <string name="now_playing_output_this_device">This device</string>
+    <string name="now_playing_pause">Pause</string>
+    <string name="now_playing_play">Play</string>
+    <string name="now_playing_previous">Previous</string>
+    <string name="now_playing_queue">Queue</string>
+    <string name="now_playing_repeat">Repeat</string>
+    <string name="now_playing_shuffle">Shuffle</string>
+    <string name="now_playing_title">Now playing</string>
+
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
     <string name="settings_back">Back</string>

@@ -31,4 +31,7 @@ internal sealed interface Screens {
 
     @Serializable
     data class AlbumDetail(val albumId: String) : Screens
+
+    @Serializable
+    data class NowPlaying(val trackId: String) : Screens
 }
