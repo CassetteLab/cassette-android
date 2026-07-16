@@ -1,6 +1,7 @@
 package fr.cassette.cassette.presentation.nowPlaying
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +48,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +68,12 @@ internal fun NowPlayingScreen(
     onEvent: (NowPlayingEvent) -> Unit,
 ) {
     var albumArtBitmap by remember(uiState.trackId) { mutableStateOf<Bitmap?>(null) }
+
+    LaunchedEffect(uiState.coverArt?.filePath) {
+        albumArtBitmap = uiState.coverArt?.let { coverArt ->
+            BitmapFactory.decodeFile(coverArt.filePath)
+        }
+    }
 
     AlbumArtworkTheme(albumArt = albumArtBitmap) {
     val playerContainer = MaterialTheme.colorScheme.primaryContainer
@@ -157,7 +164,6 @@ internal fun NowPlayingScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(340.dp),
-                        onBitmapLoaded = { bitmap -> albumArtBitmap = bitmap },
                     )
                     if (uiState.coverArt == null) {
                         Icon(

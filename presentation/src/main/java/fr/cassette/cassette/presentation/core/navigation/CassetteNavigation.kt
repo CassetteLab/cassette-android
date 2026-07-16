@@ -145,7 +145,11 @@ internal fun CassetteNavigation(
                 onEvent = { event ->
                     when (event) {
                         AlbumDetailEvent.OnBackClicked -> navController.navigateUp()
-                        is AlbumDetailEvent.OnTrackClicked -> navController.navigate(Screens.NowPlaying(event.trackId))
+                        is AlbumDetailEvent.OnTrackClicked -> {
+                            viewModel.onEvent(event)
+                            navController.navigate(Screens.NowPlaying(event.trackId))
+                            return@AlbumDetailScreen
+                        }
                         else -> Unit
                     }
                     viewModel.onEvent(event)

@@ -57,11 +57,18 @@ internal class NowPlayingViewModel(
         }
 
         val coverArtId = currentTrack.coverArtId ?: return
+        val trackId = currentTrack.track.id
         viewModelScope.launch {
             runCatching {
                 getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE)
             }.onSuccess { coverArt ->
-                updateState { it.copy(coverArt = coverArt) }
+                updateState { state ->
+                    if (state.trackId == trackId) {
+                        state.copy(coverArt = coverArt)
+                    } else {
+                        state
+                    }
+                }
             }.onFailure { exception ->
                 logger.w("Unable to load cover art $coverArtId", exception)
             }
