@@ -14,7 +14,7 @@ internal class AlbumRemoteDataSourceImpl(
     private val httpClient: HttpClient,
 ) {
     suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> {
-        val configuration = serverConfigurationDao.getFirstServerConfiguration()
+        val configuration = serverConfigurationDao.getServerConfiguration()
             ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
 
@@ -32,7 +32,7 @@ internal class AlbumRemoteDataSourceImpl(
     }
 
     suspend fun getAlbum(albumId: String): AlbumDetail {
-        val configuration = serverConfigurationDao.getFirstServerConfiguration()
+        val configuration = serverConfigurationDao.getServerConfiguration()
             ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
 

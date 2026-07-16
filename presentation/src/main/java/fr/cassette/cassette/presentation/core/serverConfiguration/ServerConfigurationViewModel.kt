@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
 import fr.cassette.cassette.domain.models.ServerConfiguration
 import fr.cassette.cassette.domain.models.ServerConfigurationCustomHeader
+import fr.cassette.cassette.domain.usecases.GetServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.PingServerUseCase
 import fr.cassette.cassette.domain.usecases.SaveServerConfigurationUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 
 internal class ServerConfigurationViewModel(
     private val pingServerUseCase: PingServerUseCase,
+    private val getServerConfigurationUseCase: GetServerConfigurationUseCase,
     private val saveServerConfigurationUseCase: SaveServerConfigurationUseCase,
     logger: Logger,
 ) : BaseViewModel<ServerConfigurationUiState, ServerConfigurationEvent>(
@@ -20,6 +22,10 @@ internal class ServerConfigurationViewModel(
 ) {
 
     private var nextHeaderId = 0L
+
+    init {
+        loadServerConfiguration()
+    }
 
     override fun handleEvent(event: ServerConfigurationEvent) {
         when (event) {
@@ -65,6 +71,28 @@ internal class ServerConfigurationViewModel(
 
             ServerConfigurationEvent.OnConnectClicked -> saveServerConfiguration()
             ServerConfigurationEvent.OnBackClicked -> Unit
+        }
+    }
+
+    private fun loadServerConfiguration() {
+        viewModelScope.launch {
+            val serverConfiguration = getServerConfigurationUseCase() ?: return@launch
+            val customHeaders = serverConfiguration.customHeaders.mapIndexed { index, customHeader ->
+                ServerConfigurationHeaderUiState(
+                    id = index.toLong(),
+                    name = customHeader.name,
+                    value = customHeader.value,
+                )
+            }
+            nextHeaderId = customHeaders.size.toLong()
+            updateState {
+                it.copy(
+                    serverUrl = serverConfiguration.serverUrl,
+                    username = serverConfiguration.username,
+                    password = serverConfiguration.password,
+                    customHeaders = customHeaders,
+                )
+            }
         }
     }
 

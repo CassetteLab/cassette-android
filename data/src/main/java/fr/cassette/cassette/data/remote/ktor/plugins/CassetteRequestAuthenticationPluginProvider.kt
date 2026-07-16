@@ -22,7 +22,7 @@ internal class CassetteRequestAuthenticationPluginProvider(
                 return@onRequest
             }
 
-            val configuration = serverConfigurationDao.getFirstServerConfiguration()
+            val configuration = serverConfigurationDao.getServerConfiguration()
             if (configuration == null){
                 logger.w("Configuration is null can't add authentication parameters")
                 return@onRequest

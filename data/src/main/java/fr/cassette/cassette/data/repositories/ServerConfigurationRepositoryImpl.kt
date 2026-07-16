@@ -2,10 +2,12 @@ package fr.cassette.cassette.data.repositories
 
 import fr.cassette.cassette.core.helpers.CipherHelper
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
+import fr.cassette.cassette.data.local.embeddeds.ServerConfigurationWithCustomHeaders
 import fr.cassette.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
 import fr.cassette.cassette.data.local.entities.ServerConfigurationEntity
 import fr.cassette.cassette.data.remote.dto.PingResponseDto
 import fr.cassette.cassette.domain.models.ServerConfiguration
+import fr.cassette.cassette.domain.models.ServerConfigurationCustomHeader
 import fr.cassette.cassette.domain.repositories.ServerConfigurationRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -42,6 +44,10 @@ internal class ServerConfigurationRepositoryImpl(
         .digest(value.toByteArray())
         .joinToString(separator = "") { byte -> "%02x".format(byte) }
 
+    override suspend fun getServerConfiguration(): ServerConfiguration? {
+        return serverConfigurationDao.getServerConfiguration()?.toDomain()
+    }
+
     override suspend fun saveServerConfiguration(serverConfiguration: ServerConfiguration) {
         serverConfigurationDao.insertServerConfigurationWithCustomHeaders(
             serverConfiguration = ServerConfigurationEntity(
@@ -62,4 +68,16 @@ internal class ServerConfigurationRepositoryImpl(
     override suspend fun hasServerConfiguration(): Boolean {
         return serverConfigurationDao.hasServerConfiguration()
     }
+
+    private fun ServerConfigurationWithCustomHeaders.toDomain(): ServerConfiguration = ServerConfiguration(
+        serverUrl = serverConfiguration.serverUrl,
+        username = serverConfiguration.username,
+        password = cipherHelper.decrypt(serverConfiguration.encryptedPassword),
+        customHeaders = customHeaders.map { customHeader ->
+            ServerConfigurationCustomHeader(
+                name = customHeader.name,
+                value = cipherHelper.decrypt(customHeader.encryptedValue),
+            )
+        },
+    )
 }
