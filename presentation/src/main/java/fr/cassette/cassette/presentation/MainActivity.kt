@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             val startDestination = if (hasServerConfigurationUseCase()) {
-                Screens.Home
+                Screens.Main
             } else {
                 Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen
             }

@@ -2,16 +2,18 @@ package fr.cassette.cassette.data.repositories
 
 import fr.cassette.cassette.core.helpers.CipherHelper
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
+import fr.cassette.cassette.data.local.embeddeds.ServerConfigurationWithCustomHeaders
 import fr.cassette.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
 import fr.cassette.cassette.data.local.entities.ServerConfigurationEntity
+import fr.cassette.cassette.data.remote.dto.PingResponseDto
 import fr.cassette.cassette.domain.models.ServerConfiguration
+import fr.cassette.cassette.domain.models.ServerConfigurationCustomHeader
 import fr.cassette.cassette.domain.repositories.ServerConfigurationRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
-import org.json.JSONObject
 import java.security.MessageDigest
 
 internal class ServerConfigurationRepositoryImpl(
@@ -21,12 +23,10 @@ internal class ServerConfigurationRepositoryImpl(
 ) : ServerConfigurationRepository {
     override suspend fun pingServer(serverConfiguration: ServerConfiguration) {
         val salt = System.currentTimeMillis().toString(16)
-        val responseBody = httpClient.get("${serverConfiguration.serverUrl.trimEnd('/')}/rest/ping.view") {
+        val response = httpClient.get("${serverConfiguration.serverUrl.trimEnd('/')}/rest/ping.view") {
             parameter("u", serverConfiguration.username)
             parameter("t", md5(serverConfiguration.password + salt))
             parameter("s", salt)
-            parameter("v", "1.16.1")
-            parameter("c", "Cassette")
             parameter("f", "json")
 
             serverConfiguration.customHeaders
@@ -34,10 +34,9 @@ internal class ServerConfigurationRepositoryImpl(
                 .forEach { customHeader ->
                     header(customHeader.name, customHeader.value)
                 }
-        }.body<String>()
+        }.body<PingResponseDto>()
 
-        val subsonicResponse = JSONObject(responseBody).getJSONObject("subsonic-response")
-        if (subsonicResponse.getString("status") != "ok") {
+        if (response.subsonicResponse.status != "ok") {
             throw IllegalStateException("Subsonic ping failed")
         }
     }
@@ -45,6 +44,10 @@ internal class ServerConfigurationRepositoryImpl(
     private fun md5(value: String): String = MessageDigest.getInstance("MD5")
         .digest(value.toByteArray())
         .joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+    override suspend fun getServerConfiguration(): ServerConfiguration? {
+        return serverConfigurationDao.getServerConfiguration()?.toDomain()
+    }
 
     override suspend fun saveServerConfiguration(serverConfiguration: ServerConfiguration) {
         serverConfigurationDao.insertServerConfigurationWithCustomHeaders(
@@ -66,4 +69,16 @@ internal class ServerConfigurationRepositoryImpl(
     override suspend fun hasServerConfiguration(): Boolean {
         return serverConfigurationDao.hasServerConfiguration()
     }
+
+    private fun ServerConfigurationWithCustomHeaders.toDomain(): ServerConfiguration = ServerConfiguration(
+        serverUrl = serverConfiguration.serverUrl,
+        username = serverConfiguration.username,
+        password = cipherHelper.decrypt(serverConfiguration.encryptedPassword),
+        customHeaders = customHeaders.map { customHeader ->
+            ServerConfigurationCustomHeader(
+                name = customHeader.name,
+                value = cipherHelper.decrypt(customHeader.encryptedValue),
+            )
+        },
+    )
 }

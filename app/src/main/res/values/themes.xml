@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Cassette" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:colorAccent">@color/cassette_accent</item>
-        <item name="android:fontFamily">sans</item>
-        <item name="android:navigationBarColor">@color/cassette_background_primary</item>
-        <item name="android:statusBarColor">@color/cassette_background_primary</item>
-        <item name="android:windowBackground">@color/cassette_background_primary</item>
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
+    <style name="Theme.Cassette" parent="android:Theme.Material.Light.NoActionBar"/>
 </resources>

@@ -1,0 +1,33 @@
+package fr.cassette.cassette.presentation.nowPlaying
+
+import fr.cassette.cassette.presentation.core.mvi.UiState
+
+internal data class NowPlayingUiState(
+    val trackId: String,
+    val title: String = "Instant Crush",
+    val artist: String = "Daft Punk, Julian Casablancas",
+    val album: String = "Random Access Memories",
+    val currentPositionSeconds: Int = 76,
+    val durationSeconds: Int = 337,
+    val isPlaying: Boolean = true,
+    val isShuffleEnabled: Boolean = false,
+    val repeatMode: RepeatMode = RepeatMode.Off,
+    val isFavorite: Boolean = false,
+) : UiState {
+    val progress: Float = if (durationSeconds > 0) {
+        currentPositionSeconds.toFloat() / durationSeconds.toFloat()
+    } else {
+        0f
+    }.coerceIn(0f, 1f)
+
+    val currentPositionLabel: String = currentPositionSeconds.toDurationLabel()
+    val durationLabel: String = durationSeconds.toDurationLabel()
+}
+
+internal enum class RepeatMode {
+    Off,
+    All,
+    One,
+}
+
+private fun Int.toDurationLabel(): String = "%d:%02d".format(this / 60, this % 60)

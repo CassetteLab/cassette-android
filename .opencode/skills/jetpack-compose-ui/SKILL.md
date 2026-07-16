@@ -30,12 +30,13 @@ Use this skill when building or reviewing Jetpack Compose UI in an Android/Kotli
 
 ## State And Events
 
-- Model the UI with an immutable `data class` UiState.
-- Use a sealed interface for UI events.
+- Model the UI with an immutable `data class` UiState that implements the project `UiState` interface (`presentation.core.mvi.UiState`).
+- Use a sealed interface for UI events that implements the project `Event` interface (`presentation.core.mvi.Event`).
 - Keep event names action-oriented and user/interface focused, for example `OnUsernameChanged`, `OnSubmitClicked`, `OnBackClicked`.
 - Prefer derived state in `UiState` for simple synchronous rules, such as `canSubmit`, `isUrlValid`, or `hasError`.
 - Keep business logic out of composables. Composables should render state and emit events.
-- Keep ViewModel updates explicit and simple with `MutableStateFlow`, `StateFlow`, and `update` when that matches the project architecture.
+- Use the project `BaseViewModel<S, E>` (`presentation.core.mvi.BaseViewModel`) for feature ViewModels instead of creating standalone `ViewModel`/`MutableStateFlow` plumbing.
+- Pass `viewModelName` (Name of viewmodel), the initial `UiState`, and `Logger` to `BaseViewModel`; handle user actions by overriding `handleEvent(event)` and updating state through `updateState { ... }`.
 
 ## Strings And Resources
 
@@ -82,6 +83,7 @@ Use this skill when building or reviewing Jetpack Compose UI in an Android/Kotli
 ## Previews
 
 - Add previews for new screens or reusable visual components when the project already uses previews.
+- Use `@PreviewLightDark` for previews so light and dark themes are covered.
 - Wrap previews in the project theme.
 - Keep preview sample data realistic and minimal.
 - Previews are the exception to the one-composable-per-file rule when they preview the composable in that same file.
@@ -112,9 +114,11 @@ Use this skill when building or reviewing Jetpack Compose UI in an Android/Kotli
 - The UI follows the existing package and architecture conventions.
 - User-facing strings are in resources.
 - Feature-only APIs are `internal` or `private`.
+- Feature `UiState` and `Event` types implement their corresponding project MVI interfaces.
 - Each file has at most one production composable, except previews.
 - Child composables live in the feature-local `core` package when extracted.
 - Composables are stateless where practical.
 - UiState owns derived display/validation state.
 - The screen is previewable and themed.
+- Previews use `@PreviewLightDark`.
 - The affected Gradle tasks pass.

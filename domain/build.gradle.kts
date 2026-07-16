@@ -16,4 +16,5 @@ java {
 dependencies {
     // Koin (Dependency Injection)
     implementation(libs.koin.core)
+    implementation(libs.kotlinx.coroutines.core)
 }

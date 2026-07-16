@@ -21,7 +21,13 @@ internal abstract class BaseViewModel<S : UiState, E : Event>(
     }
 
     fun onEvent(event: E) {
-        logger.d("$viewModelName received new event: $event")
+        if (event is SensitiveEvent){
+            logger.d("$viewModelName received new sensitive event: ${event::class.simpleName}")
+        }
+        else {
+            logger.d("$viewModelName received new event: $event")
+        }
+
         handleEvent(event)
     }
 
