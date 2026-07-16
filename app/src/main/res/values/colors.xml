@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="cassette_accent">#6C47F5</color>
-    <color name="cassette_background_primary">#F6F4FF</color>
-    <color name="cassette_background_secondary">#EDEAFF</color>
-    <color name="cassette_text_primary">#1A1520</color>
+    <color name="splash_screen_background">#FF0F0D1A</color>
 </resources>
