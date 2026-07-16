@@ -23,7 +23,6 @@ import fr.cassette.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 @Composable
 internal fun AlbumCoverArt(
     coverArt: AlbumCoverArtModel?,
-    iconSize: Dp = 42.dp,
     modifier: Modifier = Modifier,
     onBitmapLoaded: (Bitmap) -> Unit = {},
 ) {
@@ -32,13 +31,6 @@ internal fun AlbumCoverArt(
             .background(MaterialTheme.colorScheme.secondaryContainer),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            modifier = Modifier.size(iconSize),
-            imageVector = Icons.Default.Album,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
-
         if (coverArt != null) {
             AsyncImage(
                 modifier = Modifier.matchParentSize(),

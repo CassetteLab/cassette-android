@@ -4,9 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,7 +38,8 @@ import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.domain.models.Track
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumArtworkTheme
-import fr.cassette.cassette.presentation.albumDetail.core.AlbumDetailContent
+import fr.cassette.cassette.presentation.albumDetail.core.AlbumDetailTrackRow
+import fr.cassette.cassette.presentation.core.AlbumCoverArt
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.core.HomeMessage
 
@@ -96,19 +99,14 @@ internal fun AlbumDetailScreen(
         ) { innerPadding ->
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    top = innerPadding.calculateTopPadding() + 16.dp,
-                    end = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                contentPadding = innerPadding,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                when {
-                    uiState.isLoading -> item { CircularProgressIndicator() }
-
-                    uiState.hasError -> item {
+                if (uiState.isLoading){
+                    item { CircularProgressIndicator() }
+                }
+                else if (uiState.hasError){
+                    item {
                         HomeMessage(
                             title = stringResource(R.string.album_detail_error_title),
                             description = stringResource(R.string.album_detail_error_description),
@@ -116,12 +114,25 @@ internal fun AlbumDetailScreen(
                             onActionClick = { onEvent(AlbumDetailEvent.OnRetryClicked) },
                         )
                     }
-
-                    uiState.album != null -> item {
-                        AlbumDetailContent(
-                            album = uiState.album,
+                }
+                else {
+                    item {
+                        AlbumCoverArt(
                             coverArt = uiState.coverArt,
-                            onTrackClick = { track -> onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .aspectRatio(1f)
+                                .padding(bottom = 16.dp),
+                        )
+                    }
+
+                    items(uiState.album?.tracks ?: emptyList()){ track ->
+                        AlbumDetailTrackRow(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .padding(horizontal = 16.dp),
+                            track = track,
+                            onClick = { onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
                         )
                     }
                 }
