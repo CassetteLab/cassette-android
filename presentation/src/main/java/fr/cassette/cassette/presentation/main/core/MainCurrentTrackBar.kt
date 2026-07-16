@@ -30,15 +30,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassette.cassette.domain.models.Track
+import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.presentation.R
 
 @Composable
 internal fun MainCurrentTrackBar(
-    track: Track,
+    currentTrack: CurrentTrack,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val track = currentTrack.track
     val artist = track.artist?.takeIf { it.isNotBlank() }
         ?: stringResource(R.string.main_unknown_artist)
     val openNowPlayingDescription = stringResource(R.string.main_open_now_playing)

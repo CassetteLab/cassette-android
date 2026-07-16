@@ -2,6 +2,7 @@ package fr.cassette.cassette.presentation.albumDetail
 
 import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
 import fr.cassette.cassette.domain.usecases.SetCurrentTrackUseCase
@@ -32,10 +33,18 @@ internal class AlbumDetailViewModel(
     }
 
     private fun setCurrentTrack(trackId: String) {
-        uiState.value.album
-            ?.tracks
+        val album = uiState.value.album ?: return
+        album.tracks
             ?.firstOrNull { it.id == trackId }
-            ?.let(setCurrentTrackUseCase::invoke)
+            ?.let { track ->
+                setCurrentTrackUseCase(
+                    CurrentTrack(
+                        track = track,
+                        albumName = album.name,
+                        coverArtId = album.coverArt ?: album.id,
+                    )
+                )
+            }
     }
 
     private fun loadAlbum() {

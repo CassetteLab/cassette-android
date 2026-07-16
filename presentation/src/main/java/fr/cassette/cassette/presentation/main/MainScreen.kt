@@ -59,8 +59,8 @@ internal fun MainScreen(
             Column {
                 uiState.currentTrack?.let { track ->
                     MainCurrentTrackBar(
-                        track = track,
-                        onClick = { onNavigateToRootScreen(Screens.NowPlaying(track.id)) },
+                        currentTrack = track,
+                        onClick = { onNavigateToRootScreen(Screens.NowPlaying(track.track.id)) },
                     )
                 }
                 BottomAppBar(

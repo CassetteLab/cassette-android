@@ -1,14 +1,16 @@
 package fr.cassette.cassette.presentation.nowPlaying
 
+import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.presentation.core.mvi.UiState
 
 internal data class NowPlayingUiState(
     val trackId: String,
-    val title: String = "Instant Crush",
-    val artist: String = "Daft Punk, Julian Casablancas",
-    val album: String = "Random Access Memories",
-    val currentPositionSeconds: Int = 76,
-    val durationSeconds: Int = 337,
+    val title: String = "",
+    val artist: String? = null,
+    val album: String? = null,
+    val coverArt: AlbumCoverArt? = null,
+    val currentPositionSeconds: Int = 0,
+    val durationSeconds: Int = 0,
     val isPlaying: Boolean = true,
     val isShuffleEnabled: Boolean = false,
     val repeatMode: RepeatMode = RepeatMode.Off,

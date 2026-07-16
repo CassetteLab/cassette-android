@@ -79,6 +79,9 @@
     <string name="now_playing_repeat">Repeat</string>
     <string name="now_playing_shuffle">Shuffle</string>
     <string name="now_playing_title">Now playing</string>
+    <string name="now_playing_unknown_album">Unknown album</string>
+    <string name="now_playing_unknown_artist">Unknown artist</string>
+    <string name="now_playing_unknown_title">Unknown title</string>
 
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
