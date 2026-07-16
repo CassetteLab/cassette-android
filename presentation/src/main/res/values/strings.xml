@@ -46,6 +46,10 @@
     <string name="home_title">Home</string>
     <string name="home_unknown_artist">Unknown artist</string>
 
+    <!-- Main -->
+    <string name="main_open_now_playing">Open now playing</string>
+    <string name="main_unknown_artist">Unknown artist</string>
+
     <!-- Album Detail -->
     <string name="album_detail_album_id">Album ID</string>
     <string name="album_detail_back">Back</string>

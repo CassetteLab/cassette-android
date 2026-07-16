@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
+import fr.cassette.cassette.domain.usecases.SetCurrentTrackUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.launch
 
@@ -11,6 +12,7 @@ internal class AlbumDetailViewModel(
     private val albumId: String,
     private val getAlbumUseCase: GetAlbumUseCase,
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
+    private val setCurrentTrackUseCase: SetCurrentTrackUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumDetailUiState, AlbumDetailEvent>(
     viewModelName = "AlbumDetailViewModel",
@@ -25,8 +27,15 @@ internal class AlbumDetailViewModel(
         when (event) {
             AlbumDetailEvent.OnBackClicked -> Unit
             AlbumDetailEvent.OnRetryClicked -> loadAlbum()
-            is AlbumDetailEvent.OnTrackClicked -> Unit
+            is AlbumDetailEvent.OnTrackClicked -> setCurrentTrack(event.trackId)
         }
+    }
+
+    private fun setCurrentTrack(trackId: String) {
+        uiState.value.album
+            ?.tracks
+            ?.firstOrNull { it.id == trackId }
+            ?.let(setCurrentTrackUseCase::invoke)
     }
 
     private fun loadAlbum() {

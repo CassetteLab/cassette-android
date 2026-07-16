@@ -1,5 +1,6 @@
 package fr.cassette.cassette.presentation.main
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -33,6 +34,7 @@ import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.HomeEvent
 import fr.cassette.cassette.presentation.home.HomeScreen
 import fr.cassette.cassette.presentation.home.HomeViewModel
+import fr.cassette.cassette.presentation.main.core.MainCurrentTrackBar
 import fr.cassette.cassette.presentation.main.core.MainTab
 import fr.cassette.cassette.presentation.settings.SettingsEvent
 import fr.cassette.cassette.presentation.settings.SettingsScreen
@@ -44,6 +46,8 @@ import org.koin.androidx.compose.koinViewModel
 internal fun MainScreen(
     onNavigateToRootScreen: (Screens) -> Unit
 ){
+    val viewModel: MainViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val startDestination = MainTab.Home
     var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
     val navController = rememberNavController()
@@ -52,32 +56,40 @@ internal fun MainScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Bottom),
         bottomBar = {
-            BottomAppBar(
-                windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    MainTab.entries.forEach { tab ->
-                        NavigationBarItem(
-                            selected = tab == selectedDestination,
-                            onClick = {
-                                if (selectedDestination == tab) return@NavigationBarItem
+            Column {
+                uiState.currentTrack?.let { track ->
+                    MainCurrentTrackBar(
+                        track = track,
+                        onClick = { onNavigateToRootScreen(Screens.NowPlaying(track.id)) },
+                    )
+                }
+                BottomAppBar(
+                    windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
+                ) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        MainTab.entries.forEach { tab ->
+                            NavigationBarItem(
+                                selected = tab == selectedDestination,
+                                onClick = {
+                                    if (selectedDestination == tab) return@NavigationBarItem
 
-                                selectedDestination = tab
-                                navController.navigate(tab.destination){
-                                    launchSingleTop = true
-                                    popUpTo(navController.graph.id)
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = tab.iconRes,
-                                    contentDescription = stringResource(tab.labelRes)
-                                )
-                            },
-                            label = {
-                                Text(text = stringResource(tab.labelRes))
-                            },
-                        )
+                                    selectedDestination = tab
+                                    navController.navigate(tab.destination){
+                                        launchSingleTop = true
+                                        popUpTo(navController.graph.id)
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = tab.iconRes,
+                                        contentDescription = stringResource(tab.labelRes)
+                                    )
+                                },
+                                label = {
+                                    Text(text = stringResource(tab.labelRes))
+                                },
+                            )
+                        }
                     }
                 }
             }
