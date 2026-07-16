@@ -80,56 +80,13 @@ internal fun AlbumDetailContent(
                         ),
                 )
             }
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                Text(
-                    text = album.name,
-                    color = panelContentColor,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.headlineMedium,
-                )
-                Text(
-                    text = album.artist ?: stringResource(R.string.album_detail_unknown_artist),
-                    color = panelContentColor.copy(alpha = 0.78f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Text(
-                    text = pluralStringResource(
-                        R.plurals.album_detail_tracks_count,
-                        album.tracks.size,
-                        album.tracks.size,
-                    ),
-                    color = panelContentColor.copy(alpha = 0.62f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
         }
 
-        album.created?.let { created ->
-            AlbumDetailMetadata(label = stringResource(R.string.album_detail_created), value = created)
-        }
-        if (album.tracks.isEmpty()) {
-            AlbumDetailMetadata(
-                label = stringResource(R.string.album_detail_tracks),
-                value = stringResource(R.string.album_detail_tracks_empty),
+        album.tracks.forEach { track ->
+            AlbumDetailTrackRow(
+                track = track,
+                onClick = { onTrackClick(track) },
             )
-        } else {
-            album.tracks.forEach { track ->
-                AlbumDetailTrackRow(
-                    track = track,
-                    onClick = { onTrackClick(track) },
-                )
-            }
         }
     }
 }
