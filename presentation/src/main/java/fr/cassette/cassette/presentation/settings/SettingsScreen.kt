@@ -2,14 +2,12 @@ package fr.cassette.cassette.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.rounded.CloudDownload
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.settings.core.SettingsActionRow
-import fr.cassette.cassette.presentation.settings.core.SettingsInformationRow
+import fr.cassette.cassette.presentation.settings.core.SettingsAppInfoCard
 import fr.cassette.cassette.presentation.settings.core.SettingsSection
 import fr.cassette.cassette.presentation.settings.core.SettingsSwitchRow
 
@@ -64,11 +62,30 @@ internal fun SettingsScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+
+            item {
+                SettingsAppInfoCard(
+                    appName = stringResource(R.string.settings_app_name),
+                    tagline = stringResource(R.string.settings_app_tagline),
+                    versionLabel = stringResource(R.string.settings_app_version_format, uiState.versionName, uiState.versionCode),
+                    buildTypeLabel = stringResource(
+                        R.string.settings_app_build_type_format,
+                        stringResource(
+                            if (uiState.isDebugBuild) {
+                                R.string.settings_build_type_debug
+                            } else {
+                                R.string.settings_build_type_release
+                            }
+                        ),
+                    ),
+                )
+            }
             item {
                 SettingsSection(title = stringResource(R.string.settings_server_section_title)) {
                     SettingsActionRow(
                         title = stringResource(R.string.settings_server_configuration_title),
                         description = stringResource(R.string.settings_server_configuration_description),
+                        leadingIcon = Icons.Rounded.Storage,
                         onClick = { onEvent(SettingsEvent.OnServerConfigurationClicked) },
                     )
                 }
@@ -79,6 +96,7 @@ internal fun SettingsScreen(
                         title = stringResource(R.string.settings_wifi_only_downloads_title),
                         description = stringResource(R.string.settings_wifi_only_downloads_description),
                         checked = uiState.isWifiOnlyDownloadsEnabled,
+                        leadingIcon = Icons.Rounded.CloudDownload,
                         onCheckedChange = { isEnabled ->
                             onEvent(SettingsEvent.OnWifiOnlyDownloadsChanged(isEnabled))
                         },
@@ -91,39 +109,10 @@ internal fun SettingsScreen(
                         title = stringResource(R.string.settings_notifications_title),
                         description = stringResource(R.string.settings_notifications_description),
                         checked = uiState.areNotificationsEnabled,
+                        leadingIcon = Icons.Rounded.Notifications,
                         onCheckedChange = { isEnabled ->
                             onEvent(SettingsEvent.OnNotificationsChanged(isEnabled))
                         },
-                    )
-                }
-            }
-            item {
-                SettingsSection(title = stringResource(R.string.settings_about_section_title)) {
-                    SettingsInformationRow(
-                        title = stringResource(R.string.settings_version_name_title),
-                        value = uiState.versionName,
-                    )
-                    HorizontalDivider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.outlineVariant,
-                    )
-                    SettingsInformationRow(
-                        title = stringResource(R.string.settings_version_code_title),
-                        value = uiState.versionCode,
-                    )
-                    HorizontalDivider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.outlineVariant,
-                    )
-                    SettingsInformationRow(
-                        title = stringResource(R.string.settings_build_type_title),
-                        value = stringResource(
-                            if (uiState.isDebugBuild) {
-                                R.string.settings_build_type_debug
-                            } else {
-                                R.string.settings_build_type_release
-                            }
-                        ),
                     )
                 }
             }

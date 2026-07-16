@@ -74,6 +74,10 @@
 
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
+    <string name="settings_app_build_type_format">Build: %1$s</string>
+    <string name="settings_app_name">Cassette</string>
+    <string name="settings_app_tagline">A clean music client for your Subsonic server.</string>
+    <string name="settings_app_version_format">Version %1$s (%2$s)</string>
     <string name="settings_back">Back</string>
     <string name="settings_build_type_debug">Debug</string>
     <string name="settings_build_type_release">Release</string>
