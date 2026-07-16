@@ -7,6 +7,9 @@
 - UI entrypoint is `presentation/src/main/java/fr/cassette/cassette/presentation/MainActivity.kt`, launched by `app/src/main/AndroidManifest.xml`.
 - Koin modules are declared per module under `*/di/*Module.kt`; `CassetteApplication` starts Koin.
 
+## UI Work
+- Before creating, editing, or reviewing Jetpack Compose UI, screens, previews, UI state/events, or files under `presentation/src/main`, load the `jetpack-compose-ui` skill first.
+
 ## Build And Verification
 - Use the wrapper: `./gradlew ...`.
 - Quick app build: `./gradlew :app:assembleDebug`.

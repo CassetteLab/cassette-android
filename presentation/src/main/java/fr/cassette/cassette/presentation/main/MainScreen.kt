@@ -56,40 +56,32 @@ internal fun MainScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Bottom),
         bottomBar = {
-            Column {
-                uiState.currentTrack?.let { track ->
-                    MainCurrentTrackBar(
-                        currentTrack = track,
-                        onClick = { onNavigateToRootScreen(Screens.NowPlaying(track.track.id)) },
-                    )
-                }
-                BottomAppBar(
-                    windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
-                ) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        MainTab.entries.forEach { tab ->
-                            NavigationBarItem(
-                                selected = tab == selectedDestination,
-                                onClick = {
-                                    if (selectedDestination == tab) return@NavigationBarItem
+            BottomAppBar(
+                windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
+            ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    MainTab.entries.forEach { tab ->
+                        NavigationBarItem(
+                            selected = tab == selectedDestination,
+                            onClick = {
+                                if (selectedDestination == tab) return@NavigationBarItem
 
-                                    selectedDestination = tab
-                                    navController.navigate(tab.destination){
-                                        launchSingleTop = true
-                                        popUpTo(navController.graph.id)
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = tab.iconRes,
-                                        contentDescription = stringResource(tab.labelRes)
-                                    )
-                                },
-                                label = {
-                                    Text(text = stringResource(tab.labelRes))
-                                },
-                            )
-                        }
+                                selectedDestination = tab
+                                navController.navigate(tab.destination){
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.id)
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = tab.iconRes,
+                                    contentDescription = stringResource(tab.labelRes)
+                                )
+                            },
+                            label = {
+                                Text(text = stringResource(tab.labelRes))
+                            },
+                        )
                     }
                 }
             }
