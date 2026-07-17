@@ -4,6 +4,7 @@ import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
+import fr.cassette.cassette.domain.usecases.GetAlbumTracksUseCase
 import fr.cassette.cassette.domain.usecases.GetServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.HasServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.PingServerUseCase
@@ -21,6 +22,7 @@ val domainModule = module {
 
     // Albums
     singleOf(::GetAlbumUseCase)
+    singleOf(::GetAlbumTracksUseCase)
     singleOf(::GetAlbumCoverArtUseCase)
     singleOf(::GetRecentlyAddedAlbumsUseCase)
 

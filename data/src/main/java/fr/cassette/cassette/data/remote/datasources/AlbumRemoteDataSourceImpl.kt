@@ -6,6 +6,7 @@ import fr.cassette.cassette.data.remote.dto.AlbumListResponseDto
 import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.AlbumList
+import fr.cassette.cassette.domain.models.Track
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -54,6 +55,10 @@ internal class AlbumRemoteDataSourceImpl(
 
         return subsonicResponse.album?.toDetailDomain()
             ?: throw IllegalStateException("Subsonic getAlbum returned no album")
+    }
+
+    suspend fun getAlbumTracks(albumId: String): List<Track> {
+        return getAlbum(albumId).tracks
     }
 
     suspend fun getAlbumCoverArt(coverArtId: String, size: Int?): AlbumCoverArt {
