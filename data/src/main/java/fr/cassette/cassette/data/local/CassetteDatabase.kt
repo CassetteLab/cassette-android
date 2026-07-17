@@ -2,6 +2,7 @@ package fr.cassette.cassette.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import fr.cassette.cassette.data.local.dao.AlbumDao
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.local.entities.AlbumEntity
 import fr.cassette.cassette.data.local.entities.FavoriteAlbumEntity
@@ -19,9 +20,10 @@ import fr.cassette.cassette.data.local.entities.TrackEntity
         FavoriteAlbumEntity::class,
         FavoriteTrackEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false,
 )
 internal abstract class CassetteDatabase : RoomDatabase() {
+    abstract fun albumDao(): AlbumDao
     abstract fun serverConfigurationDao(): ServerConfigurationDao
 }

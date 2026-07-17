@@ -5,6 +5,7 @@ data class AlbumDetail(
     val name: String,
     val artist: String?,
     val coverArt: String?,
+    val coverArtFilePath: String?,
     val created: String?,
     val tracks: List<Track>,
 )

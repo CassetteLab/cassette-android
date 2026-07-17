@@ -2,6 +2,7 @@ package fr.cassette.cassette.presentation.home
 
 import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
@@ -32,12 +33,17 @@ internal class HomeViewModel(
             updateState { it.copy(isLoading = true, hasError = false) }
             try {
                 val albums = getRecentlyAddedAlbumsUseCase(size = RECENT_ALBUMS_SIZE)
-                updateState { it.copy(isLoading = false, albums = albums, albumCoverArts = emptyMap()) }
+                val albumCoverArts = albums.mapNotNull { album ->
+                    album.coverArtFilePath?.let { filePath -> album.id to AlbumCoverArt(filePath = filePath) }
+                }.toMap()
+                updateState { it.copy(isLoading = false, albums = albums, albumCoverArts = albumCoverArts) }
 
                 albums.forEach { album ->
+                    if (album.coverArtFilePath != null) return@forEach
+
                     val coverArtId = album.coverArt ?: album.id
                     runCatching {
-                        getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE)
+                        getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = album.id)
                     }.onSuccess { coverArt ->
                         updateState { state ->
                             state.copy(albumCoverArts = state.albumCoverArts + (album.id to coverArt))

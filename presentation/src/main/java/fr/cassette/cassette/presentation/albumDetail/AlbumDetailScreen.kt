@@ -153,6 +153,7 @@ private fun AlbumDetailScreenPreview() {
                     name = "Discovery",
                     artist = "Daft Punk",
                     coverArt = "al-123",
+                    coverArtFilePath = null,
                     created = "2026-07-15T12:00:00",
                     tracks = listOf(
                         Track(

@@ -7,5 +7,5 @@ import fr.cassette.cassette.domain.models.AlbumList
 interface AlbumRepository {
     suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList>
     suspend fun getAlbum(albumId: String): AlbumDetail
-    suspend fun getAlbumCoverArt(coverArtId: String, size: Int? = null): AlbumCoverArt
+    suspend fun getAlbumCoverArt(coverArtId: String, size: Int? = null, albumId: String? = null): AlbumCoverArt
 }

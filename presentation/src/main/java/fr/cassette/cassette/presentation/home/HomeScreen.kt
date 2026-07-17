@@ -99,6 +99,7 @@ private fun HomeScreenPreview() {
                         name = "Discovery",
                         artist = "Daft Punk",
                         coverArt = null,
+                        coverArtFilePath = null,
                         created = null,
                     ),
                     AlbumList(
@@ -106,6 +107,7 @@ private fun HomeScreenPreview() {
                         name = "In Rainbows",
                         artist = "Radiohead",
                         coverArt = null,
+                        coverArtFilePath = null,
                         created = null,
                     ),
                 ),

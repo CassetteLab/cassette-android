@@ -2,6 +2,7 @@ package fr.cassette.cassette.presentation.albumDetail
 
 import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
@@ -40,8 +41,10 @@ internal class AlbumDetailViewModel(
                 setCurrentTrackUseCase(
                     CurrentTrack(
                         track = track,
+                        albumId = album.id,
                         albumName = album.name,
                         coverArtId = album.coverArt ?: album.id,
+                        coverArtFilePath = album.coverArtFilePath,
                     )
                 )
             }
@@ -52,10 +55,11 @@ internal class AlbumDetailViewModel(
             updateState { it.copy(isLoading = true, hasError = false) }
             try {
                 val album = getAlbumUseCase(albumId)
-                val coverArt = runCatching {
+                val coverArt = album.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
                     getAlbumCoverArtUseCase(
                         coverArtId = album.coverArt ?: album.id,
                         size = COVER_ART_SIZE,
+                        albumId = album.id,
                     )
                 }.getOrNull()
                 updateState { it.copy(isLoading = false, album = album, coverArt = coverArt) }

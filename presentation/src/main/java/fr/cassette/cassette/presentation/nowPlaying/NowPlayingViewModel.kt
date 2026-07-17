@@ -2,6 +2,7 @@ package fr.cassette.cassette.presentation.nowPlaying
 
 import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
@@ -52,15 +53,17 @@ internal class NowPlayingViewModel(
                 artist = currentTrack.track.artist,
                 album = currentTrack.albumName,
                 durationSeconds = currentTrack.track.durationSeconds ?: 0,
-                coverArt = null,
+                coverArt = currentTrack.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) },
             )
         }
+
+        if (currentTrack.coverArtFilePath != null) return
 
         val coverArtId = currentTrack.coverArtId ?: return
         val trackId = currentTrack.track.id
         viewModelScope.launch {
             runCatching {
-                getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE)
+                getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)
             }.onSuccess { coverArt ->
                 updateState { state ->
                     if (state.trackId == trackId) {
