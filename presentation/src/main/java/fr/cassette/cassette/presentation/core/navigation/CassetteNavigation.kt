@@ -1,5 +1,7 @@
 package fr.cassette.cassette.presentation.core.navigation
 
+import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +40,7 @@ import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CassetteNavigation(
+internal fun ComponentActivity.CassetteNavigation(
     startDestination: Screens,
     modifier: Modifier = Modifier,
 ) {
@@ -181,7 +183,7 @@ internal fun CassetteNavigation(
                     uiState = uiState,
                     onEvent = { event ->
                         when (event) {
-                            NowPlayingEvent.OnBackClicked -> navController.navigateUp()
+                            NowPlayingEvent.OnBackClicked -> onBackPressedDispatcher.onBackPressed()
                             else -> Unit
                         }
                         viewModel.onEvent(event)
