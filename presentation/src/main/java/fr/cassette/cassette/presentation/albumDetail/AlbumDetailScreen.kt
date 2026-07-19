@@ -58,6 +58,10 @@ internal fun AlbumDetailScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        onEvent(AlbumDetailEvent.OnAppearing)
+    }
+
     AlbumArtworkTheme(albumArt = albumArtBitmap) {
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -79,8 +83,8 @@ internal fun AlbumDetailScreen(
                             Text(
                                 text = "${uiState.album?.artist ?: ""} - ${pluralStringResource(
                                     R.plurals.album_detail_tracks_count,
-                                    uiState.album?.tracks?.size ?: 0,
-                                    uiState.album?.tracks?.size ?: 0,
+                                    uiState.tracks.size,
+                                    uiState.tracks.size,
                                 )}",
                                 style = MaterialTheme.typography.titleMedium
                             )
@@ -126,7 +130,11 @@ internal fun AlbumDetailScreen(
                         )
                     }
 
-                    items(uiState.album?.tracks ?: emptyList()){ track ->
+                    if (uiState.isTracksLoading) {
+                        item { CircularProgressIndicator() }
+                    }
+
+                    items(uiState.tracks){ track ->
                         AlbumDetailTrackRow(
                             modifier = Modifier
                                 .padding(top = 8.dp)
@@ -153,22 +161,24 @@ private fun AlbumDetailScreenPreview() {
                     name = "Discovery",
                     artist = "Daft Punk",
                     coverArt = "al-123",
+                    coverArtFilePath = null,
                     created = "2026-07-15T12:00:00",
-                    tracks = listOf(
-                        Track(
-                            id = "track-1",
-                            title = "One More Time",
-                            artist = "Daft Punk",
-                            trackNumber = 1,
-                            durationSeconds = 320,
-                        ),
-                        Track(
-                            id = "track-2",
-                            title = "Aerodynamic",
-                            artist = "Daft Punk",
-                            trackNumber = 2,
-                            durationSeconds = 212,
-                        ),
+                    tracks = emptyList(),
+                ),
+                tracks = listOf(
+                    Track(
+                        id = "track-1",
+                        title = "One More Time",
+                        artist = "Daft Punk",
+                        trackNumber = 1,
+                        durationSeconds = 320,
+                    ),
+                    Track(
+                        id = "track-2",
+                        title = "Aerodynamic",
+                        artist = "Daft Punk",
+                        trackNumber = 2,
+                        durationSeconds = 212,
                     ),
                 ),
             ),

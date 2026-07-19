@@ -1,5 +1,7 @@
 package fr.cassette.cassette.presentation.nowPlaying
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,10 +40,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +56,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.cassette.cassette.presentation.R
+import fr.cassette.cassette.presentation.albumDetail.core.AlbumArtworkTheme
+import fr.cassette.cassette.presentation.core.AlbumCoverArt
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.nowPlaying.core.PlayerControlButton
 
@@ -59,6 +67,15 @@ internal fun NowPlayingScreen(
     uiState: NowPlayingUiState,
     onEvent: (NowPlayingEvent) -> Unit,
 ) {
+    var albumArtBitmap by remember(uiState.trackId) { mutableStateOf<Bitmap?>(null) }
+
+    LaunchedEffect(uiState.coverArt?.filePath) {
+        albumArtBitmap = uiState.coverArt?.let { coverArt ->
+            BitmapFactory.decodeFile(coverArt.filePath)
+        }
+    }
+
+    AlbumArtworkTheme(albumArt = albumArtBitmap) {
     val playerContainer = MaterialTheme.colorScheme.primaryContainer
     val playerContent = MaterialTheme.colorScheme.onPrimaryContainer
     val playerAccent = MaterialTheme.colorScheme.primary
@@ -139,24 +156,23 @@ internal fun NowPlayingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(28.dp))
-                        .background(
-                            Brush.linearGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.90f),
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.74f),
-                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.82f),
-                                ),
-                            )
-                        )
-                        .padding(vertical = 64.dp),
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Icon(
-                        modifier = Modifier.size(110.dp),
-                        imageVector = Icons.Rounded.Album,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.42f),
+                    AlbumCoverArt(
+                        coverArt = uiState.coverArt,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(340.dp),
                     )
+                    if (uiState.coverArt == null) {
+                        Icon(
+                            modifier = Modifier.size(110.dp),
+                            imageVector = Icons.Rounded.Album,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.42f),
+                        )
+                    }
                 }
             }
 
@@ -171,7 +187,7 @@ internal fun NowPlayingScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = uiState.title,
+                            text = uiState.title.ifBlank { stringResource(R.string.now_playing_unknown_title) },
                             color = playerContent,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -180,14 +196,16 @@ internal fun NowPlayingScreen(
                         )
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = uiState.artist,
+                            text = uiState.artist?.takeIf { it.isNotBlank() }
+                                ?: stringResource(R.string.now_playing_unknown_artist),
                             color = playerContent.copy(alpha = 0.72f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleMedium,
                         )
                         Text(
-                            text = uiState.album,
+                            text = uiState.album?.takeIf { it.isNotBlank() }
+                                ?: stringResource(R.string.now_playing_unknown_album),
                             color = playerContent.copy(alpha = 0.54f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -323,6 +341,7 @@ internal fun NowPlayingScreen(
                 }
             }
         }
+    }
     }
 }
 

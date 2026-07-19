@@ -79,6 +79,9 @@
     <string name="now_playing_repeat">Repeat</string>
     <string name="now_playing_shuffle">Shuffle</string>
     <string name="now_playing_title">Now playing</string>
+    <string name="now_playing_unknown_album">Unknown album</string>
+    <string name="now_playing_unknown_artist">Unknown artist</string>
+    <string name="now_playing_unknown_title">Unknown title</string>
 
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
@@ -90,18 +93,12 @@
     <string name="settings_build_type_debug">Debug</string>
     <string name="settings_build_type_release">Release</string>
     <string name="settings_build_type_title">Build type</string>
-    <string name="settings_notifications_description">Show useful updates while Cassette is playing in the background.</string>
-    <string name="settings_notifications_section_title">Notifications</string>
-    <string name="settings_notifications_title">Playback notifications</string>
-    <string name="settings_playback_section_title">Playback</string>
     <string name="settings_server_configuration_description">Update your Subsonic URL, credentials, and custom headers.</string>
     <string name="settings_server_configuration_title">Server configuration</string>
     <string name="settings_server_section_title">Server</string>
     <string name="settings_title">Settings</string>
     <string name="settings_version_code_title">Version code</string>
     <string name="settings_version_name_title">Version</string>
-    <string name="settings_wifi_only_downloads_description">Avoid mobile data when caching music for offline listening.</string>
-    <string name="settings_wifi_only_downloads_title">Wi-Fi only downloads</string>
 
     <!-- Server Configuration Settings -->
     <string name="server_configuration_settings_title">Server configuration</string>

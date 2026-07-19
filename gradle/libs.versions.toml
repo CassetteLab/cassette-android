@@ -13,6 +13,7 @@ koin = "4.2.2"
 kotlinxCoroutines = "1.10.2"
 ktor = "3.5.1"
 navigation = "2.9.8"
+bottomSheetNavigation = "1.0.5"
 room = "2.8.4"
 ksp = "2.2.10-2.0.2"
 coil = "2.7.0"
@@ -26,6 +27,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+bottom-sheet-navigation = { group = "io.github.stefanoq21", name = "material3-navigation", version.ref = "bottomSheetNavigation" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

@@ -5,5 +5,6 @@ data class AlbumList(
     val name: String,
     val artist: String?,
     val coverArt: String?,
+    val coverArtFilePath: String?,
     val created: String?,
 )

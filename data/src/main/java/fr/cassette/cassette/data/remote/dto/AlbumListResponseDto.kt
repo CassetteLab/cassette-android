@@ -38,6 +38,7 @@ internal data class AlbumDto(
         name = name,
         artist = artist?.takeIf { it.isNotBlank() },
         coverArt = coverArt?.takeIf { it.isNotBlank() },
+        coverArtFilePath = null,
         created = created?.takeIf { it.isNotBlank() },
     )
 
@@ -46,6 +47,7 @@ internal data class AlbumDto(
         name = name,
         artist = artist?.takeIf { it.isNotBlank() },
         coverArt = coverArt?.takeIf { it.isNotBlank() },
+        coverArtFilePath = null,
         created = created?.takeIf { it.isNotBlank() },
         tracks = song.map { it.toDomain() },
     )

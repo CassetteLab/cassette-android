@@ -1,10 +1,10 @@
 package fr.cassette.cassette.domain.repositories
 
-import fr.cassette.cassette.domain.models.Track
+import fr.cassette.cassette.domain.models.CurrentTrack
 import kotlinx.coroutines.flow.Flow
 
 interface PlaybackRepository {
-    val currentTrack: Flow<Track?>
+    val currentTrack: Flow<CurrentTrack?>
 
-    fun setCurrentTrack(track: Track)
+    fun setCurrentTrack(currentTrack: CurrentTrack)
 }
