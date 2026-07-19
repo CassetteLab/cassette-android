@@ -23,14 +23,13 @@ internal class AlbumDetailViewModel(
     logger = logger,
     initialState = AlbumDetailUiState(albumId = albumId),
 ) {
-    init {
-        loadAlbum()
-        loadAlbumTracks()
-    }
-
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
             AlbumDetailEvent.OnBackClicked -> Unit
+            AlbumDetailEvent.OnAppearing -> {
+                loadAlbum()
+                loadAlbumTracks()
+            }
             AlbumDetailEvent.OnRetryClicked -> {
                 loadAlbum()
                 loadAlbumTracks()

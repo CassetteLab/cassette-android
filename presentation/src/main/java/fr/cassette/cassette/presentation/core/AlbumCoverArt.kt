@@ -36,6 +36,7 @@ internal fun AlbumCoverArt(
                 modifier = Modifier.matchParentSize(),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(coverArt.filePath)
+                    .allowHardware(false)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,

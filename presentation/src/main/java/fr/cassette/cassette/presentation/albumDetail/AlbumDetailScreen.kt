@@ -58,6 +58,10 @@ internal fun AlbumDetailScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        onEvent(AlbumDetailEvent.OnAppearing)
+    }
+
     AlbumArtworkTheme(albumArt = albumArtBitmap) {
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

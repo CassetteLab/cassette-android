@@ -90,32 +90,6 @@ internal fun SettingsScreen(
                     )
                 }
             }
-            item {
-                SettingsSection(title = stringResource(R.string.settings_playback_section_title)) {
-                    SettingsSwitchRow(
-                        title = stringResource(R.string.settings_wifi_only_downloads_title),
-                        description = stringResource(R.string.settings_wifi_only_downloads_description),
-                        checked = uiState.isWifiOnlyDownloadsEnabled,
-                        leadingIcon = Icons.Rounded.CloudDownload,
-                        onCheckedChange = { isEnabled ->
-                            onEvent(SettingsEvent.OnWifiOnlyDownloadsChanged(isEnabled))
-                        },
-                    )
-                }
-            }
-            item {
-                SettingsSection(title = stringResource(R.string.settings_notifications_section_title)) {
-                    SettingsSwitchRow(
-                        title = stringResource(R.string.settings_notifications_title),
-                        description = stringResource(R.string.settings_notifications_description),
-                        checked = uiState.areNotificationsEnabled,
-                        leadingIcon = Icons.Rounded.Notifications,
-                        onCheckedChange = { isEnabled ->
-                            onEvent(SettingsEvent.OnNotificationsChanged(isEnabled))
-                        },
-                    )
-                }
-            }
         }
     }
 }
