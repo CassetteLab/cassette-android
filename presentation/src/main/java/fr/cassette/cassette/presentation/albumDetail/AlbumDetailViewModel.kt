@@ -7,7 +7,7 @@ import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumTracksUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
-import fr.cassette.cassette.domain.usecases.SetCurrentTrackUseCase
+import fr.cassette.cassette.domain.usecases.PlayTrackUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.launch
 
@@ -16,7 +16,7 @@ internal class AlbumDetailViewModel(
     private val getAlbumUseCase: GetAlbumUseCase,
     private val getAlbumTracksUseCase: GetAlbumTracksUseCase,
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
-    private val setCurrentTrackUseCase: SetCurrentTrackUseCase,
+    private val playTrackUseCase: PlayTrackUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumDetailUiState, AlbumDetailEvent>(
     viewModelName = "AlbumDetailViewModel",
@@ -34,24 +34,26 @@ internal class AlbumDetailViewModel(
                 loadAlbum()
                 loadAlbumTracks()
             }
-            is AlbumDetailEvent.OnTrackClicked -> setCurrentTrack(event.trackId)
+            is AlbumDetailEvent.OnTrackClicked -> playTrack(event.trackId)
         }
     }
 
-    private fun setCurrentTrack(trackId: String) {
+    private fun playTrack(trackId: String) {
         val album = uiState.value.album ?: return
         uiState.value.tracks
             .firstOrNull { it.id == trackId }
             ?.let { track ->
-                setCurrentTrackUseCase(
-                    CurrentTrack(
-                        track = track,
-                        albumId = album.id,
-                        albumName = album.name,
-                        coverArtId = album.coverArt ?: album.id,
-                        coverArtFilePath = album.coverArtFilePath,
+                viewModelScope.launch {
+                    playTrackUseCase(
+                        CurrentTrack(
+                            track = track,
+                            albumId = album.id,
+                            albumName = album.name,
+                            coverArtId = album.coverArt ?: album.id,
+                            coverArtFilePath = album.coverArtFilePath,
+                        ),
                     )
-                )
+                }
             }
     }
 

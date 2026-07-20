@@ -6,6 +6,10 @@ import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
+import fr.cassette.cassette.domain.usecases.GetPlaybackStateUseCase
+import fr.cassette.cassette.domain.usecases.PausePlaybackUseCase
+import fr.cassette.cassette.domain.usecases.PlayCurrentTrackUseCase
+import fr.cassette.cassette.domain.usecases.SeekPlaybackUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -14,7 +18,11 @@ import kotlinx.coroutines.launch
 internal class NowPlayingViewModel(
     trackId: String,
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
+    private val pausePlaybackUseCase: PausePlaybackUseCase,
+    private val playCurrentTrackUseCase: PlayCurrentTrackUseCase,
+    private val seekPlaybackUseCase: SeekPlaybackUseCase,
     getCurrentTrackUseCase: GetCurrentTrackUseCase,
+    getPlaybackStateUseCase: GetPlaybackStateUseCase,
     logger: Logger,
 ) : BaseViewModel<NowPlayingUiState, NowPlayingEvent>(
     viewModelName = "NowPlayingViewModel",
@@ -29,19 +37,42 @@ internal class NowPlayingViewModel(
                 }
             }
             .launchIn(viewModelScope)
+
+        getPlaybackStateUseCase()
+            .onEach { playbackState ->
+                updateState {
+                    it.copy(
+                        isPlaying = playbackState.isPlaying,
+                        currentPositionSeconds = playbackState.positionMs.toSeconds(),
+                        durationSeconds = playbackState.durationMs.toSeconds()
+                            .takeIf { duration -> duration > 0 } ?: it.durationSeconds,
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     override fun handleEvent(event: NowPlayingEvent) {
         when (event) {
             NowPlayingEvent.OnBackClicked -> Unit
             NowPlayingEvent.OnNextClicked -> Unit
-            NowPlayingEvent.OnPlayPauseClicked -> updateState { it.copy(isPlaying = !it.isPlaying) }
+            NowPlayingEvent.OnPlayPauseClicked -> {
+                if (uiState.value.isPlaying) {
+                    pausePlaybackUseCase()
+                } else {
+                    playCurrentTrackUseCase()
+                }
+            }
             NowPlayingEvent.OnPreviousClicked -> Unit
             NowPlayingEvent.OnShuffleClicked -> updateState { it.copy(isShuffleEnabled = !it.isShuffleEnabled) }
             NowPlayingEvent.OnRepeatClicked -> updateState { it.copy(repeatMode = it.repeatMode.next()) }
             NowPlayingEvent.OnFavoriteClicked -> updateState { it.copy(isFavorite = !it.isFavorite) }
-            is NowPlayingEvent.OnSeekChanged -> updateState {
-                it.copy(currentPositionSeconds = (it.durationSeconds * event.progress).toInt())
+            is NowPlayingEvent.OnSeekChanged -> {
+                val positionSeconds = (uiState.value.durationSeconds * event.progress).toInt()
+                seekPlaybackUseCase(positionSeconds * MILLIS_PER_SECOND)
+                updateState {
+                    it.copy(currentPositionSeconds = positionSeconds)
+                }
             }
         }
     }
@@ -80,8 +111,11 @@ internal class NowPlayingViewModel(
 
     private companion object {
         const val COVER_ART_SIZE = 900
+        const val MILLIS_PER_SECOND = 1_000L
     }
 }
+
+private fun Long.toSeconds(): Int = (this / 1_000L).toInt()
 
 private fun RepeatMode.next(): RepeatMode = when (this) {
     RepeatMode.Off -> RepeatMode.All

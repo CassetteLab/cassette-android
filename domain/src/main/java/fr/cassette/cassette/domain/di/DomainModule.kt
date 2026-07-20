@@ -5,11 +5,15 @@ import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumTracksUseCase
+import fr.cassette.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassette.cassette.domain.usecases.GetServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.HasServerConfigurationUseCase
+import fr.cassette.cassette.domain.usecases.PausePlaybackUseCase
 import fr.cassette.cassette.domain.usecases.PingServerUseCase
+import fr.cassette.cassette.domain.usecases.PlayCurrentTrackUseCase
+import fr.cassette.cassette.domain.usecases.PlayTrackUseCase
 import fr.cassette.cassette.domain.usecases.SaveServerConfigurationUseCase
-import fr.cassette.cassette.domain.usecases.SetCurrentTrackUseCase
+import fr.cassette.cassette.domain.usecases.SeekPlaybackUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -28,5 +32,9 @@ val domainModule = module {
 
     // Playback
     singleOf(::GetCurrentTrackUseCase)
-    singleOf(::SetCurrentTrackUseCase)
+    singleOf(::GetPlaybackStateUseCase)
+    singleOf(::PausePlaybackUseCase)
+    singleOf(::PlayCurrentTrackUseCase)
+    singleOf(::PlayTrackUseCase)
+    singleOf(::SeekPlaybackUseCase)
 }

@@ -26,6 +26,10 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
 
+    // Media playback
+    implementation(libs.androidx.media3.datasource)
+    implementation(libs.androidx.media3.exoplayer)
+
     // Koin (Dependency Injection)
     implementation(libs.koin.android)
     implementation(libs.koin.core)

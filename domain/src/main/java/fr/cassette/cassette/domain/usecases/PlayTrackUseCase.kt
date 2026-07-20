@@ -3,10 +3,10 @@ package fr.cassette.cassette.domain.usecases
 import fr.cassette.cassette.domain.models.CurrentTrack
 import fr.cassette.cassette.domain.repositories.PlaybackRepository
 
-class SetCurrentTrackUseCase(
+class PlayTrackUseCase(
     private val playbackRepository: PlaybackRepository,
 ) {
-    operator fun invoke(currentTrack: CurrentTrack) {
-        playbackRepository.setCurrentTrack(currentTrack)
+    suspend operator fun invoke(currentTrack: CurrentTrack) {
+        playbackRepository.play(currentTrack)
     }
 }
