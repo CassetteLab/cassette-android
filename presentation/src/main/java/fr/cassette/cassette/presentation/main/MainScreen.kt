@@ -273,8 +273,14 @@ internal fun ComponentActivity.MainScreen() {
                             .padding(16.dp),
                     track = uiState.currentTrack?.track?.title ?: "",
                     artist = uiState.currentTrack?.track?.artist ?: "",
-                    onPause = {
-                        viewModel.onEvent(MainEvent.OnPauseCurrentTrack)
+                    coverArtFilePath = uiState.currentTrack?.coverArtFilePath,
+                    isPlaying = uiState.isPlaying,
+                    onPlayPause = {
+                        if (uiState.isPlaying) {
+                            viewModel.onEvent(MainEvent.OnPauseCurrentTrack)
+                        } else {
+                            viewModel.onEvent(MainEvent.OnPlayCurrentTrack)
+                        }
                     },
                     onNext = {
                         viewModel.onEvent(MainEvent.OnNextTrack)

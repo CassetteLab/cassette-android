@@ -5,4 +5,5 @@ import fr.cassette.cassette.presentation.core.mvi.UiState
 
 internal data class MainUiState(
     val currentTrack: CurrentTrack? = null,
+    val isPlaying: Boolean = false,
 ) : UiState
