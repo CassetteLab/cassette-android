@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.bottom.sheet.navigation)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.palette)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

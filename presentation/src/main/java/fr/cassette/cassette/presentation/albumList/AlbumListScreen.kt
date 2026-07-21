@@ -9,12 +9,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -28,7 +31,7 @@ import fr.cassette.cassette.presentation.albumList.core.AlbumListRow
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.core.HomeMessage
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun AlbumListScreen(
     uiState: AlbumListUiState,
@@ -37,6 +40,8 @@ internal fun AlbumListScreen(
     LaunchedEffect(Unit) {
         onEvent(AlbumListEvent.OnAppearing)
     }
+
+    val pullToRefreshState = rememberPullToRefreshState()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -55,9 +60,17 @@ internal fun AlbumListScreen(
         },
     ) { innerPadding ->
         PullToRefreshBox(
+            state = pullToRefreshState,
             modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             isRefreshing = uiState.isRefreshing,
             onRefresh = { onEvent(AlbumListEvent.OnRefresh) },
+            indicator = {
+                PullToRefreshDefaults.LoadingIndicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = uiState.isRefreshing,
+                    state = pullToRefreshState,
+                )
+            },
         ) {
             LazyColumn(
                 modifier =

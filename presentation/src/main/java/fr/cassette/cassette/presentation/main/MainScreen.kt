@@ -213,12 +213,6 @@ internal fun ComponentActivity.MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     AlbumDetailEvent.OnBackClicked -> navController.navigateUp()
-                                    is AlbumDetailEvent.OnTrackClicked -> {
-                                        viewModel.onEvent(event)
-                                        navController.navigate(Screens.NowPlaying(event.trackId))
-                                        return@AlbumDetailScreen
-                                    }
-
                                     else -> Unit
                                 }
                                 viewModel.onEvent(event)
@@ -279,8 +273,12 @@ internal fun ComponentActivity.MainScreen() {
                             .padding(16.dp),
                     track = uiState.currentTrack?.track?.title ?: "",
                     artist = uiState.currentTrack?.track?.artist ?: "",
-                    onPause = { },
-                    onNext = { },
+                    onPause = {
+                        viewModel.onEvent(MainEvent.OnPauseCurrentTrack)
+                    },
+                    onNext = {
+                        viewModel.onEvent(MainEvent.OnNextTrack)
+                    },
                     onExpand = {
                         uiState.currentTrack?.let {
                             navController.navigate(Screens.NowPlaying(it.track.id))
