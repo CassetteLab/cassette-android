@@ -20,12 +20,20 @@ internal class AlbumRemoteDataSourceImpl(
     private val httpClient: HttpClient,
 ) {
     suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> {
+        return getAlbumList(type = "newest", size = size)
+    }
+
+    suspend fun getAllAlbums(size: Int): List<AlbumList> {
+        return getAlbumList(type = "alphabeticalByName", size = size)
+    }
+
+    private suspend fun getAlbumList(type: String, size: Int): List<AlbumList> {
         val configuration = serverConfigurationDao.getServerConfiguration()
             ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
 
         val response = httpClient.get("${server.serverUrl.trimEnd('/')}/rest/getAlbumList2.view") {
-            parameter("type", "newest")
+            parameter("type", type)
             parameter("size", size)
             parameter("f", "json")
         }.body<AlbumListResponseDto>()

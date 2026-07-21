@@ -11,6 +11,8 @@ import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.domain.models.Track
 import fr.cassette.cassette.domain.repositories.AlbumRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.io.File
 
 internal class AlbumRepositoryImpl(
@@ -67,6 +69,22 @@ internal class AlbumRepositoryImpl(
             }
     }
 
+    override fun getAllAlbums(): Flow<List<AlbumList>> {
+        return albumDao.getAllAlbums().map { entities ->
+            entities.map { it.toListDomain() }
+        }
+    }
+
+    override suspend fun refreshAlbums() {
+        val remoteAlbums = albumRemoteDataSource.getAllAlbums(size = ALL_ALBUMS_SIZE)
+        val serverConfigurationId = currentServerConfigurationId()
+        remoteAlbums.forEach { album ->
+            val localAlbum = albumDao.getAlbum(album.id)
+            val albumWithLocalCoverArt = album.copy(coverArtFilePath = localAlbum?.validCoverArtFilePath())
+            albumDao.insertAlbum(albumWithLocalCoverArt.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
+        }
+    }
+
     private suspend fun AlbumList.toEntity(existingServerConfigurationId: Long?): AlbumEntity {
         return AlbumEntity(
             id = id,
@@ -103,6 +121,17 @@ internal class AlbumRepositoryImpl(
         )
     }
 
+    private fun AlbumEntity.toListDomain(): AlbumList {
+        return AlbumList(
+            id = id,
+            name = name,
+            artist = artist,
+            coverArt = coverArt,
+            coverArtFilePath = validCoverArtFilePath(),
+            created = created,
+        )
+    }
+
     private fun Track.toEntity(albumId: String): TrackEntity {
         return TrackEntity(
             id = id,
@@ -131,5 +160,9 @@ internal class AlbumRepositoryImpl(
 
     private fun AlbumEntity.validCoverArtFilePath(): String? {
         return coverArtFilePath?.takeIf { filePath -> File(filePath).exists() }
+    }
+
+    private companion object {
+        const val ALL_ALBUMS_SIZE = 500
     }
 }
