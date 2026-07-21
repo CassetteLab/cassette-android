@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.cassette.cassette.domain.models.RepeatMode
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassette.cassette.presentation.core.AlbumCoverArt

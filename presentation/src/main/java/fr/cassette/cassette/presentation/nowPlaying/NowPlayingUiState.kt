@@ -1,6 +1,7 @@
 package fr.cassette.cassette.presentation.nowPlaying
 
 import fr.cassette.cassette.domain.models.AlbumCoverArt
+import fr.cassette.cassette.domain.models.RepeatMode
 import fr.cassette.cassette.presentation.core.mvi.UiState
 
 internal data class NowPlayingUiState(
@@ -25,12 +26,6 @@ internal data class NowPlayingUiState(
 
     val currentPositionLabel: String = currentPositionSeconds.toDurationLabel()
     val durationLabel: String = durationSeconds.toDurationLabel()
-}
-
-internal enum class RepeatMode {
-    Off,
-    All,
-    One,
 }
 
 private fun Int.toDurationLabel(): String = "%d:%02d".format(this / 60, this % 60)

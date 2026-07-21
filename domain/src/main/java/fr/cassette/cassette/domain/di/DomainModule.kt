@@ -17,6 +17,10 @@ import fr.cassette.cassette.domain.usecases.PlayTrackUseCase
 import fr.cassette.cassette.domain.usecases.RefreshAlbumsUseCase
 import fr.cassette.cassette.domain.usecases.SaveServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.SeekPlaybackUseCase
+import fr.cassette.cassette.domain.usecases.SetPlaybackRepeatModeUseCase
+import fr.cassette.cassette.domain.usecases.SetPlaybackShuffleEnabledUseCase
+import fr.cassette.cassette.domain.usecases.SkipToNextTrackUseCase
+import fr.cassette.cassette.domain.usecases.SkipToPreviousTrackUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -46,4 +50,8 @@ val domainModule =
         singleOf(::PlayCurrentTrackUseCase)
         singleOf(::PlayTrackUseCase)
         singleOf(::SeekPlaybackUseCase)
+        singleOf(::SetPlaybackRepeatModeUseCase)
+        singleOf(::SetPlaybackShuffleEnabledUseCase)
+        singleOf(::SkipToNextTrackUseCase)
+        singleOf(::SkipToPreviousTrackUseCase)
     }

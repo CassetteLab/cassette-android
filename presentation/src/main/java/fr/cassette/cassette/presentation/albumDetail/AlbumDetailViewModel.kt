@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
 import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.CurrentTrack
+import fr.cassette.cassette.domain.models.PlaybackContext
+import fr.cassette.cassette.domain.models.PlaybackContextType
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumTracksUseCase
 import fr.cassette.cassette.domain.usecases.GetAlbumUseCase
@@ -40,18 +42,24 @@ internal class AlbumDetailViewModel(
 
     private fun playTrack(trackId: String) {
         val album = uiState.value.album ?: return
-        uiState.value.tracks
-            .firstOrNull { it.id == trackId }
-            ?.let { track ->
+        val contextTracks =
+            uiState.value.tracks.map { track ->
+                CurrentTrack(
+                    track = track,
+                    albumId = album.id,
+                    albumName = album.name,
+                    coverArtId = album.coverArt ?: album.id,
+                    coverArtFilePath = album.coverArtFilePath,
+                )
+            }
+        contextTracks
+            .firstOrNull { it.track.id == trackId }
+            ?.let { currentTrack ->
                 viewModelScope.launch {
                     playTrackUseCase(
-                        CurrentTrack(
-                            track = track,
-                            albumId = album.id,
-                            albumName = album.name,
-                            coverArtId = album.coverArt ?: album.id,
-                            coverArtFilePath = album.coverArtFilePath,
-                        ),
+                        currentTrack = currentTrack,
+                        contextTracks = contextTracks,
+                        context = PlaybackContext(type = PlaybackContextType.Album, id = album.id),
                     )
                 }
             }

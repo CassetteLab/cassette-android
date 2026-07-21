@@ -3,6 +3,7 @@ package fr.cassette.cassette.data.di
 import androidx.room.Room
 import fr.cassette.cassette.data.local.CassetteDatabase
 import fr.cassette.cassette.data.local.dao.AlbumDao
+import fr.cassette.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.local.dao.TrackDao
 import fr.cassette.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
@@ -36,6 +37,7 @@ val dataModule =
         single<AlbumDao> { get<CassetteDatabase>().albumDao() }
         single<TrackDao> { get<CassetteDatabase>().trackDao() }
         single<ServerConfigurationDao> { get<CassetteDatabase>().serverConfigurationDao() }
+        single<PlaybackQueueDao> { get<CassetteDatabase>().playbackQueueDao() }
 
         // Ktor
         singleOf(::KtorClientProviderImpl)

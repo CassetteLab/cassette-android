@@ -4,12 +4,17 @@ import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
 import fr.cassette.cassette.domain.models.AlbumCoverArt
 import fr.cassette.cassette.domain.models.CurrentTrack
+import fr.cassette.cassette.domain.models.RepeatMode
 import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassette.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassette.cassette.domain.usecases.PausePlaybackUseCase
 import fr.cassette.cassette.domain.usecases.PlayCurrentTrackUseCase
 import fr.cassette.cassette.domain.usecases.SeekPlaybackUseCase
+import fr.cassette.cassette.domain.usecases.SetPlaybackRepeatModeUseCase
+import fr.cassette.cassette.domain.usecases.SetPlaybackShuffleEnabledUseCase
+import fr.cassette.cassette.domain.usecases.SkipToNextTrackUseCase
+import fr.cassette.cassette.domain.usecases.SkipToPreviousTrackUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,6 +26,10 @@ internal class NowPlayingViewModel(
     private val pausePlaybackUseCase: PausePlaybackUseCase,
     private val playCurrentTrackUseCase: PlayCurrentTrackUseCase,
     private val seekPlaybackUseCase: SeekPlaybackUseCase,
+    private val setPlaybackRepeatModeUseCase: SetPlaybackRepeatModeUseCase,
+    private val setPlaybackShuffleEnabledUseCase: SetPlaybackShuffleEnabledUseCase,
+    private val skipToNextTrackUseCase: SkipToNextTrackUseCase,
+    private val skipToPreviousTrackUseCase: SkipToPreviousTrackUseCase,
     getCurrentTrackUseCase: GetCurrentTrackUseCase,
     getPlaybackStateUseCase: GetPlaybackStateUseCase,
     logger: Logger,
@@ -47,6 +56,8 @@ internal class NowPlayingViewModel(
                             playbackState.durationMs
                                 .toSeconds()
                                 .takeIf { duration -> duration > 0 } ?: it.durationSeconds,
+                        isShuffleEnabled = playbackState.isShuffleEnabled,
+                        repeatMode = playbackState.repeatMode,
                     )
                 }
             }.launchIn(viewModelScope)
@@ -55,7 +66,7 @@ internal class NowPlayingViewModel(
     override fun handleEvent(event: NowPlayingEvent) {
         when (event) {
             NowPlayingEvent.OnBackClicked -> Unit
-            NowPlayingEvent.OnNextClicked -> Unit
+            NowPlayingEvent.OnNextClicked -> viewModelScope.launch { skipToNextTrackUseCase() }
             NowPlayingEvent.OnPlayPauseClicked -> {
                 if (uiState.value.isPlaying) {
                     pausePlaybackUseCase()
@@ -63,9 +74,15 @@ internal class NowPlayingViewModel(
                     playCurrentTrackUseCase()
                 }
             }
-            NowPlayingEvent.OnPreviousClicked -> Unit
-            NowPlayingEvent.OnShuffleClicked -> updateState { it.copy(isShuffleEnabled = !it.isShuffleEnabled) }
-            NowPlayingEvent.OnRepeatClicked -> updateState { it.copy(repeatMode = it.repeatMode.next()) }
+            NowPlayingEvent.OnPreviousClicked -> viewModelScope.launch { skipToPreviousTrackUseCase() }
+            NowPlayingEvent.OnShuffleClicked -> {
+                val isEnabled = !uiState.value.isShuffleEnabled
+                viewModelScope.launch { setPlaybackShuffleEnabledUseCase(isEnabled) }
+            }
+            NowPlayingEvent.OnRepeatClicked -> {
+                val repeatMode = uiState.value.repeatMode.next()
+                viewModelScope.launch { setPlaybackRepeatModeUseCase(repeatMode) }
+            }
             NowPlayingEvent.OnFavoriteClicked -> updateState { it.copy(isFavorite = !it.isFavorite) }
             is NowPlayingEvent.OnSeekChanged -> {
                 val positionSeconds = (uiState.value.durationSeconds * event.progress).toInt()
