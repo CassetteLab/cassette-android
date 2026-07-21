@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -27,6 +28,7 @@ import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun NowPlayingSnack(
+    modifier: Modifier = Modifier,
     track: String,
     artist: String,
     onPause: () -> Unit,
@@ -34,8 +36,9 @@ internal fun NowPlayingSnack(
     onExpand: () -> Unit
 ) {
     Button(
+        modifier = modifier,
         shape = CircleShape,
-        contentPadding = PaddingValues(12.dp),
+        contentPadding = PaddingValues(8.dp),
         onClick = onExpand,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -44,21 +47,26 @@ internal fun NowPlayingSnack(
     ) {
         Row(modifier = Modifier.weight(1f)) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
                         .background(Color.White, shape = CircleShape)
-                        .size(44.dp)
+                        .size(40.dp)
                 )
 
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(track)
+                    Text(
+                        track,
+                        maxLines = 1
+                    )
                     Text(
                         text = artist,
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.titleSmall,
+                        maxLines = 1
                     )
                 }
             }

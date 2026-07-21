@@ -30,8 +30,7 @@ internal fun HomeScreen(
     Scaffold { innerPadding ->
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .fillMaxWidth(),
+                .fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 16.dp,
                 top = innerPadding.calculateTopPadding() + 16.dp,
