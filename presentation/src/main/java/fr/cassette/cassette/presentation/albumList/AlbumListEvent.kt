@@ -7,7 +7,6 @@ internal sealed interface AlbumListEvent : Event {
 
     data object OnRefresh : AlbumListEvent
 
-    data object OnRetryClicked : AlbumListEvent
 
     data class OnAlbumClicked(
         val albumId: String,

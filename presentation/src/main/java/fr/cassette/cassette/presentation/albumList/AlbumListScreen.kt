@@ -1,6 +1,9 @@
 package fr.cassette.cassette.presentation.albumList
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,8 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.albumList.core.AlbumListRow
+import fr.cassette.cassette.presentation.core.LoadingMessage
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.core.HomeMessage
 
@@ -54,7 +60,14 @@ internal fun AlbumListScreen(
                         titleContentColor = MaterialTheme.colorScheme.onBackground,
                     ),
                 title = {
-                    Text(text = stringResource(R.string.album_list_title))
+                    Column {
+                        Text(text = stringResource(R.string.album_list_title))
+                        AnimatedVisibility(uiState.isRefreshing) {
+                            LinearWavyProgressIndicator(
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
                 },
             )
         },
@@ -62,65 +75,58 @@ internal fun AlbumListScreen(
         PullToRefreshBox(
             state = pullToRefreshState,
             modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
-            isRefreshing = uiState.isRefreshing,
+            isRefreshing = uiState.isPullToRefreshIndicatorVisible && uiState.isRefreshing,
             onRefresh = { onEvent(AlbumListEvent.OnRefresh) },
             indicator = {
                 PullToRefreshDefaults.LoadingIndicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = uiState.isRefreshing,
+                    isRefreshing = uiState.isPullToRefreshIndicatorVisible && uiState.isRefreshing,
                     state = pullToRefreshState,
                 )
             },
         ) {
-            LazyColumn(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                contentPadding =
-                    PaddingValues(
-                        start = 16.dp,
-                        top = 16.dp,
-                        end = 16.dp,
-                        bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                when {
-                    uiState.isLoading ->
-                        item {
-                            CircularProgressIndicator()
-                        }
+            if (uiState.isLoading){
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    LoadingMessage(
+                        message = R.string.album_list_loading_albums
+                    )
+                }
+            }
+            else if (uiState.albums.isEmpty()) {
+                HomeMessage(
+                    title = stringResource(R.string.album_list_empty_title),
+                    description = stringResource(R.string.album_list_empty_description),
+                )
+            }
+            else {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                    contentPadding =
+                        PaddingValues(
+                            start = 16.dp,
+                            top = 16.dp,
+                            end = 16.dp,
+                            bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
 
-                    uiState.hasError ->
-                        item {
-                            HomeMessage(
-                                title = stringResource(R.string.album_list_error_title),
-                                description = stringResource(R.string.album_list_error_description),
-                                actionLabel = stringResource(R.string.album_list_retry),
-                                onActionClick = { onEvent(AlbumListEvent.OnRetryClicked) },
-                            )
-                        }
-
-                    uiState.albums.isEmpty() ->
-                        item {
-                            HomeMessage(
-                                title = stringResource(R.string.album_list_empty_title),
-                                description = stringResource(R.string.album_list_empty_description),
-                            )
-                        }
-
-                    else ->
-                        items(
-                            items = uiState.albums,
-                            key = { album -> album.id },
-                        ) { album ->
-                            AlbumListRow(
-                                album = album,
-                                onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-                        }
+                    items(
+                        items = uiState.albums,
+                        key = { album -> album.id },
+                    ) { album ->
+                        AlbumListRow(
+                            album = album,
+                            onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
                 }
             }
         }

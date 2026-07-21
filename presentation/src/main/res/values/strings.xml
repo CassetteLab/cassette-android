@@ -106,6 +106,7 @@
     <!-- Album List -->
     <string name="album_list_empty_description">All albums from your server will appear here.</string>
     <string name="album_list_empty_title">No albums yet</string>
+    <string name="album_list_loading_albums">Loading albums</string>
     <string name="album_list_error_description">Check your server connection and try again.</string>
     <string name="album_list_error_title">Unable to load albums</string>
     <string name="album_list_retry">Retry</string>

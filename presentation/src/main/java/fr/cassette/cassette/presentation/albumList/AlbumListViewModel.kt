@@ -17,36 +17,43 @@ internal class AlbumListViewModel(
         logger = logger,
         initialState = AlbumListUiState(),
     ) {
-    init {
-        viewModelScope.launch {
-            getAllAlbumsUseCase()
-                .onStart { updateState { it.copy(isLoading = true, hasError = false) } }
-                .collect { albums ->
-                    updateState { it.copy(isLoading = false, albums = albums) }
-                }
-        }
-    }
-
     override fun handleEvent(event: AlbumListEvent) {
         when (event) {
-            AlbumListEvent.OnAppearing -> refreshAlbums()
+            AlbumListEvent.OnAppearing -> {
+                viewModelScope.launch {
+                    getAllAlbumsUseCase()
+                        .onStart { updateState { it.copy(isLoading = true) } }
+                        .collect { albums ->
+                            updateState { it.copy(isLoading = false, albums = albums) }
+                        }
+                }
+                viewModelScope.launch {
+                    updateState { it.copy(isRefreshing = true) }
+                    refreshAlbums()
+                }
+                    .invokeOnCompletion {
+                        updateState { it.copy(isRefreshing = false) }
+                    }
+
+            }
             is AlbumListEvent.OnAlbumClicked -> Unit
-            AlbumListEvent.OnRefresh -> refreshAlbums()
-            AlbumListEvent.OnRetryClicked -> refreshAlbums()
+            AlbumListEvent.OnRefresh -> {
+                viewModelScope.launch {
+                    updateState { it.copy(isRefreshing = true, isPullToRefreshIndicatorVisible = true) }
+                    refreshAlbums()
+                }
+                    .invokeOnCompletion {
+                        updateState { it.copy(isRefreshing = false, isPullToRefreshIndicatorVisible = false) }
+                    }
+            }
         }
     }
 
-    private fun refreshAlbums() {
-        viewModelScope.launch {
-            updateState { it.copy(isRefreshing = true, hasError = false) }
-            try {
-                refreshAlbumsUseCase()
-                updateState { it.copy(isRefreshing = false) }
-            } catch (exception: Exception) {
-                logger.w("Unable to refresh albums", exception)
-                val currentAlbums = uiState.value.albums
-                updateState { it.copy(isRefreshing = false, hasError = currentAlbums.isEmpty()) }
-            }
+    private suspend fun refreshAlbums() {
+        try {
+            refreshAlbumsUseCase()
+        } catch (exception: Exception) {
+            logger.w("Unable to refresh albums", exception)
         }
     }
 }
