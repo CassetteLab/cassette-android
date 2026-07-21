@@ -44,6 +44,9 @@ import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.albumDetail.AlbumDetailEvent
 import fr.cassette.cassette.presentation.albumDetail.AlbumDetailScreen
 import fr.cassette.cassette.presentation.albumDetail.AlbumDetailViewModel
+import fr.cassette.cassette.presentation.albumList.AlbumListEvent
+import fr.cassette.cassette.presentation.albumList.AlbumListScreen
+import fr.cassette.cassette.presentation.albumList.AlbumListViewModel
 import fr.cassette.cassette.presentation.core.NowPlayingSnack
 import fr.cassette.cassette.presentation.core.navigation.Screens
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
@@ -57,6 +60,9 @@ import fr.cassette.cassette.presentation.main.core.MainTab
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingEvent
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingScreen
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingViewModel
+import fr.cassette.cassette.presentation.playlistList.PlaylistListEvent
+import fr.cassette.cassette.presentation.playlistList.PlaylistListScreen
+import fr.cassette.cassette.presentation.playlistList.PlaylistListViewModel
 import fr.cassette.cassette.presentation.settings.SettingsEvent
 import fr.cassette.cassette.presentation.settings.SettingsScreen
 import fr.cassette.cassette.presentation.settings.SettingsUiState
@@ -79,8 +85,6 @@ internal fun ComponentActivity.MainScreen() {
     LaunchedEffect(Unit) {
         viewModel.onEvent(MainEvent.OnAppearing)
     }
-
-    val 
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -147,6 +151,37 @@ internal fun ComponentActivity.MainScreen() {
 
                                     else -> Unit
                                 }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.AlbumList> {
+                        val viewModel: AlbumListViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                        AlbumListScreen(
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    is AlbumListEvent.OnAlbumClicked -> {
+                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)){
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    else -> Unit
+                                }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.PlaylistList> {
+                        val viewModel: PlaylistListViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                        PlaylistListScreen(
+                            uiState = uiState,
+                            onEvent = { event ->
                                 viewModel.onEvent(event)
                             },
                         )
