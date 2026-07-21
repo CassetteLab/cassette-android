@@ -4,9 +4,42 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 
-private val CassetteFontFamily = FontFamily.SansSerif
+private val fontProvider =
+    GoogleFont.Provider(
+        providerAuthority = "com.google.android.gms.fonts",
+        providerPackage = "com.google.android.gms",
+        certificates = androidx.compose.ui.text.googlefonts.R.array.com_google_android_gms_fonts_certs,
+    )
+
+private val cassetteGoogleFont = GoogleFont("Space Grotesk")
+
+private val CassetteFontFamily =
+    FontFamily(
+        Font(
+            googleFont = cassetteGoogleFont,
+            fontProvider = fontProvider,
+            weight = FontWeight.Normal,
+        ),
+        Font(
+            googleFont = cassetteGoogleFont,
+            fontProvider = fontProvider,
+            weight = FontWeight.Medium,
+        ),
+        Font(
+            googleFont = cassetteGoogleFont,
+            fontProvider = fontProvider,
+            weight = FontWeight.SemiBold,
+        ),
+        Font(
+            googleFont = cassetteGoogleFont,
+            fontProvider = fontProvider,
+            weight = FontWeight.Bold,
+        ),
+    )
 
 val Typography =
     Typography(
