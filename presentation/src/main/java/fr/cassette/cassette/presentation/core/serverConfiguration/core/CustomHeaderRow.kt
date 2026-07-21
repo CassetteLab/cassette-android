@@ -64,13 +64,14 @@ internal fun CustomHeaderRow(
                     },
                 ) {
                     Text(
-                        text = stringResource(
-                            if (header.isValueVisible) {
-                                R.string.server_configuration_header_value_hide
-                            } else {
-                                R.string.server_configuration_header_value_show
-                            },
-                        ),
+                        text =
+                            stringResource(
+                                if (header.isValueVisible) {
+                                    R.string.server_configuration_header_value_hide
+                                } else {
+                                    R.string.server_configuration_header_value_show
+                                },
+                            ),
                     )
                 }
             },

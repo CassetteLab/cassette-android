@@ -40,7 +40,7 @@ internal fun OnBoardingWelcomeScreen(
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.background,
             ) {
                 PrimaryButton(
                     isLoading = uiState.isLoading,
@@ -49,20 +49,20 @@ internal fun OnBoardingWelcomeScreen(
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         onEvent(OnBoardingWelcomeEvent.OnGetStartedClicked)
                     },
-                    text = stringResource(R.string.on_boarding_welcome_get_started)
+                    text = stringResource(R.string.on_boarding_welcome_get_started),
                 )
             }
-        }
+        },
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = contentPadding,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
                 AnimatedCassetteHero(
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = 16.dp),
                 )
             }
 

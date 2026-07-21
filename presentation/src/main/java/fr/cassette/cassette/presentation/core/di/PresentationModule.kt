@@ -14,16 +14,17 @@ import fr.cassette.cassette.presentation.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val presentationModule = module {
-    viewModelOf(::ServerConfigurationViewModel)
-    viewModelOf(::OnBoardingCacheViewModel)
-    viewModelOf(::OnBoardingCompleteViewModel)
-    viewModelOf(::OnBoardingWelcomeViewModel)
-    viewModelOf(::HomeViewModel)
-    viewModelOf(::MainViewModel)
-    viewModelOf(::SettingsViewModel)
-    viewModelOf(::AlbumDetailViewModel)
-    viewModelOf(::NowPlayingViewModel)
-    viewModelOf(::AlbumListViewModel)
-    viewModelOf(::PlaylistListViewModel)
-}
+val presentationModule =
+    module {
+        viewModelOf(::ServerConfigurationViewModel)
+        viewModelOf(::OnBoardingCacheViewModel)
+        viewModelOf(::OnBoardingCompleteViewModel)
+        viewModelOf(::OnBoardingWelcomeViewModel)
+        viewModelOf(::HomeViewModel)
+        viewModelOf(::MainViewModel)
+        viewModelOf(::SettingsViewModel)
+        viewModelOf(::AlbumDetailViewModel)
+        viewModelOf(::NowPlayingViewModel)
+        viewModelOf(::AlbumListViewModel)
+        viewModelOf(::PlaylistListViewModel)
+    }

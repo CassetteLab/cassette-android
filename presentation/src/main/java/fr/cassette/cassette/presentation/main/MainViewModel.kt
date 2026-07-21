@@ -8,14 +8,14 @@ import kotlinx.coroutines.launch
 
 internal class MainViewModel(
     logger: Logger,
-    private val getCurrentTrackUseCase: GetCurrentTrackUseCase
+    private val getCurrentTrackUseCase: GetCurrentTrackUseCase,
 ) : BaseViewModel<MainUiState, MainEvent>(
-    viewModelName = "MainViewModel",
-    logger = logger,
-    initialState = MainUiState(),
-) {
+        viewModelName = "MainViewModel",
+        logger = logger,
+        initialState = MainUiState(),
+    ) {
     override fun handleEvent(event: MainEvent) {
-        when(event){
+        when (event) {
             MainEvent.OnAppearing -> {
                 viewModelScope.launch {
                     getCurrentTrackUseCase().collect { track ->

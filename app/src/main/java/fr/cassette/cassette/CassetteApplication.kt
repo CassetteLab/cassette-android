@@ -20,7 +20,7 @@ class CassetteApplication : Application() {
                 coreModule,
                 dataModule,
                 domainModule,
-                presentationModule
+                presentationModule,
             )
         }
     }

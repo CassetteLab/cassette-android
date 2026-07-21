@@ -26,6 +26,8 @@ import fr.cassette.cassette.data.local.entities.TrackEntity
 )
 internal abstract class CassetteDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
+
     abstract fun trackDao(): TrackDao
+
     abstract fun serverConfigurationDao(): ServerConfigurationDao
 }

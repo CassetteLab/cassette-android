@@ -12,10 +12,10 @@ internal class PlaylistListViewModel(
     private val getAllPlaylistsUseCase: GetAllPlaylistsUseCase,
     logger: Logger,
 ) : BaseViewModel<PlaylistListUiState, PlaylistListEvent>(
-    viewModelName = "PlaylistListViewModel",
-    logger = logger,
-    initialState = PlaylistListUiState(),
-) {
+        viewModelName = "PlaylistListViewModel",
+        logger = logger,
+        initialState = PlaylistListUiState(),
+    ) {
     override fun handleEvent(event: PlaylistListEvent) {
         when (event) {
             PlaylistListEvent.OnAppearing -> loadPlaylists()
@@ -31,8 +31,7 @@ internal class PlaylistListViewModel(
                 .catch { exception ->
                     logger.w("Unable to load playlists", exception)
                     updateState { it.copy(isLoading = false, hasError = true) }
-                }
-                .collect { playlists ->
+                }.collect { playlists ->
                     updateState { it.copy(isLoading = false, playlists = playlists) }
                 }
         }

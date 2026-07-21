@@ -15,12 +15,13 @@ internal data class ServerConfigurationUiState(
     val isUrlValid: Boolean = serverUrl.isBlank() || ServerConfigurationValidator.isValidUrl(serverUrl)
     val isHttp: Boolean = ServerConfigurationValidator.isHttpUrl(serverUrl)
     val areHeadersValid: Boolean = customHeaders.all { it.isValid }
-    val canSubmit: Boolean = serverUrl.isNotBlank() &&
-        username.isNotBlank() &&
-        password.isNotBlank() &&
-        isUrlValid &&
-        areHeadersValid &&
-        !isLoading
+    val canSubmit: Boolean =
+        serverUrl.isNotBlank() &&
+            username.isNotBlank() &&
+            password.isNotBlank() &&
+            isUrlValid &&
+            areHeadersValid &&
+            !isLoading
 }
 
 internal data class ServerConfigurationHeaderUiState(

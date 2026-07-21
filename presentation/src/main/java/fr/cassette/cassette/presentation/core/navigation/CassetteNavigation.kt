@@ -1,32 +1,17 @@
 package fr.cassette.cassette.presentation.core.navigation
 
-import android.app.Activity
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.stefanoq21.material3.navigation.ModalBottomSheetLayout
-import com.stefanoq21.material3.navigation.bottomSheet
-import com.stefanoq21.material3.navigation.rememberBottomSheetNavigator
-import fr.cassette.cassette.presentation.albumDetail.AlbumDetailEvent
-import fr.cassette.cassette.presentation.albumDetail.AlbumDetailScreen
-import fr.cassette.cassette.presentation.albumDetail.AlbumDetailViewModel
-import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
 import fr.cassette.cassette.presentation.main.MainScreen
-import fr.cassette.cassette.presentation.nowPlaying.NowPlayingEvent
-import fr.cassette.cassette.presentation.nowPlaying.NowPlayingScreen
-import fr.cassette.cassette.presentation.nowPlaying.NowPlayingViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
@@ -34,9 +19,7 @@ import fr.cassette.cassette.presentation.onBoarding.onBoardingServerConfiguratio
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeEvent
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeScreen
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
-import fr.cassette.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -9,6 +9,7 @@ internal sealed interface ServerConfigurationError {
 }
 
 @Composable
-internal fun ServerConfigurationError.asString(): String = when (this) {
-    ServerConfigurationError.ConnectionFailed -> stringResource(R.string.server_configuration_connection_failed)
-}
+internal fun ServerConfigurationError.asString(): String =
+    when (this) {
+        ServerConfigurationError.ConnectionFailed -> stringResource(R.string.server_configuration_connection_failed)
+    }

@@ -13,10 +13,10 @@ internal class AlbumListViewModel(
     private val refreshAlbumsUseCase: RefreshAlbumsUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumListUiState, AlbumListEvent>(
-    viewModelName = "AlbumListViewModel",
-    logger = logger,
-    initialState = AlbumListUiState(),
-) {
+        viewModelName = "AlbumListViewModel",
+        logger = logger,
+        initialState = AlbumListUiState(),
+    ) {
     init {
         viewModelScope.launch {
             getAllAlbumsUseCase()

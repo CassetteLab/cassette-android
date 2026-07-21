@@ -3,10 +3,10 @@ package fr.cassette.cassette.presentation.home.core
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,10 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassette.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.AlbumCoverArt
+import fr.cassette.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
 @Composable
 internal fun AlbumRow(
@@ -40,38 +40,42 @@ internal fun AlbumRow(
     val panelContentColor = MaterialTheme.colorScheme.onPrimaryContainer
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick)
-            .height(96.dp)
-            .background(panelColor),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .clickable(onClick = onClick)
+                .height(96.dp)
+                .background(panelColor),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f),
         ) {
             AlbumCoverArt(
                 coverArt = coverArt,
                 modifier = Modifier.matchParentSize(),
             )
             Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(Color.Transparent, panelColor),
+                modifier =
+                    Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, panelColor),
+                            ),
                         ),
-                    ),
             )
         }
 
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(

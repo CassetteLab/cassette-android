@@ -3,7 +3,6 @@ package fr.cassette.cassette.presentation.main
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -28,9 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -40,7 +37,6 @@ import androidx.navigation.toRoute
 import com.stefanoq21.material3.navigation.ModalBottomSheetLayout
 import com.stefanoq21.material3.navigation.bottomSheet
 import com.stefanoq21.material3.navigation.rememberBottomSheetNavigator
-import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.albumDetail.AlbumDetailEvent
 import fr.cassette.cassette.presentation.albumDetail.AlbumDetailScreen
 import fr.cassette.cassette.presentation.albumDetail.AlbumDetailViewModel
@@ -51,21 +47,17 @@ import fr.cassette.cassette.presentation.core.NowPlayingSnack
 import fr.cassette.cassette.presentation.core.navigation.Screens
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
-import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.HomeEvent
 import fr.cassette.cassette.presentation.home.HomeScreen
 import fr.cassette.cassette.presentation.home.HomeViewModel
-import fr.cassette.cassette.presentation.main.core.MainCurrentTrackBar
 import fr.cassette.cassette.presentation.main.core.MainTab
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingEvent
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingScreen
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingViewModel
-import fr.cassette.cassette.presentation.playlistList.PlaylistListEvent
 import fr.cassette.cassette.presentation.playlistList.PlaylistListScreen
 import fr.cassette.cassette.presentation.playlistList.PlaylistListViewModel
 import fr.cassette.cassette.presentation.settings.SettingsEvent
 import fr.cassette.cassette.presentation.settings.SettingsScreen
-import fr.cassette.cassette.presentation.settings.SettingsUiState
 import fr.cassette.cassette.presentation.settings.SettingsViewModel
 import fr.cassette.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
 import org.koin.androidx.compose.koinViewModel
@@ -101,7 +93,7 @@ internal fun ComponentActivity.MainScreen() {
                                 if (selectedDestination == tab) return@NavigationBarItem
 
                                 selectedDestination = tab
-                                navController.navigate(tab.destination){
+                                navController.navigate(tab.destination) {
                                     launchSingleTop = true
                                     popUpTo(navController.graph.id)
                                 }
@@ -109,7 +101,7 @@ internal fun ComponentActivity.MainScreen() {
                             icon = {
                                 Icon(
                                     imageVector = tab.iconRes,
-                                    contentDescription = stringResource(tab.labelRes)
+                                    contentDescription = stringResource(tab.labelRes),
                                 )
                             },
                             label = {
@@ -122,19 +114,19 @@ internal fun ComponentActivity.MainScreen() {
         },
     ) { contentPadding ->
         Box(
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(contentPadding),
         ) {
             ModalBottomSheetLayout(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .fillMaxSize(),
                 dragHandle = null,
                 bottomSheetNavigator = bottomSheetNavigator,
-                contentWindowInsets = { WindowInsets(0.dp) }
+                contentWindowInsets = { WindowInsets(0.dp) },
             ) {
-
                 NavHost(
                     startDestination = startDestination.destination,
-                    navController = navController
+                    navController = navController,
                 ) {
                     composable<Screens.Home> {
                         val viewModel: HomeViewModel = koinViewModel()
@@ -144,7 +136,7 @@ internal fun ComponentActivity.MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     is HomeEvent.OnAlbumClicked -> {
-                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)){
+                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)) {
                                             launchSingleTop = true
                                         }
                                     }
@@ -164,7 +156,7 @@ internal fun ComponentActivity.MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     is AlbumListEvent.OnAlbumClicked -> {
-                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)){
+                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)) {
                                             launchSingleTop = true
                                         }
                                     }
@@ -195,7 +187,7 @@ internal fun ComponentActivity.MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     SettingsEvent.OnServerConfigurationClicked -> {
-                                        navController.navigate(Screens.SettingsServerConfiguration){
+                                        navController.navigate(Screens.SettingsServerConfiguration) {
                                             launchSingleTop = true
                                         }
                                     }
@@ -204,15 +196,16 @@ internal fun ComponentActivity.MainScreen() {
                                 }
 
                                 viewModel.onEvent(event)
-                            }
+                            },
                         )
                     }
 
                     composable<Screens.AlbumDetail> { backStackEntry ->
                         val route = backStackEntry.toRoute<Screens.AlbumDetail>()
-                        val viewModel = koinViewModel<AlbumDetailViewModel>(
-                            parameters = { parametersOf(route.albumId) },
-                        )
+                        val viewModel =
+                            koinViewModel<AlbumDetailViewModel>(
+                                parameters = { parametersOf(route.albumId) },
+                            )
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         AlbumDetailScreen(
@@ -251,15 +244,16 @@ internal fun ComponentActivity.MainScreen() {
                                     else -> {}
                                 }
                                 viewModel.onEvent(event)
-                            }
+                            },
                         )
                     }
 
                     bottomSheet<Screens.NowPlaying> { backStackEntry ->
                         val route = backStackEntry.toRoute<Screens.NowPlaying>()
-                        val viewModel = koinViewModel<NowPlayingViewModel>(
-                            parameters = { parametersOf(route.trackId) },
-                        )
+                        val viewModel =
+                            koinViewModel<NowPlayingViewModel>(
+                                parameters = { parametersOf(route.trackId) },
+                            )
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         val currentActivity = LocalActivity.current
 
@@ -277,11 +271,12 @@ internal fun ComponentActivity.MainScreen() {
                 }
             }
 
-            if (uiState.currentTrack != null){
+            if (uiState.currentTrack != null) {
                 NowPlayingSnack(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(16.dp),
                     track = uiState.currentTrack?.track?.title ?: "",
                     artist = uiState.currentTrack?.track?.artist ?: "",
                     onPause = { },
@@ -290,7 +285,7 @@ internal fun ComponentActivity.MainScreen() {
                         uiState.currentTrack?.let {
                             navController.navigate(Screens.NowPlaying(it.track.id))
                         }
-                    }
+                    },
                 )
             }
         }

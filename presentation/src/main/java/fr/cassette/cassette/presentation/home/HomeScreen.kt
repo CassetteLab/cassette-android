@@ -29,14 +29,16 @@ internal fun HomeScreen(
 ) {
     Scaffold { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                top = innerPadding.calculateTopPadding() + 16.dp,
-                end = 16.dp,
-                bottom = innerPadding.calculateBottomPadding() + 16.dp,
-            ),
+            modifier =
+                Modifier
+                    .fillMaxSize(),
+            contentPadding =
+                PaddingValues(
+                    start = 16.dp,
+                    top = innerPadding.calculateTopPadding() + 16.dp,
+                    end = 16.dp,
+                    bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -50,36 +52,40 @@ internal fun HomeScreen(
             }
 
             when {
-                uiState.isLoading -> item {
-                    CircularProgressIndicator()
-                }
+                uiState.isLoading ->
+                    item {
+                        CircularProgressIndicator()
+                    }
 
-                uiState.hasError -> item {
-                    HomeMessage(
-                        title = stringResource(R.string.home_recent_albums_error_title),
-                        description = stringResource(R.string.home_recent_albums_error_description),
-                        actionLabel = stringResource(R.string.home_recent_albums_retry),
-                        onActionClick = { onEvent(HomeEvent.OnRetryClicked) },
-                    )
-                }
+                uiState.hasError ->
+                    item {
+                        HomeMessage(
+                            title = stringResource(R.string.home_recent_albums_error_title),
+                            description = stringResource(R.string.home_recent_albums_error_description),
+                            actionLabel = stringResource(R.string.home_recent_albums_retry),
+                            onActionClick = { onEvent(HomeEvent.OnRetryClicked) },
+                        )
+                    }
 
-                uiState.albums.isEmpty() -> item {
-                    HomeMessage(
-                        title = stringResource(R.string.home_recent_albums_empty_title),
-                        description = stringResource(R.string.home_recent_albums_empty_description),
-                    )
-                }
+                uiState.albums.isEmpty() ->
+                    item {
+                        HomeMessage(
+                            title = stringResource(R.string.home_recent_albums_empty_title),
+                            description = stringResource(R.string.home_recent_albums_empty_description),
+                        )
+                    }
 
-                else -> items(
-                    items = uiState.albums,
-                    key = { album -> album.id },
-                ) { album ->
-                    AlbumRow(
-                        album = album,
-                        coverArt = uiState.albumCoverArts[album.id],
-                        onClick = { onEvent(HomeEvent.OnAlbumClicked(album.id)) },
-                    )
-                }
+                else ->
+                    items(
+                        items = uiState.albums,
+                        key = { album -> album.id },
+                    ) { album ->
+                        AlbumRow(
+                            album = album,
+                            coverArt = uiState.albumCoverArts[album.id],
+                            onClick = { onEvent(HomeEvent.OnAlbumClicked(album.id)) },
+                        )
+                    }
             }
         }
     }
@@ -90,27 +96,29 @@ internal fun HomeScreen(
 private fun HomeScreenPreview() {
     CassetteTheme {
         HomeScreen(
-            uiState = HomeUiState(
-                isLoading = false,
-                albums = listOf(
-                    AlbumList(
-                        id = "1",
-                        name = "Discovery",
-                        artist = "Daft Punk",
-                        coverArt = null,
-                        coverArtFilePath = null,
-                        created = null,
-                    ),
-                    AlbumList(
-                        id = "2",
-                        name = "In Rainbows",
-                        artist = "Radiohead",
-                        coverArt = null,
-                        coverArtFilePath = null,
-                        created = null,
-                    ),
+            uiState =
+                HomeUiState(
+                    isLoading = false,
+                    albums =
+                        listOf(
+                            AlbumList(
+                                id = "1",
+                                name = "Discovery",
+                                artist = "Daft Punk",
+                                coverArt = null,
+                                coverArtFilePath = null,
+                                created = null,
+                            ),
+                            AlbumList(
+                                id = "2",
+                                name = "In Rainbows",
+                                artist = "Radiohead",
+                                coverArt = null,
+                                coverArtFilePath = null,
+                                created = null,
+                            ),
+                        ),
                 ),
-            ),
             onEvent = {},
         )
     }

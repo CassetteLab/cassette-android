@@ -3,12 +3,10 @@ package fr.cassette.cassette.presentation.albumDetail.core
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,12 +28,13 @@ internal fun AlbumDetailTrackRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
-            .clickable(onClick = onClick)
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(12.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+                .clickable(onClick = onClick)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -66,17 +65,18 @@ internal fun AlbumDetailTrackRow(
 
 @PreviewLightDark
 @Composable
-private fun AlbumDetailTrackRowPreview(){
+private fun AlbumDetailTrackRowPreview() {
     CassetteTheme {
         AlbumDetailTrackRow(
-            track = Track(
-                id = "",
-                title = "Hand It Over",
-                artist = "MGMT",
-                trackNumber = 1,
-                durationSeconds = 146
-            ),
-            onClick = {}
+            track =
+                Track(
+                    id = "",
+                    title = "Hand It Over",
+                    artist = "MGMT",
+                    trackNumber = 1,
+                    durationSeconds = 146,
+                ),
+            onClick = {},
         )
     }
 }

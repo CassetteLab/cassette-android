@@ -33,40 +33,42 @@ internal fun NowPlayingSnack(
     artist: String,
     onPause: () -> Unit,
     onNext: () -> Unit,
-    onExpand: () -> Unit
+    onExpand: () -> Unit,
 ) {
     Button(
         modifier = modifier,
         shape = CircleShape,
         contentPadding = PaddingValues(8.dp),
         onClick = onExpand,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
     ) {
         Row(modifier = Modifier.weight(1f)) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
-                        .background(Color.White, shape = CircleShape)
-                        .size(40.dp)
+                    modifier =
+                        Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .size(40.dp),
                 )
 
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         track,
-                        maxLines = 1
+                        maxLines = 1,
                     )
                     Text(
                         text = artist,
                         style = MaterialTheme.typography.titleSmall,
-                        maxLines = 1
+                        maxLines = 1,
                     )
                 }
             }
@@ -74,25 +76,27 @@ internal fun NowPlayingSnack(
 
         IconButton(
             onClick = onPause,
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
+            colors =
+                IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                ),
         ) {
             Icon(
                 imageVector = Icons.Filled.Pause,
-                contentDescription = null
+                contentDescription = null,
             )
         }
 
         IconButton(
             onClick = onNext,
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
-            )
+            colors =
+                IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                ),
         ) {
             Icon(
                 imageVector = Icons.Filled.SkipNext,
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
@@ -100,14 +104,14 @@ internal fun NowPlayingSnack(
 
 @Composable
 @PreviewLightDark
-private fun NowPlayingSnackPreview(){
+private fun NowPlayingSnackPreview() {
     CassetteTheme {
         NowPlayingSnack(
             track = "Electric Feel",
             artist = "MGMT",
             onPause = { },
             onNext = { },
-            onExpand = { }
+            onExpand = { },
         )
     }
 }

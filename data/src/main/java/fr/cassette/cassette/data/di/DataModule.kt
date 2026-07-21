@@ -21,32 +21,35 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val dataModule = module {
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            CassetteDatabase::class.java,
-            "cassette.db",
-        ).fallbackToDestructiveMigration(dropAllTables = true).build()
+val dataModule =
+    module {
+        single {
+            Room
+                .databaseBuilder(
+                    androidContext(),
+                    CassetteDatabase::class.java,
+                    "cassette.db",
+                ).fallbackToDestructiveMigration(dropAllTables = true)
+                .build()
+        }
+
+        single<AlbumDao> { get<CassetteDatabase>().albumDao() }
+        single<TrackDao> { get<CassetteDatabase>().trackDao() }
+        single<ServerConfigurationDao> { get<CassetteDatabase>().serverConfigurationDao() }
+
+        // Ktor
+        singleOf(::KtorClientProviderImpl)
+        single<HttpClient> {
+            get<KtorClientProviderImpl>().getClient()
+        }
+        singleOf(::CassetteRequestDefaultsPluginProvider)
+        singleOf(::CassetteRequestAuthenticationPluginProvider)
+
+        // Remote data sources
+        singleOf(::AlbumRemoteDataSourceImpl)
+
+        // Repositories
+        singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
+        singleOf(::PlaybackRepositoryImpl) bind PlaybackRepository::class
+        singleOf(::ServerConfigurationRepositoryImpl) bind ServerConfigurationRepository::class
     }
-
-    single<AlbumDao> { get<CassetteDatabase>().albumDao() }
-    single<TrackDao> { get<CassetteDatabase>().trackDao() }
-    single<ServerConfigurationDao> { get<CassetteDatabase>().serverConfigurationDao() }
-
-    // Ktor
-    singleOf(::KtorClientProviderImpl)
-    single<HttpClient> {
-        get<KtorClientProviderImpl>().getClient()
-    }
-    singleOf(::CassetteRequestDefaultsPluginProvider)
-    singleOf(::CassetteRequestAuthenticationPluginProvider)
-
-    // Remote data sources
-    singleOf(::AlbumRemoteDataSourceImpl)
-
-    // Repositories
-    singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
-    singleOf(::PlaybackRepositoryImpl) bind PlaybackRepository::class
-    singleOf(::ServerConfigurationRepositoryImpl) bind ServerConfigurationRepository::class
-}

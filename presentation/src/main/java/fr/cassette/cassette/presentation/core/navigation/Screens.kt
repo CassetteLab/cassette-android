@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal sealed interface Screens {
-
     @Serializable
     sealed interface OnBoardingScreens : Screens {
         @Serializable
@@ -36,8 +35,12 @@ internal sealed interface Screens {
     data object PlaylistList : Screens
 
     @Serializable
-    data class AlbumDetail(val albumId: String) : Screens
+    data class AlbumDetail(
+        val albumId: String,
+    ) : Screens
 
     @Serializable
-    data class NowPlaying(val trackId: String) : Screens
+    data class NowPlaying(
+        val trackId: String,
+    ) : Screens
 }

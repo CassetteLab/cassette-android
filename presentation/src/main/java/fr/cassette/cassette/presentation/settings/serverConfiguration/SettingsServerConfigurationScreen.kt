@@ -1,6 +1,5 @@
 package fr.cassette.cassette.presentation.settings.serverConfiguration
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -28,37 +27,38 @@ import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigur
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationScreenContent
 import fr.cassette.cassette.presentation.core.serverConfiguration.ServerConfigurationUiState
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
-import fr.cassette.cassette.presentation.settings.SettingsEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsServerConfigurationScreen(
     uiState: ServerConfigurationUiState,
-    onEvent: (ServerConfigurationEvent) -> Unit
+    onEvent: (ServerConfigurationEvent) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .imePadding(),
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .imePadding(),
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    ),
                 title = {
                     Text(
-                        text = stringResource(R.string.server_configuration_settings_title)
+                        text = stringResource(R.string.server_configuration_settings_title),
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { onEvent(ServerConfigurationEvent.OnBackClicked) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.settings_back)
+                            contentDescription = stringResource(R.string.settings_back),
                         )
                     }
                 },
@@ -67,7 +67,7 @@ internal fun SettingsServerConfigurationScreen(
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.background,
             ) {
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),
@@ -76,26 +76,26 @@ internal fun SettingsServerConfigurationScreen(
                     },
                     isEnabled = uiState.canSubmit,
                     isLoading = uiState.isLoading,
-                    text = stringResource(R.string.server_configuration_connect_and_save)
+                    text = stringResource(R.string.server_configuration_connect_and_save),
                 )
             }
-        }
+        },
     ) { innerPadding ->
         ServerConfigurationScreenContent(
             contentPadding = innerPadding,
             uiState = uiState,
-            onEvent = onEvent
+            onEvent = onEvent,
         )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun SettingsServerConfigurationScreenPreview(){
+private fun SettingsServerConfigurationScreenPreview() {
     CassetteTheme {
         SettingsServerConfigurationScreen(
             uiState = ServerConfigurationUiState(),
-            onEvent = { }
+            onEvent = { },
         )
     }
 }

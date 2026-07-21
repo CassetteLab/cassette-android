@@ -22,7 +22,10 @@ internal class LogcatLoggerImpl : Logger {
         Log.w(tag, message)
     }
 
-    override fun w(message: String, throwable: Throwable) {
+    override fun w(
+        message: String,
+        throwable: Throwable,
+    ) {
         Log.w(tag, message, throwable)
     }
 
@@ -34,7 +37,10 @@ internal class LogcatLoggerImpl : Logger {
         Log.e(tag, message)
     }
 
-    override fun e(message: String, throwable: Throwable) {
+    override fun e(
+        message: String,
+        throwable: Throwable,
+    ) {
         Log.e(tag, message, throwable)
     }
 

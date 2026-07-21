@@ -50,24 +50,26 @@ internal fun OnBoardingCompleteScreen(
                         onEvent(OnBoardingCompleteEvent.OnStartListeningClicked)
                     },
                     text = stringResource(R.string.on_boarding_complete_start_listening),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
     ) { contentPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-                .padding(horizontal = 32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+                    .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.weight(1f))
 
             Surface(
-                modifier = Modifier
-                    .size(80.dp)
-                    .semantics { contentDescription = checkContentDescription },
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .semantics { contentDescription = checkContentDescription },
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,

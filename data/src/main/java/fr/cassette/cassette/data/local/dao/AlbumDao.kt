@@ -25,5 +25,8 @@ internal interface AlbumDao {
     suspend fun deleteAllAlbums()
 
     @Query("UPDATE albums SET coverArtFilePath = :coverArtFilePath WHERE id = :albumId")
-    suspend fun updateCoverArtFilePath(albumId: String, coverArtFilePath: String)
+    suspend fun updateCoverArtFilePath(
+        albumId: String,
+        coverArtFilePath: String,
+    )
 }

@@ -5,11 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -40,30 +40,34 @@ internal fun MainCurrentTrackBar(
     modifier: Modifier = Modifier,
 ) {
     val track = currentTrack.track
-    val artist = track.artist?.takeIf { it.isNotBlank() }
-        ?: stringResource(R.string.main_unknown_artist)
+    val artist =
+        track.artist?.takeIf { it.isNotBlank() }
+            ?: stringResource(R.string.main_unknown_artist)
     val openNowPlayingDescription = stringResource(R.string.main_open_now_playing)
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .semantics { contentDescription = openNowPlayingDescription }
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .semantics { contentDescription = openNowPlayingDescription }
+                .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.primaryContainer,
         tonalElevation = 6.dp,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp, end = 12.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)),
+                modifier =
+                    Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -100,10 +104,11 @@ internal fun MainCurrentTrackBar(
             Spacer(modifier = Modifier.width(12.dp))
 
             Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
+                modifier =
+                    Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(

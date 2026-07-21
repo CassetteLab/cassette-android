@@ -24,18 +24,20 @@ internal fun PrimaryButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     isEnabled: Boolean = true,
-    content : @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
-            .height(56.dp),
+        modifier =
+            modifier
+                .height(56.dp),
         shape = RoundedCornerShape(18.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-        enabled = isEnabled
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+        enabled = isEnabled,
     ) {
         content()
     }
@@ -52,15 +54,14 @@ internal fun PrimaryButton(
     PrimaryButton(
         modifier = modifier,
         onClick = onClick,
-        isEnabled = isEnabled
-    ){
-        if (isLoading){
+        isEnabled = isEnabled,
+    ) {
+        if (isLoading) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
             )
-        }
-        else {
+        } else {
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelLarge,
@@ -71,29 +72,29 @@ internal fun PrimaryButton(
 
 @Composable
 @PreviewLightDark
-private fun PrimaryButtonPreview(){
+private fun PrimaryButtonPreview() {
     CassetteTheme {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {},
-                text = stringResource(R.string.on_boarding_welcome_get_started)
+                text = stringResource(R.string.on_boarding_welcome_get_started),
             )
 
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {},
                 text = stringResource(R.string.on_boarding_welcome_get_started),
-                isLoading = true
+                isLoading = true,
             )
 
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {},
                 text = stringResource(R.string.on_boarding_welcome_get_started),
-                isEnabled = false
+                isEnabled = false,
             )
         }
     }

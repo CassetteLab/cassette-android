@@ -2,7 +2,6 @@ package fr.cassette.cassette.presentation.albumDetail
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,9 +52,10 @@ internal fun AlbumDetailScreen(
     var albumArtBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(uiState.coverArt) {
-        albumArtBitmap = uiState.coverArt?.let { coverArt ->
-            BitmapFactory.decodeFile(coverArt.filePath)
-        }
+        albumArtBitmap =
+            uiState.coverArt?.let { coverArt ->
+                BitmapFactory.decodeFile(coverArt.filePath)
+            }
     }
 
     LaunchedEffect(Unit) {
@@ -69,15 +69,16 @@ internal fun AlbumDetailScreen(
             topBar = {
                 LargeTopAppBar(
                     scrollBehavior = scrollBehavior,
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        scrolledContainerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            scrolledContainerColor = MaterialTheme.colorScheme.background,
+                            titleContentColor = MaterialTheme.colorScheme.onBackground,
+                        ),
                     title = {
                         Column {
                             Text(
-                                text = uiState.album?.name ?: ""
+                                text = uiState.album?.name ?: "",
                             )
 
                             Text(
@@ -86,7 +87,7 @@ internal fun AlbumDetailScreen(
                                     uiState.tracks.size,
                                     uiState.tracks.size,
                                 )}",
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
                             )
                         }
                     },
@@ -97,19 +98,18 @@ internal fun AlbumDetailScreen(
                                 contentDescription = stringResource(R.string.album_detail_back),
                             )
                         }
-                    }
+                    },
                 )
             },
         ) { innerPadding ->
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = innerPadding,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (uiState.isLoading){
+                if (uiState.isLoading) {
                     item { CircularProgressIndicator() }
-                }
-                else if (uiState.hasError){
+                } else if (uiState.hasError) {
                     item {
                         HomeMessage(
                             title = stringResource(R.string.album_detail_error_title),
@@ -118,15 +118,15 @@ internal fun AlbumDetailScreen(
                             onActionClick = { onEvent(AlbumDetailEvent.OnRetryClicked) },
                         )
                     }
-                }
-                else {
+                } else {
                     item {
                         AlbumCoverArt(
                             coverArt = uiState.coverArt,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .aspectRatio(1f)
-                                .padding(bottom = 16.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .aspectRatio(1f)
+                                    .padding(bottom = 16.dp),
                         )
                     }
 
@@ -134,11 +134,12 @@ internal fun AlbumDetailScreen(
                         item { CircularProgressIndicator() }
                     }
 
-                    items(uiState.tracks){ track ->
+                    items(uiState.tracks) { track ->
                         AlbumDetailTrackRow(
-                            modifier = Modifier
-                                .padding(top = 8.dp)
-                                .padding(horizontal = 16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(top = 8.dp)
+                                    .padding(horizontal = 16.dp),
                             track = track,
                             onClick = { onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
                         )
@@ -154,34 +155,37 @@ internal fun AlbumDetailScreen(
 private fun AlbumDetailScreenPreview() {
     CassetteTheme {
         AlbumDetailScreen(
-            uiState = AlbumDetailUiState(
-                albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
-                album = AlbumDetail(
-                    id = "2YuwDgPuXhF5ir4SjAl6Iw",
-                    name = "Discovery",
-                    artist = "Daft Punk",
-                    coverArt = "al-123",
-                    coverArtFilePath = null,
-                    created = "2026-07-15T12:00:00",
-                    tracks = emptyList(),
+            uiState =
+                AlbumDetailUiState(
+                    albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
+                    album =
+                        AlbumDetail(
+                            id = "2YuwDgPuXhF5ir4SjAl6Iw",
+                            name = "Discovery",
+                            artist = "Daft Punk",
+                            coverArt = "al-123",
+                            coverArtFilePath = null,
+                            created = "2026-07-15T12:00:00",
+                            tracks = emptyList(),
+                        ),
+                    tracks =
+                        listOf(
+                            Track(
+                                id = "track-1",
+                                title = "One More Time",
+                                artist = "Daft Punk",
+                                trackNumber = 1,
+                                durationSeconds = 320,
+                            ),
+                            Track(
+                                id = "track-2",
+                                title = "Aerodynamic",
+                                artist = "Daft Punk",
+                                trackNumber = 2,
+                                durationSeconds = 212,
+                            ),
+                        ),
                 ),
-                tracks = listOf(
-                    Track(
-                        id = "track-1",
-                        title = "One More Time",
-                        artist = "Daft Punk",
-                        trackNumber = 1,
-                        durationSeconds = 320,
-                    ),
-                    Track(
-                        id = "track-2",
-                        title = "Aerodynamic",
-                        artist = "Daft Punk",
-                        trackNumber = 2,
-                        durationSeconds = 212,
-                    ),
-                ),
-            ),
             onEvent = {},
         )
     }

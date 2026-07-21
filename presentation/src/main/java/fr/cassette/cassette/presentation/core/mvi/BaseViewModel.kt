@@ -12,7 +12,6 @@ internal abstract class BaseViewModel<S : UiState, E : Event>(
     initialState: S,
     protected val logger: Logger,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(initialState)
     val uiState: StateFlow<S> = _uiState.asStateFlow()
 
@@ -21,10 +20,9 @@ internal abstract class BaseViewModel<S : UiState, E : Event>(
     }
 
     fun onEvent(event: E) {
-        if (event is SensitiveEvent){
+        if (event is SensitiveEvent) {
             logger.d("$viewModelName received new sensitive event: ${event::class.simpleName}")
-        }
-        else {
+        } else {
             logger.d("$viewModelName received new event: $event")
         }
 

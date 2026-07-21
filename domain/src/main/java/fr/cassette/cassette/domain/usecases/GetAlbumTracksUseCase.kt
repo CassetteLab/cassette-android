@@ -6,7 +6,5 @@ import fr.cassette.cassette.domain.repositories.AlbumRepository
 class GetAlbumTracksUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    suspend operator fun invoke(albumId: String): List<Track> {
-        return albumRepository.getAlbumTracks(albumId)
-    }
+    suspend operator fun invoke(albumId: String): List<Track> = albumRepository.getAlbumTracks(albumId)
 }

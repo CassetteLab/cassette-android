@@ -29,12 +29,13 @@ internal fun AlbumListRow(
     val panelContentColor = MaterialTheme.colorScheme.onPrimaryContainer
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick)
-            .background(panelColor)
-            .padding(horizontal = 14.dp, vertical = 12.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .clickable(onClick = onClick)
+                .background(panelColor)
+                .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.Center,
     ) {
         Text(

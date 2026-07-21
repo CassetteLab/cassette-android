@@ -16,11 +16,12 @@ internal data class NowPlayingUiState(
     val repeatMode: RepeatMode = RepeatMode.Off,
     val isFavorite: Boolean = false,
 ) : UiState {
-    val progress: Float = if (durationSeconds > 0) {
-        currentPositionSeconds.toFloat() / durationSeconds.toFloat()
-    } else {
-        0f
-    }.coerceIn(0f, 1f)
+    val progress: Float =
+        if (durationSeconds > 0) {
+            currentPositionSeconds.toFloat() / durationSeconds.toFloat()
+        } else {
+            0f
+        }.coerceIn(0f, 1f)
 
     val currentPositionLabel: String = currentPositionSeconds.toDurationLabel()
     val durationLabel: String = durationSeconds.toDurationLabel()

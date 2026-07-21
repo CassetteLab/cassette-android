@@ -7,7 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetAllAlbumsUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    operator fun invoke(): Flow<List<AlbumList>> {
-        return albumRepository.getAllAlbums()
-    }
+    operator fun invoke(): Flow<List<AlbumList>> = albumRepository.getAllAlbums()
 }

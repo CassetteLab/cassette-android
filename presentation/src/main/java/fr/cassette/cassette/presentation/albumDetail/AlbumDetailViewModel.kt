@@ -19,10 +19,10 @@ internal class AlbumDetailViewModel(
     private val playTrackUseCase: PlayTrackUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumDetailUiState, AlbumDetailEvent>(
-    viewModelName = "AlbumDetailViewModel",
-    logger = logger,
-    initialState = AlbumDetailUiState(albumId = albumId),
-) {
+        viewModelName = "AlbumDetailViewModel",
+        logger = logger,
+        initialState = AlbumDetailUiState(albumId = albumId),
+    ) {
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
             AlbumDetailEvent.OnBackClicked -> Unit
@@ -62,13 +62,14 @@ internal class AlbumDetailViewModel(
             updateState { it.copy(isLoading = true, hasError = false) }
             try {
                 val album = getAlbumUseCase(albumId)
-                val coverArt = album.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
-                    getAlbumCoverArtUseCase(
-                        coverArtId = album.coverArt ?: album.id,
-                        size = COVER_ART_SIZE,
-                        albumId = album.id,
-                    )
-                }.getOrNull()
+                val coverArt =
+                    album.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
+                        getAlbumCoverArtUseCase(
+                            coverArtId = album.coverArt ?: album.id,
+                            size = COVER_ART_SIZE,
+                            albumId = album.id,
+                        )
+                    }.getOrNull()
                 updateState { it.copy(isLoading = false, album = album, coverArt = coverArt) }
             } catch (exception: Exception) {
                 logger.w("Unable to load album $albumId", exception)

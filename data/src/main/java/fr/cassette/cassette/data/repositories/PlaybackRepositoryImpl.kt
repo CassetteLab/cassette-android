@@ -40,9 +40,11 @@ internal class PlaybackRepositoryImpl(
     override val playbackState: StateFlow<PlaybackState> = _playbackState
 
     private val httpDataSourceFactory = DefaultHttpDataSource.Factory()
-    private val player = ExoPlayer.Builder(context)
-        .setMediaSourceFactory(DefaultMediaSourceFactory(context).setDataSourceFactory(httpDataSourceFactory))
-        .build()
+    private val player =
+        ExoPlayer
+            .Builder(context)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(context).setDataSourceFactory(httpDataSourceFactory))
+            .build()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var positionUpdatesJob: Job? = null
 
@@ -93,35 +95,40 @@ internal class PlaybackRepositoryImpl(
     }
 
     private suspend fun buildStreamRequest(trackId: String): StreamRequest {
-        val configuration = serverConfigurationDao.getServerConfiguration()
-            ?: throw IllegalStateException("No server configuration found")
+        val configuration =
+            serverConfigurationDao.getServerConfiguration()
+                ?: throw IllegalStateException("No server configuration found")
         val server = configuration.serverConfiguration
         val salt = System.currentTimeMillis().toString(16)
         val password = cipherHelper.decrypt(server.encryptedPassword)
-        val uri = Uri.parse("${server.serverUrl.trimEnd('/')}/rest/stream.view")
-            .buildUpon()
-            .appendQueryParameter("id", trackId)
-            .appendQueryParameter("u", server.username)
-            .appendQueryParameter("t", md5(password + salt))
-            .appendQueryParameter("s", salt)
-            .appendQueryParameter("v", "1.16.1")
-            .appendQueryParameter("c", "Cassette")
-            .build()
-        val headers = configuration.customHeaders
-            .filter { it.name.isNotBlank() }
-            .associate { customHeader -> customHeader.name to cipherHelper.decrypt(customHeader.encryptedValue) }
+        val uri =
+            Uri
+                .parse("${server.serverUrl.trimEnd('/')}/rest/stream.view")
+                .buildUpon()
+                .appendQueryParameter("id", trackId)
+                .appendQueryParameter("u", server.username)
+                .appendQueryParameter("t", md5(password + salt))
+                .appendQueryParameter("s", salt)
+                .appendQueryParameter("v", "1.16.1")
+                .appendQueryParameter("c", "Cassette")
+                .build()
+        val headers =
+            configuration.customHeaders
+                .filter { it.name.isNotBlank() }
+                .associate { customHeader -> customHeader.name to cipherHelper.decrypt(customHeader.encryptedValue) }
         return StreamRequest(uri = uri, headers = headers)
     }
 
     private fun startPositionUpdates() {
         if (positionUpdatesJob?.isActive == true) return
 
-        positionUpdatesJob = scope.launch {
-            while (isActive) {
-                updatePlaybackState()
-                delay(POSITION_UPDATE_INTERVAL_MS)
+        positionUpdatesJob =
+            scope.launch {
+                while (isActive) {
+                    updatePlaybackState()
+                    delay(POSITION_UPDATE_INTERVAL_MS)
+                }
             }
-        }
     }
 
     private fun stopPositionUpdates() {
@@ -130,17 +137,20 @@ internal class PlaybackRepositoryImpl(
     }
 
     private fun updatePlaybackState(positionMs: Long = player.currentPosition) {
-        _playbackState.value = PlaybackState(
-            isPlaying = player.isPlaying,
-            positionMs = positionMs.coerceAtLeast(0L),
-            durationMs = player.duration.takeIf { it != C.TIME_UNSET }?.coerceAtLeast(0L) ?: 0L,
-            bufferedPositionMs = player.bufferedPosition.coerceAtLeast(0L),
-        )
+        _playbackState.value =
+            PlaybackState(
+                isPlaying = player.isPlaying,
+                positionMs = positionMs.coerceAtLeast(0L),
+                durationMs = player.duration.takeIf { it != C.TIME_UNSET }?.coerceAtLeast(0L) ?: 0L,
+                bufferedPositionMs = player.bufferedPosition.coerceAtLeast(0L),
+            )
     }
 
-    private fun md5(value: String): String = MessageDigest.getInstance("MD5")
-        .digest(value.toByteArray())
-        .joinToString(separator = "") { byte -> "%02x".format(byte) }
+    private fun md5(value: String): String =
+        MessageDigest
+            .getInstance("MD5")
+            .digest(value.toByteArray())
+            .joinToString(separator = "") { byte -> "%02x".format(byte) }
 
     private data class StreamRequest(
         val uri: Uri,

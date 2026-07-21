@@ -25,18 +25,17 @@ internal class NowPlayingViewModel(
     getPlaybackStateUseCase: GetPlaybackStateUseCase,
     logger: Logger,
 ) : BaseViewModel<NowPlayingUiState, NowPlayingEvent>(
-    viewModelName = "NowPlayingViewModel",
-    logger = logger,
-    initialState = NowPlayingUiState(trackId = trackId),
-) {
+        viewModelName = "NowPlayingViewModel",
+        logger = logger,
+        initialState = NowPlayingUiState(trackId = trackId),
+    ) {
     init {
         getCurrentTrackUseCase()
             .onEach { currentTrack ->
                 if (currentTrack?.track?.id == uiState.value.trackId) {
                     updateCurrentTrack(currentTrack)
                 }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
 
         getPlaybackStateUseCase()
             .onEach { playbackState ->
@@ -44,12 +43,13 @@ internal class NowPlayingViewModel(
                     it.copy(
                         isPlaying = playbackState.isPlaying,
                         currentPositionSeconds = playbackState.positionMs.toSeconds(),
-                        durationSeconds = playbackState.durationMs.toSeconds()
-                            .takeIf { duration -> duration > 0 } ?: it.durationSeconds,
+                        durationSeconds =
+                            playbackState.durationMs
+                                .toSeconds()
+                                .takeIf { duration -> duration > 0 } ?: it.durationSeconds,
                     )
                 }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     override fun handleEvent(event: NowPlayingEvent) {
@@ -117,8 +117,9 @@ internal class NowPlayingViewModel(
 
 private fun Long.toSeconds(): Int = (this / 1_000L).toInt()
 
-private fun RepeatMode.next(): RepeatMode = when (this) {
-    RepeatMode.Off -> RepeatMode.All
-    RepeatMode.All -> RepeatMode.One
-    RepeatMode.One -> RepeatMode.Off
-}
+private fun RepeatMode.next(): RepeatMode =
+    when (this) {
+        RepeatMode.Off -> RepeatMode.All
+        RepeatMode.All -> RepeatMode.One
+        RepeatMode.One -> RepeatMode.Off
+    }

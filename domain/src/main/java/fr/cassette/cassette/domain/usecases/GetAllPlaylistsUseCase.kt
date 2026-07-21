@@ -5,7 +5,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class GetAllPlaylistsUseCase {
-    operator fun invoke(): Flow<List<PlaylistList>> {
-        return flowOf(emptyList())
-    }
+    operator fun invoke(): Flow<List<PlaylistList>> = flowOf(emptyList())
 }
