@@ -62,14 +62,23 @@ private fun buildDarkAlbumColorScheme(
     val primaryContainer = lerp(seed, Color.Black, 0.45f)
     val secondaryContainer = lerp(seed, Color.Black, 0.18f)
     val primary = buildAccentFromSeed(seed, lightnessDelta = 0.08f)
+    val secondary = buildSecondaryFromSeed(seed, isDark = true)
+    val tertiary = buildTertiaryFromSeed(seed, isDark = true)
+    val tertiaryContainer = lerp(tertiary, Color.Black, 0.45f)
 
     return baseColorScheme.copy(
         primary = primary,
         onPrimary = bestContrastContent(primary),
         primaryContainer = primaryContainer,
         onPrimaryContainer = bestContrastContent(primaryContainer),
+        secondary = secondary,
+        onSecondary = bestContrastContent(secondary),
         secondaryContainer = secondaryContainer,
         onSecondaryContainer = bestContrastContent(secondaryContainer),
+        tertiary = tertiary,
+        onTertiary = bestContrastContent(tertiary),
+        tertiaryContainer = tertiaryContainer,
+        onTertiaryContainer = bestContrastContent(tertiaryContainer),
         background = background,
         onBackground = Color(0xFFF7F2FF),
         surface = background,
@@ -92,14 +101,23 @@ private fun buildLightAlbumColorScheme(
     val primaryContainer = lerp(seed, Color.White, 0.50f)
     val secondaryContainer = lerp(seed, Color.White, 0.62f)
     val primary = buildAccentFromSeed(seed, lightnessDelta = -0.12f)
+    val secondary = buildSecondaryFromSeed(seed, isDark = false)
+    val tertiary = buildTertiaryFromSeed(seed, isDark = false)
+    val tertiaryContainer = lerp(tertiary, Color.White, 0.50f)
 
     return baseColorScheme.copy(
         primary = primary,
         onPrimary = bestContrastContent(primary),
         primaryContainer = primaryContainer,
         onPrimaryContainer = bestContrastContent(primaryContainer),
+        secondary = secondary,
+        onSecondary = bestContrastContent(secondary),
         secondaryContainer = secondaryContainer,
         onSecondaryContainer = bestContrastContent(secondaryContainer),
+        tertiary = tertiary,
+        onTertiary = bestContrastContent(tertiary),
+        tertiaryContainer = tertiaryContainer,
+        onTertiaryContainer = bestContrastContent(tertiaryContainer),
         background = background,
         onBackground = Color(0xFF17141E),
         surface = background,
@@ -119,6 +137,29 @@ private fun buildAccentFromSeed(
     ColorUtils.colorToHSL(seed.toArgb(), hsl)
     hsl[1] = (hsl[1] * 1.22f).coerceIn(0.46f, 0.92f)
     hsl[2] = (hsl[2] + lightnessDelta).coerceIn(0.34f, 0.72f)
+    return Color(ColorUtils.HSLToColor(hsl))
+}
+
+private fun buildSecondaryFromSeed(
+    seed: Color,
+    isDark: Boolean,
+): Color {
+    val hsl = FloatArray(3)
+    ColorUtils.colorToHSL(seed.toArgb(), hsl)
+    hsl[1] = (hsl[1] * 0.60f).coerceIn(0.12f, 0.38f)
+    hsl[2] = if (isDark) 0.48f else 0.44f
+    return Color(ColorUtils.HSLToColor(hsl))
+}
+
+private fun buildTertiaryFromSeed(
+    seed: Color,
+    isDark: Boolean,
+): Color {
+    val hsl = FloatArray(3)
+    ColorUtils.colorToHSL(seed.toArgb(), hsl)
+    hsl[0] = (hsl[0] + 60f) % 360f
+    hsl[1] = (hsl[1] * 0.90f).coerceIn(0.32f, 0.76f)
+    hsl[2] = if (isDark) 0.52f else 0.44f
     return Color(ColorUtils.HSLToColor(hsl))
 }
 

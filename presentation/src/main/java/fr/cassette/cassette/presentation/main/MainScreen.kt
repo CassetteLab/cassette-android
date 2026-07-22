@@ -2,6 +2,7 @@ package fr.cassette.cassette.presentation.main
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -123,6 +125,13 @@ internal fun ComponentActivity.MainScreen() {
                 bottomSheetNavigator = bottomSheetNavigator,
                 contentWindowInsets = { WindowInsets(0.dp) },
             ) {
+                val subScreenContentPadding = remember(uiState.currentTrack) {
+                    if (uiState.currentTrack != null)
+                        PaddingValues(bottom = 76.dp)
+                    else
+                        PaddingValues()
+                }
+
                 NavHost(
                     startDestination = startDestination.destination,
                     navController = navController,
@@ -208,6 +217,7 @@ internal fun ComponentActivity.MainScreen() {
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         AlbumDetailScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,6 +39,7 @@ import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun AlbumDetailScreen(
+    contentPadding: PaddingValues = PaddingValues(),
     uiState: AlbumDetailUiState,
     onEvent: (AlbumDetailEvent) -> Unit,
 ) {
@@ -64,7 +66,6 @@ internal fun AlbumDetailScreen(
                 }
             }
             else -> {
-                val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
                 val maxHeaderHeight = 312.dp
 
                 Box(
@@ -75,10 +76,11 @@ internal fun AlbumDetailScreen(
                 ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding =
-                            PaddingValues(
-                                bottom = navigationBarHeight + 24.dp,
-                            ),
+                        contentPadding = contentPadding.plus(
+                            other = PaddingValues(
+                                bottom = 16.dp
+                            )
+                        ),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         item {
