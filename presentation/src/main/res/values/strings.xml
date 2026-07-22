@@ -53,6 +53,8 @@
     <!-- Album Detail -->
     <string name="album_detail_album_id">Album ID</string>
     <string name="album_detail_back">Back</string>
+    <string name="album_detail_loading_message">Loading album</string>
+    <string name="album_detail_tracks_loading_message">Loading album tracks</string>
     <string name="album_detail_cover_art">Cover art ID</string>
     <string name="album_detail_created">Created</string>
     <string name="album_detail_error_description">Check your server connection and try again.</string>

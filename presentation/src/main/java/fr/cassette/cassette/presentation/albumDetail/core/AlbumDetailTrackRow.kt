@@ -25,9 +25,9 @@ import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun AlbumDetailTrackRow(
+    modifier: Modifier = Modifier,
     track: Track,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =

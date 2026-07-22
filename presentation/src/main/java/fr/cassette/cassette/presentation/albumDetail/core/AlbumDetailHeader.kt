@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,15 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.AlbumCoverArt
+import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
 @Composable
@@ -67,50 +71,61 @@ internal fun AlbumDetailHeader(
                         ),
                     ),
         )
-
-        Column(
-            modifier =
-                Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .padding(start = 8.dp, end = 96.dp, bottom = 28.dp),
-            verticalArrangement = Arrangement.Center,
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 28.dp, start = 12.dp, end = 12.dp)
         ) {
-            Text(
-                text = album?.name ?: stringResource(R.string.album_detail_title),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.headlineMedium,
-            )
-            Text(
-                text =
-                    stringResource(
-                        R.string.album_detail_meta_line,
-                        album?.artist ?: stringResource(R.string.album_detail_unknown_artist),
-                        pluralStringResource(R.plurals.album_detail_tracks_count, tracksCount, tracksCount),
-                    ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = album?.name ?: stringResource(R.string.album_detail_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.headlineMedium,
+                )
+                Text(
+                    text =
+                        stringResource(
+                            R.string.album_detail_meta_line,
+                            album?.artist ?: stringResource(R.string.album_detail_unknown_artist),
+                            pluralStringResource(R.plurals.album_detail_tracks_count, tracksCount, tracksCount),
+                        ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
 
-        FloatingActionButton(
-            onClick = onShuffleClick,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 24.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Shuffle,
-                contentDescription = stringResource(R.string.album_detail_shuffle),
-            )
+            FloatingActionButton(
+                onClick = onShuffleClick,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Shuffle,
+                    contentDescription = stringResource(R.string.album_detail_shuffle),
+                )
+            }
         }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun AlbumDetailHeaderPreview(){
+    CassetteTheme {
+//        AlbumDetailHeader(
+//            album = TODO(),
+//            coverArt = TODO(),
+//            tracksCount = TODO(),
+//            height = TODO(),
+//            onShuffleClick = TODO()
+//        )
     }
 }

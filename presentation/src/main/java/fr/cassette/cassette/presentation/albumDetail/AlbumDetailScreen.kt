@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.AlbumDetail
@@ -34,8 +33,8 @@ import fr.cassette.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumDetailBackButton
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumDetailHeader
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumDetailTrackRow
+import fr.cassette.cassette.presentation.core.LoadingMessage
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
-import fr.cassette.cassette.presentation.home.core.HomeMessage
 
 @Composable
 internal fun AlbumDetailScreen(
@@ -59,7 +58,9 @@ internal fun AlbumDetailScreen(
         when {
             uiState.isLoading && uiState.album == null -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                    LoadingMessage(
+                        message = R.string.album_detail_loading_message
+                    )
                 }
             }
             else -> {
@@ -76,8 +77,6 @@ internal fun AlbumDetailScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding =
                             PaddingValues(
-                                start = 16.dp,
-                                end = 16.dp,
                                 bottom = navigationBarHeight + 24.dp,
                             ),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -99,16 +98,21 @@ internal fun AlbumDetailScreen(
                         if (uiState.isTracksLoading) {
                             item {
                                 Box(
-                                    modifier = Modifier.fillMaxWidth().padding(32.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 32.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
-                                    CircularProgressIndicator()
+                                    LoadingMessage(
+                                        message = R.string.album_detail_tracks_loading_message
+                                    )
                                 }
                             }
                         }
 
                         items(uiState.tracks, key = { track -> track.id }) { track ->
                             AlbumDetailTrackRow(
+                                modifier = Modifier.padding(horizontal = 16.dp),
                                 track = track,
                                 onClick = { onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
                             )
@@ -162,3 +166,34 @@ private fun AlbumDetailScreenPreview() {
         )
     }
 }
+
+@Composable
+@PreviewLightDark
+private fun AlbumDetailScreenLoadingPreview() {
+    CassetteTheme {
+        AlbumDetailScreen(
+            uiState =
+                AlbumDetailUiState(
+                    albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
+                    isLoading = true
+                ),
+            onEvent = {},
+        )
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun AlbumDetailScreenTracksLoadingPreview() {
+    CassetteTheme {
+        AlbumDetailScreen(
+            uiState =
+                AlbumDetailUiState(
+                    albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
+                    isTracksLoading = true
+                ),
+            onEvent = {},
+        )
+    }
+}
+
