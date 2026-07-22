@@ -27,15 +27,11 @@ internal class AlbumDetailViewModel(
     ) {
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
-            AlbumDetailEvent.OnBackClicked -> Unit
             AlbumDetailEvent.OnAppearing -> {
                 loadAlbum()
                 loadAlbumTracks()
             }
-            AlbumDetailEvent.OnRetryClicked -> {
-                loadAlbum()
-                loadAlbumTracks()
-            }
+            AlbumDetailEvent.OnBackClicked -> Unit
             is AlbumDetailEvent.OnTrackClicked -> playTrack(event.trackId)
         }
     }
@@ -67,7 +63,7 @@ internal class AlbumDetailViewModel(
 
     private fun loadAlbum() {
         viewModelScope.launch {
-            updateState { it.copy(isLoading = true, hasError = false) }
+            updateState { it.copy(isLoading = true) }
             try {
                 val album = getAlbumUseCase(albumId)
                 val coverArt =
@@ -81,20 +77,20 @@ internal class AlbumDetailViewModel(
                 updateState { it.copy(isLoading = false, album = album, coverArt = coverArt) }
             } catch (exception: Exception) {
                 logger.w("Unable to load album $albumId", exception)
-                updateState { it.copy(isLoading = false, hasError = true) }
+                updateState { it.copy(isLoading = false) }
             }
         }
     }
 
     private fun loadAlbumTracks() {
         viewModelScope.launch {
-            updateState { it.copy(isTracksLoading = true, hasTracksError = false) }
+            updateState { it.copy(isTracksLoading = true) }
             try {
                 val tracks = getAlbumTracksUseCase(albumId)
                 updateState { it.copy(isTracksLoading = false, tracks = tracks) }
             } catch (exception: Exception) {
                 logger.w("Unable to load album tracks $albumId", exception)
-                updateState { it.copy(isTracksLoading = false, hasTracksError = true) }
+                updateState { it.copy(isTracksLoading = false) }
             }
         }
     }

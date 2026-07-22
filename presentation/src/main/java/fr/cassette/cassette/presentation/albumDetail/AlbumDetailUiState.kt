@@ -12,6 +12,4 @@ internal data class AlbumDetailUiState(
     val coverArt: AlbumCoverArt? = null,
     val isLoading: Boolean = false,
     val isTracksLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val hasTracksError: Boolean = false,
 ) : UiState

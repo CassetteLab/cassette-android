@@ -62,24 +62,6 @@ internal fun AlbumDetailScreen(
                     CircularProgressIndicator()
                 }
             }
-
-            uiState.hasError && uiState.album == null -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    HomeMessage(
-                        title = stringResource(R.string.album_detail_error_title),
-                        description = stringResource(R.string.album_detail_error_description),
-                        actionLabel = stringResource(R.string.album_detail_retry),
-                        onActionClick = { onEvent(AlbumDetailEvent.OnRetryClicked) },
-                    )
-                }
-            }
-
             else -> {
                 val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
                 val maxHeaderHeight = 312.dp

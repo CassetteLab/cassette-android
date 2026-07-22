@@ -264,7 +264,7 @@ internal fun ComponentActivity.MainScreen() {
                     modifier =
                         Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(16.dp),
+                            .padding(12.dp),
                     track = uiState.currentTrack?.track?.title ?: "",
                     artist = uiState.currentTrack?.track?.artist ?: "",
                     coverArtFilePath = uiState.coverArtFilePath,
