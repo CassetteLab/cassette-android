@@ -2,10 +2,13 @@ package fr.cassette.cassette.presentation.main
 
 import androidx.lifecycle.viewModelScope
 import fr.cassette.cassette.core.logger.Logger
+import fr.cassette.cassette.domain.models.CurrentTrack
+import fr.cassette.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassette.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassette.cassette.domain.usecases.PausePlaybackUseCase
 import fr.cassette.cassette.domain.usecases.PlayCurrentTrackUseCase
+import fr.cassette.cassette.domain.usecases.SkipToNextTrackUseCase
 import fr.cassette.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -13,10 +16,12 @@ import kotlinx.coroutines.launch
 
 internal class MainViewModel(
     logger: Logger,
+    private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     private val getCurrentTrackUseCase: GetCurrentTrackUseCase,
     private val getPlaybackStateUseCase: GetPlaybackStateUseCase,
     private val pausePlaybackUseCase: PausePlaybackUseCase,
     private val playCurrentTrackUseCase: PlayCurrentTrackUseCase,
+    private val skipToNextTrackUseCase: SkipToNextTrackUseCase,
 ) : BaseViewModel<MainUiState, MainEvent>(
         viewModelName = "MainViewModel",
         logger = logger,
@@ -25,7 +30,15 @@ internal class MainViewModel(
     init {
         viewModelScope.launch {
             getCurrentTrackUseCase().collect { track ->
-                updateState { it.copy(currentTrack = track) }
+                updateState {
+                    it.copy(
+                        currentTrack = track,
+                        coverArtFilePath = track?.coverArtFilePath,
+                    )
+                }
+                if (track != null && track.coverArtFilePath == null) {
+                    loadCoverArt(track)
+                }
             }
         }
 
@@ -38,7 +51,7 @@ internal class MainViewModel(
     override fun handleEvent(event: MainEvent) {
         when (event) {
             MainEvent.OnAppearing -> Unit
-            MainEvent.OnNextTrack -> Unit
+            MainEvent.OnNextTrack -> viewModelScope.launch { skipToNextTrackUseCase() }
             MainEvent.OnPauseCurrentTrack -> {
                 pausePlaybackUseCase()
             }
@@ -46,5 +59,30 @@ internal class MainViewModel(
                 playCurrentTrackUseCase()
             }
         }
+    }
+
+    private fun loadCoverArt(currentTrack: CurrentTrack) {
+        val coverArtId = currentTrack.coverArtId ?: return
+        viewModelScope.launch {
+            runCatching {
+                getAlbumCoverArtUseCase(
+                    coverArtId = coverArtId,
+                    size = COVER_ART_SIZE,
+                    albumId = currentTrack.albumId,
+                )
+            }.onSuccess { coverArt ->
+                updateState { state ->
+                    if (state.currentTrack?.track?.id == currentTrack.track.id) {
+                        state.copy(coverArtFilePath = coverArt.filePath)
+                    } else {
+                        state
+                    }
+                }
+            }
+        }
+    }
+
+    private companion object {
+        const val COVER_ART_SIZE = 160
     }
 }

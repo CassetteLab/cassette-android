@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LinearWavyProgressIndicator
@@ -32,7 +31,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
-import fr.cassette.cassette.presentation.albumList.core.AlbumListRow
+import fr.cassette.cassette.presentation.albumList.core.AlbumListItem
 import fr.cassette.cassette.presentation.core.LoadingMessage
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.presentation.home.core.HomeMessage
@@ -64,7 +63,7 @@ internal fun AlbumListScreen(
                         Text(text = stringResource(R.string.album_list_title))
                         AnimatedVisibility(uiState.isRefreshing) {
                             LinearWavyProgressIndicator(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
                             )
                         }
                     }
@@ -85,27 +84,26 @@ internal fun AlbumListScreen(
                 )
             },
         ) {
-            if (uiState.isLoading){
+            if (uiState.isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
+                    contentAlignment = Alignment.Center,
+                ) {
                     LoadingMessage(
-                        message = R.string.album_list_loading_albums
+                        message = R.string.album_list_loading_albums,
                     )
                 }
-            }
-            else if (uiState.albums.isEmpty()) {
+            } else if (uiState.albums.isEmpty()) {
                 HomeMessage(
                     title = stringResource(R.string.album_list_empty_title),
                     description = stringResource(R.string.album_list_empty_description),
                 )
-            }
-            else {
-                LazyColumn(
+            } else {
+                LazyVerticalGrid(
                     modifier =
                         Modifier
                             .fillMaxSize(),
+                    columns = GridCells.Fixed(2),
                     contentPadding =
                         PaddingValues(
                             start = 16.dp,
@@ -113,15 +111,14 @@ internal fun AlbumListScreen(
                             end = 16.dp,
                             bottom = innerPadding.calculateBottomPadding() + 16.dp,
                         ),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-
                     items(
                         items = uiState.albums,
                         key = { album -> album.id },
                     ) { album ->
-                        AlbumListRow(
+                        AlbumListItem(
                             album = album,
                             onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
                             modifier = Modifier.fillMaxWidth(),

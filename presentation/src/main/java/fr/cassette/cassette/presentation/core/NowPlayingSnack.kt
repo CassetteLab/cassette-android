@@ -1,7 +1,6 @@
 package fr.cassette.cassette.presentation.core
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,7 +19,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import fr.cassette.cassette.presentation.albumDetail.core.AlbumArtworkTheme
@@ -49,14 +48,7 @@ internal fun NowPlayingSnack(
     onNext: () -> Unit,
     onExpand: () -> Unit,
 ) {
-    var albumArtBitmap by remember(coverArtFilePath) { mutableStateOf<Bitmap?>(null) }
-
-    LaunchedEffect(coverArtFilePath) {
-        albumArtBitmap =
-            coverArtFilePath?.let { path ->
-                BitmapFactory.decodeFile(path)
-            }
-    }
+    var albumArtBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     AlbumArtworkTheme(albumArt = albumArtBitmap) {
         Button(
@@ -90,6 +82,10 @@ internal fun NowPlayingSnack(
                                     .build(),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
+                            onSuccess = { state ->
+                                albumArtBitmap =
+                                    state.result.drawable.toBitmap(config = Bitmap.Config.ARGB_8888)
+                            },
                         )
                     } else {
                         AlbumCoverArtPlaceholder()

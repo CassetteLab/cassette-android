@@ -1,7 +1,6 @@
 package fr.cassette.cassette.presentation.main
 
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -242,14 +241,9 @@ internal fun ComponentActivity.MainScreen() {
                         )
                     }
 
-                    bottomSheet<Screens.NowPlaying> { backStackEntry ->
-                        val route = backStackEntry.toRoute<Screens.NowPlaying>()
-                        val viewModel =
-                            koinViewModel<NowPlayingViewModel>(
-                                parameters = { parametersOf(route.trackId) },
-                            )
+                    bottomSheet<Screens.NowPlaying> {
+                        val viewModel = koinViewModel<NowPlayingViewModel>()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                        val currentActivity = LocalActivity.current
 
                         NowPlayingScreen(
                             uiState = uiState,
@@ -273,7 +267,7 @@ internal fun ComponentActivity.MainScreen() {
                             .padding(16.dp),
                     track = uiState.currentTrack?.track?.title ?: "",
                     artist = uiState.currentTrack?.track?.artist ?: "",
-                    coverArtFilePath = uiState.currentTrack?.coverArtFilePath,
+                    coverArtFilePath = uiState.coverArtFilePath,
                     isPlaying = uiState.isPlaying,
                     onPlayPause = {
                         if (uiState.isPlaying) {
@@ -286,9 +280,7 @@ internal fun ComponentActivity.MainScreen() {
                         viewModel.onEvent(MainEvent.OnNextTrack)
                     },
                     onExpand = {
-                        uiState.currentTrack?.let {
-                            navController.navigate(Screens.NowPlaying(it.track.id))
-                        }
+                        navController.navigate(Screens.NowPlaying)
                     },
                 )
             }

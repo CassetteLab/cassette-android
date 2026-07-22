@@ -7,17 +7,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
@@ -42,9 +42,10 @@ import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.AlbumArtColors
 import fr.cassette.cassette.presentation.core.extractAlbumArtColors
+import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
-internal fun AlbumListRow(
+internal fun AlbumListItem(
     album: AlbumList,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -65,21 +66,21 @@ internal fun AlbumListRow(
     )
     val containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
 
-    Card(
+    Button(
         modifier =
             modifier
-                .fillMaxWidth()
-                .height(88.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
+                .fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(containerColor = containerColor),
         onClick = onClick,
+        contentPadding = PaddingValues(0.dp),
+        shape = RoundedCornerShape(16.dp),
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
+        Column {
             Box(
                 modifier =
                     Modifier
-                        .aspectRatio(1f)
-                        .fillMaxHeight(),
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
             ) {
                 if (album.coverArtFilePath != null) {
                     AsyncImage(
@@ -104,7 +105,7 @@ internal fun AlbumListRow(
                             Modifier
                                 .fillMaxSize()
                                 .background(
-                                    Brush.horizontalGradient(
+                                    Brush.verticalGradient(
                                         colors =
                                             listOf(
                                                 Color.Transparent,
@@ -126,8 +127,8 @@ internal fun AlbumListRow(
             Box(
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .height(72.dp)
                         .background(animatedBackgroundColor)
                         .padding(horizontal = 12.dp, vertical = 10.dp),
                 contentAlignment = Alignment.CenterStart,
@@ -149,17 +150,29 @@ internal fun AlbumListRow(
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodySmall,
                     )
-                    album.created?.let { created ->
-                        Text(
-                            text = created,
-                            color = animatedTextColor.copy(alpha = 0.7f),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun AlbumListItemPreview() {
+    CassetteTheme {
+        Column {
+            AlbumListItem(
+                album =
+                    AlbumList(
+                        id = "1",
+                        name = "Little Dark Age",
+                        artist = "MGMT",
+                        coverArt = "",
+                        coverArtFilePath = "",
+                        created = "",
+                    ),
+                onClick = { },
+            )
         }
     }
 }

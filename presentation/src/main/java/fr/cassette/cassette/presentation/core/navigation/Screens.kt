@@ -40,7 +40,5 @@ internal sealed interface Screens {
     ) : Screens
 
     @Serializable
-    data class NowPlaying(
-        val trackId: String,
-    ) : Screens
+    data object NowPlaying : Screens
 }

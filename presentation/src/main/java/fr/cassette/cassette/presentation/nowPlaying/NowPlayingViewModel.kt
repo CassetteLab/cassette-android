@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class NowPlayingViewModel(
-    trackId: String,
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     private val pausePlaybackUseCase: PausePlaybackUseCase,
     private val playCurrentTrackUseCase: PlayCurrentTrackUseCase,
@@ -36,13 +35,15 @@ internal class NowPlayingViewModel(
 ) : BaseViewModel<NowPlayingUiState, NowPlayingEvent>(
         viewModelName = "NowPlayingViewModel",
         logger = logger,
-        initialState = NowPlayingUiState(trackId = trackId),
+        initialState = NowPlayingUiState(),
     ) {
     init {
         getCurrentTrackUseCase()
             .onEach { currentTrack ->
-                if (currentTrack?.track?.id == uiState.value.trackId) {
+                if (currentTrack != null) {
                     updateCurrentTrack(currentTrack)
+                } else {
+                    updateState { NowPlayingUiState() }
                 }
             }.launchIn(viewModelScope)
 
@@ -97,6 +98,7 @@ internal class NowPlayingViewModel(
     private fun updateCurrentTrack(currentTrack: CurrentTrack) {
         updateState {
             it.copy(
+                trackId = currentTrack.track.id,
                 title = currentTrack.track.title,
                 artist = currentTrack.track.artist,
                 album = currentTrack.albumName,

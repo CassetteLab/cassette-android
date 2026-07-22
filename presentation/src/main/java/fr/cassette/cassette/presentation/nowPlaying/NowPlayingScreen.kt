@@ -1,7 +1,6 @@
 package fr.cassette.cassette.presentation.nowPlaying
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,14 +66,7 @@ internal fun NowPlayingScreen(
     uiState: NowPlayingUiState,
     onEvent: (NowPlayingEvent) -> Unit,
 ) {
-    var albumArtBitmap by remember(uiState.trackId) { mutableStateOf<Bitmap?>(null) }
-
-    LaunchedEffect(uiState.coverArt?.filePath) {
-        albumArtBitmap =
-            uiState.coverArt?.let { coverArt ->
-                BitmapFactory.decodeFile(coverArt.filePath)
-            }
-    }
+    var albumArtBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     AlbumArtworkTheme(albumArt = albumArtBitmap) {
         val playerContainer = MaterialTheme.colorScheme.primaryContainer
@@ -171,6 +162,7 @@ internal fun NowPlayingScreen(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(340.dp),
+                            onBitmapLoaded = { bitmap -> albumArtBitmap = bitmap },
                         )
                         if (uiState.coverArt == null) {
                             Icon(
@@ -363,7 +355,7 @@ internal fun NowPlayingScreen(
 private fun NowPlayingScreenPreview() {
     CassetteTheme {
         NowPlayingScreen(
-            uiState = NowPlayingUiState(trackId = "track-1"),
+            uiState = NowPlayingUiState(),
             onEvent = {},
         )
     }

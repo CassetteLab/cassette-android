@@ -5,7 +5,7 @@ import fr.cassette.cassette.domain.models.RepeatMode
 import fr.cassette.cassette.presentation.core.mvi.UiState
 
 internal data class NowPlayingUiState(
-    val trackId: String,
+    val trackId: String = "",
     val title: String = "",
     val artist: String? = null,
     val album: String? = null,
