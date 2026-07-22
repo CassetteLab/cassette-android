@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.presentation.R
 import fr.cassette.cassette.presentation.core.AlbumCoverArt
+import fr.cassette.cassette.presentation.core.ShuffleButton
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 import fr.cassette.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
@@ -102,16 +98,7 @@ internal fun AlbumDetailHeader(
                 )
             }
 
-            FloatingActionButton(
-                onClick = onShuffleClick,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Shuffle,
-                    contentDescription = stringResource(R.string.album_detail_shuffle),
-                )
-            }
+            ShuffleButton(onClick = onShuffleClick)
         }
     }
 }
