@@ -26,7 +26,7 @@ import fr.cassette.cassette.data.local.entities.TrackEntity
         PlaybackSessionEntity::class,
         PlaybackQueueItemEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 internal abstract class CassetteDatabase : RoomDatabase() {

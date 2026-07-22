@@ -26,4 +26,5 @@ internal data class AlbumEntity(
     val coverArt: String? = null,
     val coverArtFilePath: String? = null,
     val created: String? = null,
+    val seedColor: Int? = null,
 )

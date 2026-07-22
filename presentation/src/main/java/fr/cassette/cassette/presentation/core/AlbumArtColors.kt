@@ -13,6 +13,16 @@ internal data class AlbumArtColors(
     val textColor: Color,
 )
 
+internal fun seedColorToAlbumArtColors(seedColor: Int): AlbumArtColors {
+    val bgColor = Color(seedColor)
+    val textLuminance = bgColor.luminance()
+    val onBgColor = if (textLuminance > 0.5f) Color.Black else Color.White
+    return AlbumArtColors(
+        backgroundColor = bgColor,
+        textColor = onBgColor,
+    )
+}
+
 internal fun extractAlbumArtColors(bitmap: Bitmap): AlbumArtColors {
     val palette = Palette.from(bitmap).generate()
 

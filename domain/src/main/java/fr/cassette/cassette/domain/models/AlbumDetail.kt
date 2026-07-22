@@ -8,4 +8,5 @@ data class AlbumDetail(
     val coverArtFilePath: String?,
     val created: String?,
     val tracks: List<Track>,
+    val seedColor: Int? = null,
 )

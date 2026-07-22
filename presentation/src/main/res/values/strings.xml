@@ -58,6 +58,8 @@
     <string name="album_detail_error_description">Check your server connection and try again.</string>
     <string name="album_detail_error_title">Unable to load album</string>
     <string name="album_detail_retry">Retry</string>
+    <string name="album_detail_meta_line">%1$s - %2$s</string>
+    <string name="album_detail_shuffle">Shuffle album</string>
     <string name="album_detail_title">Album</string>
     <string name="album_detail_tracks">Tracks</string>
     <plurals name="album_detail_tracks_count">

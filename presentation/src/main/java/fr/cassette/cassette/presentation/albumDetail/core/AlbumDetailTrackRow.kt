@@ -3,11 +3,13 @@ package fr.cassette.cassette.presentation.albumDetail.core
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,13 +33,29 @@ internal fun AlbumDetailTrackRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(18.dp))
+                .clip(MaterialTheme.shapes.extraLarge)
                 .clickable(onClick = onClick)
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.76f))
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Box(
+            modifier =
+                Modifier
+                    .size(34.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.62f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = track.trackNumber?.toString() ?: "-",
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
+
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -60,7 +78,21 @@ internal fun AlbumDetailTrackRow(
                 )
             }
         }
+
+        track.durationSeconds?.let { durationSeconds ->
+            Text(
+                text = formatDuration(durationSeconds),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
     }
+}
+
+private fun formatDuration(durationSeconds: Int): String {
+    val minutes = durationSeconds / 60
+    val seconds = durationSeconds % 60
+    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }
 
 @PreviewLightDark

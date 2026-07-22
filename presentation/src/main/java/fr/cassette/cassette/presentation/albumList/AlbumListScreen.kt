@@ -147,6 +147,7 @@ private fun AlbumListScreenPreview() {
                                 coverArt = null,
                                 coverArtFilePath = null,
                                 created = null,
+                                seedColor = null,
                             ),
                             AlbumList(
                                 id = "2",
@@ -155,6 +156,7 @@ private fun AlbumListScreenPreview() {
                                 coverArt = null,
                                 coverArtFilePath = null,
                                 created = null,
+                                seedColor = null,
                             ),
                         ),
                 ),

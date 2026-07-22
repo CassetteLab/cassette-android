@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,9 +41,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import fr.cassette.cassette.domain.models.AlbumList
 import fr.cassette.cassette.presentation.R
-import fr.cassette.cassette.presentation.core.AlbumArtColors
 import fr.cassette.cassette.presentation.core.extractAlbumArtColors
+import fr.cassette.cassette.presentation.core.seedColorToAlbumArtColors
 import fr.cassette.cassette.presentation.core.theme.CassetteTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun AlbumListItem(
@@ -50,9 +56,16 @@ internal fun AlbumListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var albumColors by remember { mutableStateOf<AlbumArtColors?>(null) }
+    var albumColors by remember(album.seedColor) {
+        mutableStateOf(album.seedColor?.let(::seedColorToAlbumArtColors))
+    }
     val defaultBackground = MaterialTheme.colorScheme.primaryContainer
     val defaultTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+    val colorExtractionScope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
+
+    DisposableEffect(Unit) {
+        onDispose { colorExtractionScope.cancel() }
+    }
 
     val animatedBackgroundColor by animateColorAsState(
         targetValue = albumColors?.backgroundColor ?: defaultBackground,
@@ -95,8 +108,12 @@ internal fun AlbumListItem(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize(),
                         onSuccess = { state ->
-                            val bitmap = state.result.drawable.toBitmap(config = Bitmap.Config.ARGB_8888)
-                            albumColors = extractAlbumArtColors(bitmap)
+                            if (albumColors == null) {
+                                val bitmap = state.result.drawable.toBitmap(config = Bitmap.Config.ARGB_8888)
+                                colorExtractionScope.launch {
+                                    albumColors = extractAlbumArtColors(bitmap)
+                                }
+                            }
                         },
                     )
 
@@ -170,6 +187,7 @@ private fun AlbumListItemPreview() {
                         coverArt = "",
                         coverArtFilePath = "",
                         created = "",
+                        seedColor = null,
                     ),
                 onClick = { },
             )

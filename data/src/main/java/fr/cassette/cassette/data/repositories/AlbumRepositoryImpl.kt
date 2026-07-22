@@ -1,5 +1,7 @@
 package fr.cassette.cassette.data.repositories
 
+import android.graphics.BitmapFactory
+import androidx.palette.graphics.Palette
 import fr.cassette.cassette.data.local.dao.AlbumDao
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.local.dao.TrackDao
@@ -24,7 +26,10 @@ internal class AlbumRepositoryImpl(
     override suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> =
         albumRemoteDataSource.getRecentlyAddedAlbums(size).map { album ->
             val localAlbum = albumDao.getAlbum(album.id)
-            val albumWithLocalCoverArt = album.copy(coverArtFilePath = localAlbum?.validCoverArtFilePath())
+            val albumWithLocalCoverArt = album.copy(
+                coverArtFilePath = localAlbum?.validCoverArtFilePath(),
+                seedColor = localAlbum?.seedColor,
+            )
             albumDao.insertAlbum(albumWithLocalCoverArt.toEntity(localAlbum?.serverConfigurationId))
             albumWithLocalCoverArt
         }
@@ -49,8 +54,11 @@ internal class AlbumRepositoryImpl(
             return localTracks.map { it.toDomain() }
         }
 
-        val remoteAlbum = albumRemoteDataSource.getAlbum(albumId)
         val localAlbum = albumDao.getAlbum(albumId)
+        val remoteAlbum =
+            albumRemoteDataSource
+                .getAlbum(albumId)
+                .copy(coverArtFilePath = localAlbum?.validCoverArtFilePath())
         albumDao.insertAlbum(remoteAlbum.toEntity(localAlbum?.serverConfigurationId))
         trackDao.deleteAlbumTracks(albumId)
         trackDao.insertTracks(remoteAlbum.tracks.map { track -> track.toEntity(albumId) })
@@ -71,8 +79,33 @@ internal class AlbumRepositoryImpl(
         return albumRemoteDataSource
             .getAlbumCoverArt(coverArtId = coverArtId, size = size)
             .also { coverArt ->
-                albumId?.let { id -> albumDao.updateCoverArtFilePath(albumId = id, coverArtFilePath = coverArt.filePath) }
+                albumId?.let { id ->
+                    albumDao.updateCoverArtFilePath(albumId = id, coverArtFilePath = coverArt.filePath)
+                    extractAndSaveSeedColor(id, coverArt.filePath)
+                }
             }
+    }
+
+    private suspend fun extractAndSaveSeedColor(
+        albumId: String,
+        filePath: String,
+    ) {
+        val existingSeedColor = albumDao.getAlbum(albumId)?.seedColor
+        if (existingSeedColor != null) return
+
+        try {
+            val bitmap = BitmapFactory.decodeFile(filePath) ?: return
+            val palette = Palette.from(bitmap).generate()
+            val swatch =
+                palette.dominantSwatch
+                    ?: palette.vibrantSwatch
+                    ?: palette.mutedSwatch
+                    ?: palette.darkVibrantSwatch
+                    ?: palette.darkMutedSwatch
+                    ?: return
+            albumDao.updateSeedColor(albumId, swatch.rgb)
+        } catch (_: Exception) {
+        }
     }
 
     override fun getAllAlbums(): Flow<List<AlbumList>> =
@@ -85,8 +118,11 @@ internal class AlbumRepositoryImpl(
         val serverConfigurationId = currentServerConfigurationId()
         remoteAlbums.forEach { album ->
             val localAlbum = albumDao.getAlbum(album.id)
-            val albumWithLocalCoverArt = album.copy(coverArtFilePath = localAlbum?.validCoverArtFilePath())
-            albumDao.insertAlbum(albumWithLocalCoverArt.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
+            val albumWithLocalData = album.copy(
+                coverArtFilePath = localAlbum?.validCoverArtFilePath(),
+                seedColor = localAlbum?.seedColor,
+            )
+            albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
         }
     }
 
@@ -99,6 +135,7 @@ internal class AlbumRepositoryImpl(
             coverArt = coverArt,
             coverArtFilePath = coverArtFilePath,
             created = created,
+            seedColor = seedColor,
         )
 
     private suspend fun AlbumDetail.toEntity(existingServerConfigurationId: Long?): AlbumEntity =
@@ -110,6 +147,7 @@ internal class AlbumRepositoryImpl(
             coverArt = coverArt,
             coverArtFilePath = coverArtFilePath,
             created = created,
+            seedColor = seedColor,
         )
 
     private fun AlbumEntity.toDetailDomain(): AlbumDetail =
@@ -121,6 +159,7 @@ internal class AlbumRepositoryImpl(
             coverArtFilePath = validCoverArtFilePath(),
             created = created,
             tracks = emptyList(),
+            seedColor = seedColor,
         )
 
     private fun AlbumEntity.toListDomain(): AlbumList =
@@ -131,6 +170,7 @@ internal class AlbumRepositoryImpl(
             coverArt = coverArt,
             coverArtFilePath = validCoverArtFilePath(),
             created = created,
+            seedColor = seedColor,
         )
 
     private fun Track.toEntity(albumId: String): TrackEntity =

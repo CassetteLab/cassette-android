@@ -29,4 +29,10 @@ internal interface AlbumDao {
         albumId: String,
         coverArtFilePath: String,
     )
+
+    @Query("UPDATE albums SET seedColor = :seedColor WHERE id = :albumId")
+    suspend fun updateSeedColor(
+        albumId: String,
+        seedColor: Int,
+    )
 }
