@@ -60,6 +60,9 @@ internal data class SongDto(
     val id: String,
     val title: String,
     val artist: String? = null,
+    val albumId: String? = null,
+    val album: String? = null,
+    val coverArt: String? = null,
     val track: Int? = null,
     val duration: Int? = null,
 ) {
@@ -70,5 +73,8 @@ internal data class SongDto(
             artist = artist?.takeIf { it.isNotBlank() },
             trackNumber = track,
             durationSeconds = duration,
+            albumId = albumId?.takeIf { it.isNotBlank() },
+            albumName = album?.takeIf { it.isNotBlank() },
+            coverArt = coverArt?.takeIf { it.isNotBlank() },
         )
 }

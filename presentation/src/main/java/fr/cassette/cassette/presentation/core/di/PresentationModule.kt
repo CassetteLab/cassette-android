@@ -9,6 +9,7 @@ import fr.cassette.cassette.presentation.nowPlaying.NowPlayingViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
 import fr.cassette.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
+import fr.cassette.cassette.presentation.playlistDetail.PlaylistDetailViewModel
 import fr.cassette.cassette.presentation.playlistList.PlaylistListViewModel
 import fr.cassette.cassette.presentation.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -27,4 +28,5 @@ val presentationModule =
         viewModelOf(::NowPlayingViewModel)
         viewModelOf(::AlbumListViewModel)
         viewModelOf(::PlaylistListViewModel)
+        viewModelOf(::PlaylistDetailViewModel)
     }

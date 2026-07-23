@@ -8,6 +8,8 @@ import fr.cassette.cassette.domain.usecases.GetAllPlaylistsUseCase
 import fr.cassette.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassette.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassette.cassette.domain.usecases.GetPlaylistCoverArtUseCase
+import fr.cassette.cassette.domain.usecases.GetPlaylistTracksUseCase
+import fr.cassette.cassette.domain.usecases.GetPlaylistUseCase
 import fr.cassette.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassette.cassette.domain.usecases.GetServerConfigurationUseCase
 import fr.cassette.cassette.domain.usecases.HasServerConfigurationUseCase
@@ -44,6 +46,8 @@ val domainModule =
 
         // Playlists
         singleOf(::GetAllPlaylistsUseCase)
+        singleOf(::GetPlaylistUseCase)
+        singleOf(::GetPlaylistTracksUseCase)
         singleOf(::GetPlaylistCoverArtUseCase)
         singleOf(::RefreshPlaylistsUseCase)
 

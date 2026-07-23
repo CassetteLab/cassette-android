@@ -7,4 +7,5 @@ data class PlaybackContext(
 
 enum class PlaybackContextType {
     Album,
+    Playlist,
 }

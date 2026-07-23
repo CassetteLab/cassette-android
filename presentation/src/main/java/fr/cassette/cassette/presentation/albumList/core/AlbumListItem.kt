@@ -82,73 +82,76 @@ internal fun AlbumListItem(
     Button(
         modifier =
             modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .aspectRatio(1f),
         colors = ButtonDefaults.buttonColors(containerColor = containerColor),
         onClick = onClick,
         contentPadding = PaddingValues(0.dp),
         shape = RoundedCornerShape(16.dp),
     ) {
-        Column {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-            ) {
-                if (album.coverArtFilePath != null) {
-                    AsyncImage(
-                        model =
-                            ImageRequest
-                                .Builder(LocalContext.current)
-                                .data(album.coverArtFilePath)
-                                .allowHardware(false)
-                                .crossfade(true)
-                                .build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                        onSuccess = { state ->
-                            if (albumColors == null) {
-                                val bitmap = state.result.drawable.toBitmap(config = Bitmap.Config.ARGB_8888)
-                                colorExtractionScope.launch {
-                                    albumColors = extractAlbumArtColors(bitmap)
-                                }
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (album.coverArtFilePath != null) {
+                AsyncImage(
+                    model =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(album.coverArtFilePath)
+                            .allowHardware(false)
+                            .crossfade(true)
+                            .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                    onSuccess = { state ->
+                        if (albumColors == null) {
+                            val bitmap = state.result.drawable.toBitmap(config = Bitmap.Config.ARGB_8888)
+                            colorExtractionScope.launch {
+                                albumColors = extractAlbumArtColors(bitmap)
                             }
-                        },
-                    )
+                        }
+                    },
+                )
 
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors =
-                                            listOf(
-                                                Color.Transparent,
-                                                animatedBackgroundColor,
-                                            ),
-                                    ),
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            Color.Transparent,
+                                            animatedBackgroundColor,
+                                        ),
                                 ),
-                    )
-                } else {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .background(defaultBackground),
-                    )
-                }
+                            ),
+                )
+            } else {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(defaultBackground),
+                )
             }
 
             Box(
                 modifier =
                     Modifier
+                        .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .height(72.dp)
-                        .background(animatedBackgroundColor)
+                        .height(96.dp)
+                        .background(
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(
+                                        Color.Transparent,
+                                        animatedBackgroundColor,
+                                    ),
+                            ),
+                        )
                         .padding(horizontal = 12.dp, vertical = 10.dp),
-                contentAlignment = Alignment.CenterStart,
+                contentAlignment = Alignment.BottomStart,
             ) {
                 Column(verticalArrangement = Arrangement.Center) {
                     Text(

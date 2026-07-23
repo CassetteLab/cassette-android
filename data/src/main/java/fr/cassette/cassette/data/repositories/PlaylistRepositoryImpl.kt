@@ -8,7 +8,9 @@ import fr.cassette.cassette.data.local.entities.PlaylistEntity
 import fr.cassette.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassette.cassette.data.remote.datasources.PlaylistRemoteDataSourceImpl
 import fr.cassette.cassette.domain.models.AlbumCoverArt
+import fr.cassette.cassette.domain.models.PlaylistDetail
 import fr.cassette.cassette.domain.models.PlaylistList
+import fr.cassette.cassette.domain.models.Track
 import fr.cassette.cassette.domain.repositories.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,6 +26,21 @@ internal class PlaylistRepositoryImpl(
         playlistDao.getAllPlaylists().map { entities ->
             entities.map { it.toListDomain() }
         }
+
+    override suspend fun getPlaylist(playlistId: String): PlaylistDetail {
+        val localPlaylist = playlistDao.getPlaylist(playlistId)
+        val playlist =
+            playlistRemoteDataSource
+                .getPlaylist(playlistId)
+                .copy(
+                    coverArtFilePath = localPlaylist?.validCoverArtFilePath(),
+                    seedColor = localPlaylist?.seedColor,
+                )
+        playlistDao.insertPlaylist(playlist.toEntity(localPlaylist?.serverConfigurationId ?: currentServerConfigurationId()))
+        return playlist.copy(tracks = emptyList())
+    }
+
+    override suspend fun getPlaylistTracks(playlistId: String): List<Track> = playlistRemoteDataSource.getPlaylistTracks(playlistId)
 
     override suspend fun refreshPlaylists() {
         val remotePlaylists = playlistRemoteDataSource.getAllPlaylists()
@@ -85,6 +102,18 @@ internal class PlaylistRepositoryImpl(
     }
 
     private fun PlaylistList.toEntity(existingServerConfigurationId: Long): PlaylistEntity =
+        PlaylistEntity(
+            id = id,
+            serverConfigurationId = existingServerConfigurationId,
+            name = name,
+            trackCount = trackCount,
+            coverArt = coverArt,
+            coverArtFilePath = coverArtFilePath,
+            created = created,
+            seedColor = seedColor,
+        )
+
+    private fun PlaylistDetail.toEntity(existingServerConfigurationId: Long): PlaylistEntity =
         PlaylistEntity(
             id = id,
             serverConfigurationId = existingServerConfigurationId,

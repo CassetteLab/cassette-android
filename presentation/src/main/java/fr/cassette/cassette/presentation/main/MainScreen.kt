@@ -55,6 +55,10 @@ import fr.cassette.cassette.presentation.main.core.MainTab
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingEvent
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingScreen
 import fr.cassette.cassette.presentation.nowPlaying.NowPlayingViewModel
+import fr.cassette.cassette.presentation.playlistDetail.PlaylistDetailEvent
+import fr.cassette.cassette.presentation.playlistDetail.PlaylistDetailScreen
+import fr.cassette.cassette.presentation.playlistDetail.PlaylistDetailViewModel
+import fr.cassette.cassette.presentation.playlistList.PlaylistListEvent
 import fr.cassette.cassette.presentation.playlistList.PlaylistListScreen
 import fr.cassette.cassette.presentation.playlistList.PlaylistListViewModel
 import fr.cassette.cassette.presentation.settings.SettingsEvent
@@ -182,8 +186,18 @@ internal fun ComponentActivity.MainScreen() {
                         val viewModel: PlaylistListViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         PlaylistListScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
+                                when (event) {
+                                    is PlaylistListEvent.OnPlaylistClicked -> {
+                                        navController.navigate(Screens.PlaylistDetail(playlistId = event.playlistId)) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    else -> Unit
+                                }
                                 viewModel.onEvent(event)
                             },
                         )
@@ -225,6 +239,27 @@ internal fun ComponentActivity.MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     AlbumDetailEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
+                                }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.PlaylistDetail> { backStackEntry ->
+                        val route = backStackEntry.toRoute<Screens.PlaylistDetail>()
+                        val viewModel =
+                            koinViewModel<PlaylistDetailViewModel>(
+                                parameters = { parametersOf(route.playlistId) },
+                            )
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        PlaylistDetailScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    PlaylistDetailEvent.OnBackClicked -> navController.navigateUp()
                                     else -> Unit
                                 }
                                 viewModel.onEvent(event)
