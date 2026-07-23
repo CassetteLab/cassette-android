@@ -115,7 +115,7 @@
     <string name="album_list_error_title">Unable to load albums</string>
     <string name="album_list_retry">Retry</string>
     <string name="album_list_tab_title">Albums</string>
-    <string name="album_list_title">All Albums</string>
+    <string name="album_list_title">My Albums</string>
     <string name="album_list_unknown_artist">Unknown artist</string>
 
     <!-- Playlist List -->

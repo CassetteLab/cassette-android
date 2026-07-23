@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,13 +62,10 @@ internal fun AlbumListScreen(
                         titleContentColor = MaterialTheme.colorScheme.onBackground,
                     ),
                 title = {
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(text = stringResource(R.string.album_list_title))
-                        AnimatedVisibility(uiState.isRefreshing) {
-                            LinearWavyProgressIndicator(
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-                        }
                     }
                 },
             )
@@ -109,23 +107,31 @@ internal fun AlbumListScreen(
                     contentPadding =
                         contentPadding.plus(
                             PaddingValues(
-                                start = 16.dp,
                                 top = 16.dp,
-                                end = 16.dp,
                                 bottom = innerPadding.calculateBottomPadding() + 16.dp,
                             )
                         ),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    item(
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        AnimatedVisibility(uiState.isRefreshing) {
+                            LinearWavyProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+
                     items(
                         items = uiState.albums,
                         key = { album -> album.id },
                     ) { album ->
                         AlbumListItem(
+                            modifier = Modifier.padding(horizontal = 8.dp),
                             album = album,
                             onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
-                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }

@@ -52,9 +52,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun AlbumListItem(
+    modifier: Modifier = Modifier,
     album: AlbumList,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     var albumColors by remember(album.seedColor) {
         mutableStateOf(album.seedColor?.let(::seedColorToAlbumArtColors))
