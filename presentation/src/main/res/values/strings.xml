@@ -123,6 +123,7 @@
     <string name="playlist_list_empty_title">No playlists yet</string>
     <string name="playlist_list_error_description">Check your server connection and try again.</string>
     <string name="playlist_list_error_title">Unable to load playlists</string>
+    <string name="playlist_list_loading_playlists">Loading playlists</string>
     <string name="playlist_list_retry">Retry</string>
     <string name="playlist_list_tab_title">Playlists</string>
     <string name="playlist_list_title">Playlists</string>

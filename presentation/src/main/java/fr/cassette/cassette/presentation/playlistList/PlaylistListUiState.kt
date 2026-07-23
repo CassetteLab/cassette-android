@@ -5,6 +5,7 @@ import fr.cassette.cassette.presentation.core.mvi.UiState
 
 internal data class PlaylistListUiState(
     val isLoading: Boolean = true,
+    val isPullToRefreshIndicatorVisible: Boolean = false,
+    val isRefreshing: Boolean = false,
     val playlists: List<PlaylistList> = emptyList(),
-    val hasError: Boolean = false,
 ) : UiState

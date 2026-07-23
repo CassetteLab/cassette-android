@@ -7,4 +7,5 @@ data class PlaylistList(
     val coverArt: String?,
     val coverArtFilePath: String?,
     val created: String?,
+    val seedColor: Int? = null,
 )

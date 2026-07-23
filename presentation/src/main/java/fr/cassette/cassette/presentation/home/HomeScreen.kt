@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,6 +25,7 @@ import fr.cassette.cassette.presentation.home.core.HomeMessage
 
 @Composable
 internal fun HomeScreen(
+    contentPadding: PaddingValues = PaddingValues(),
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
 ) {
@@ -33,12 +35,9 @@ internal fun HomeScreen(
                 Modifier
                     .fillMaxSize(),
             contentPadding =
-                PaddingValues(
-                    start = 16.dp,
-                    top = innerPadding.calculateTopPadding() + 16.dp,
-                    end = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                ),
+                innerPadding
+                    .plus(other = contentPadding)
+                    .plus(other = PaddingValues(all = 16.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {

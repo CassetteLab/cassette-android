@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -39,6 +40,7 @@ import fr.cassette.cassette.presentation.home.core.HomeMessage
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun AlbumListScreen(
+    contentPadding: PaddingValues = PaddingValues(),
     uiState: AlbumListUiState,
     onEvent: (AlbumListEvent) -> Unit,
 ) {
@@ -105,11 +107,13 @@ internal fun AlbumListScreen(
                             .fillMaxSize(),
                     columns = GridCells.Fixed(2),
                     contentPadding =
-                        PaddingValues(
-                            start = 16.dp,
-                            top = 16.dp,
-                            end = 16.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                        contentPadding.plus(
+                            PaddingValues(
+                                start = 16.dp,
+                                top = 16.dp,
+                                end = 16.dp,
+                                bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                            )
                         ),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),

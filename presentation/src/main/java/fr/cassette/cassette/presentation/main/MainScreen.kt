@@ -140,6 +140,7 @@ internal fun ComponentActivity.MainScreen() {
                         val viewModel: HomeViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         HomeScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
@@ -160,6 +161,7 @@ internal fun ComponentActivity.MainScreen() {
                         val viewModel: AlbumListViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         AlbumListScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
@@ -191,6 +193,7 @@ internal fun ComponentActivity.MainScreen() {
                         val viewModel: SettingsViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         SettingsScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {

@@ -4,17 +4,21 @@ import androidx.room.Room
 import fr.cassette.cassette.data.local.CassetteDatabase
 import fr.cassette.cassette.data.local.dao.AlbumDao
 import fr.cassette.cassette.data.local.dao.PlaybackQueueDao
+import fr.cassette.cassette.data.local.dao.PlaylistDao
 import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.local.dao.TrackDao
 import fr.cassette.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
+import fr.cassette.cassette.data.remote.datasources.PlaylistRemoteDataSourceImpl
 import fr.cassette.cassette.data.remote.ktor.KtorClientProviderImpl
 import fr.cassette.cassette.data.remote.ktor.plugins.CassetteRequestAuthenticationPluginProvider
 import fr.cassette.cassette.data.remote.ktor.plugins.CassetteRequestDefaultsPluginProvider
 import fr.cassette.cassette.data.repositories.AlbumRepositoryImpl
 import fr.cassette.cassette.data.repositories.PlaybackRepositoryImpl
+import fr.cassette.cassette.data.repositories.PlaylistRepositoryImpl
 import fr.cassette.cassette.data.repositories.ServerConfigurationRepositoryImpl
 import fr.cassette.cassette.domain.repositories.AlbumRepository
 import fr.cassette.cassette.domain.repositories.PlaybackRepository
+import fr.cassette.cassette.domain.repositories.PlaylistRepository
 import fr.cassette.cassette.domain.repositories.ServerConfigurationRepository
 import io.ktor.client.HttpClient
 import org.koin.android.ext.koin.androidContext
@@ -38,6 +42,7 @@ val dataModule =
         single<TrackDao> { get<CassetteDatabase>().trackDao() }
         single<ServerConfigurationDao> { get<CassetteDatabase>().serverConfigurationDao() }
         single<PlaybackQueueDao> { get<CassetteDatabase>().playbackQueueDao() }
+        single<PlaylistDao> { get<CassetteDatabase>().playlistDao() }
 
         // Ktor
         singleOf(::KtorClientProviderImpl)
@@ -49,9 +54,11 @@ val dataModule =
 
         // Remote data sources
         singleOf(::AlbumRemoteDataSourceImpl)
+        singleOf(::PlaylistRemoteDataSourceImpl)
 
         // Repositories
         singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
         singleOf(::PlaybackRepositoryImpl) bind PlaybackRepository::class
+        singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class
         singleOf(::ServerConfigurationRepositoryImpl) bind ServerConfigurationRepository::class
     }
