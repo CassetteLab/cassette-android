@@ -16,11 +16,10 @@ internal class ServerConfigurationViewModel(
     private val saveServerConfigurationUseCase: SaveServerConfigurationUseCase,
     logger: Logger,
 ) : BaseViewModel<ServerConfigurationUiState, ServerConfigurationEvent>(
-    viewModelName = "ServerConfigurationViewModel",
-    logger = logger,
-    initialState = ServerConfigurationUiState(),
-) {
-
+        viewModelName = "ServerConfigurationViewModel",
+        logger = logger,
+        initialState = ServerConfigurationUiState(),
+    ) {
     private var nextHeaderId = 0L
 
     init {
@@ -29,45 +28,53 @@ internal class ServerConfigurationViewModel(
 
     override fun handleEvent(event: ServerConfigurationEvent) {
         when (event) {
-            is ServerConfigurationEvent.OnServerUrlChanged -> updateState { uiState ->
-                uiState.copy(serverUrl = event.value, error = null, isSaved = false)
-            }
+            is ServerConfigurationEvent.OnServerUrlChanged ->
+                updateState { uiState ->
+                    uiState.copy(serverUrl = event.value, error = null, isSaved = false)
+                }
 
-            is ServerConfigurationEvent.OnUsernameChanged -> updateState { uiState ->
-                uiState.copy(username = event.value, error = null, isSaved = false)
-            }
+            is ServerConfigurationEvent.OnUsernameChanged ->
+                updateState { uiState ->
+                    uiState.copy(username = event.value, error = null, isSaved = false)
+                }
 
-            is ServerConfigurationEvent.OnPasswordChanged -> updateState { uiState ->
-                uiState.copy(password = event.value, error = null, isSaved = false)
-            }
+            is ServerConfigurationEvent.OnPasswordChanged ->
+                updateState { uiState ->
+                    uiState.copy(password = event.value, error = null, isSaved = false)
+                }
 
-            ServerConfigurationEvent.OnAddHeaderClicked -> updateState { uiState ->
-                uiState.copy(
-                    customHeaders = uiState.customHeaders + ServerConfigurationHeaderUiState(id = nextHeaderId++),
-                    error = null,
-                    isSaved = false,
-                )
-            }
+            ServerConfigurationEvent.OnAddHeaderClicked ->
+                updateState { uiState ->
+                    uiState.copy(
+                        customHeaders = uiState.customHeaders + ServerConfigurationHeaderUiState(id = nextHeaderId++),
+                        error = null,
+                        isSaved = false,
+                    )
+                }
 
-            is ServerConfigurationEvent.OnRemoveHeaderClicked -> updateState { uiState ->
-                uiState.copy(
-                    customHeaders = uiState.customHeaders.filterNot { it.id == event.id },
-                    error = null,
-                    isSaved = false,
-                )
-            }
+            is ServerConfigurationEvent.OnRemoveHeaderClicked ->
+                updateState { uiState ->
+                    uiState.copy(
+                        customHeaders = uiState.customHeaders.filterNot { it.id == event.id },
+                        error = null,
+                        isSaved = false,
+                    )
+                }
 
-            is ServerConfigurationEvent.OnHeaderNameChanged -> updateHeader(event.id) { header ->
-                header.copy(name = event.value)
-            }
+            is ServerConfigurationEvent.OnHeaderNameChanged ->
+                updateHeader(event.id) { header ->
+                    header.copy(name = event.value)
+                }
 
-            is ServerConfigurationEvent.OnHeaderValueChanged -> updateHeader(event.id) { header ->
-                header.copy(value = event.value)
-            }
+            is ServerConfigurationEvent.OnHeaderValueChanged ->
+                updateHeader(event.id) { header ->
+                    header.copy(value = event.value)
+                }
 
-            is ServerConfigurationEvent.OnHeaderValueVisibilityChanged -> updateHeader(event.id) { header ->
-                header.copy(isValueVisible = event.isVisible)
-            }
+            is ServerConfigurationEvent.OnHeaderValueVisibilityChanged ->
+                updateHeader(event.id) { header ->
+                    header.copy(isValueVisible = event.isVisible)
+                }
 
             ServerConfigurationEvent.OnConnectClicked -> saveServerConfiguration()
             ServerConfigurationEvent.OnBackClicked -> Unit
@@ -77,13 +84,14 @@ internal class ServerConfigurationViewModel(
     private fun loadServerConfiguration() {
         viewModelScope.launch {
             val serverConfiguration = getServerConfigurationUseCase() ?: return@launch
-            val customHeaders = serverConfiguration.customHeaders.mapIndexed { index, customHeader ->
-                ServerConfigurationHeaderUiState(
-                    id = index.toLong(),
-                    name = customHeader.name,
-                    value = customHeader.value,
-                )
-            }
+            val customHeaders =
+                serverConfiguration.customHeaders.mapIndexed { index, customHeader ->
+                    ServerConfigurationHeaderUiState(
+                        id = index.toLong(),
+                        name = customHeader.name,
+                        value = customHeader.value,
+                    )
+                }
             nextHeaderId = customHeaders.size.toLong()
             updateState {
                 it.copy(
@@ -125,24 +133,27 @@ internal class ServerConfigurationViewModel(
     ) {
         updateState { uiState ->
             uiState.copy(
-                customHeaders = uiState.customHeaders.map { header ->
-                    if (header.id == id) transform(header) else header
-                },
+                customHeaders =
+                    uiState.customHeaders.map { header ->
+                        if (header.id == id) transform(header) else header
+                    },
                 error = null,
                 isSaved = false,
             )
         }
     }
 
-    private fun ServerConfigurationUiState.toServerConfiguration(): ServerConfiguration = ServerConfiguration(
-        serverUrl = serverUrl,
-        username = username,
-        password = password,
-        customHeaders = customHeaders.map { header ->
-            ServerConfigurationCustomHeader(
-                name = header.name,
-                value = header.value,
-            )
-        },
-    )
+    private fun ServerConfigurationUiState.toServerConfiguration(): ServerConfiguration =
+        ServerConfiguration(
+            serverUrl = serverUrl,
+            username = username,
+            password = password,
+            customHeaders =
+                customHeaders.map { header ->
+                    ServerConfigurationCustomHeader(
+                        name = header.name,
+                        value = header.value,
+                    )
+                },
+        )
 }

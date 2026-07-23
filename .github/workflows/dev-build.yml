@@ -36,5 +36,8 @@ jobs:
       - name: Install Android SDK platform
         run: sdkmanager "platforms;android-37"
 
+      - name: Run ktlint check
+        run: ./gradlew ktlintCheck
+
       - name: Build debug app
         run: ./gradlew :app:assembleDebug

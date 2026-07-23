@@ -6,5 +6,3 @@ data class ServerConfiguration(
     val password: String,
     val customHeaders: List<ServerConfigurationCustomHeader> = emptyList(),
 )
-
-

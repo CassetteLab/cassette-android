@@ -28,32 +28,34 @@ import fr.cassette.cassette.presentation.core.theme.CassetteTheme
 @Composable
 internal fun OnBoardingServerConfigurationScreen(
     uiState: ServerConfigurationUiState,
-    onEvent: (ServerConfigurationEvent) -> Unit
+    onEvent: (ServerConfigurationEvent) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .imePadding(),
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .imePadding(),
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    ),
                 title = {
                     Text(
-                        text = stringResource(R.string.server_configuration_title)
+                        text = stringResource(R.string.server_configuration_title),
                     )
-                }
+                },
             )
         },
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.background,
             ) {
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),
@@ -62,26 +64,26 @@ internal fun OnBoardingServerConfigurationScreen(
                     },
                     isEnabled = uiState.canSubmit,
                     isLoading = uiState.isLoading,
-                    text = stringResource(R.string.server_configuration_connect_and_save)
+                    text = stringResource(R.string.server_configuration_connect_and_save),
                 )
             }
-        }
+        },
     ) { innerPadding ->
         ServerConfigurationScreenContent(
             contentPadding = innerPadding,
             uiState = uiState,
-            onEvent = onEvent
+            onEvent = onEvent,
         )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun OnBoardingServerConfigurationScreenPreview(){
+private fun OnBoardingServerConfigurationScreenPreview() {
     CassetteTheme {
         OnBoardingServerConfigurationScreen(
             uiState = ServerConfigurationUiState(),
-            onEvent = { }
+            onEvent = { },
         )
     }
 }

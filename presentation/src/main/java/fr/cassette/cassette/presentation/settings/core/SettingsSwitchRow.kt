@@ -28,15 +28,17 @@ internal fun SettingsSwitchRow(
     onCheckedChange: (Boolean) -> Unit,
 ) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = RoundedCornerShape(10.dp),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {

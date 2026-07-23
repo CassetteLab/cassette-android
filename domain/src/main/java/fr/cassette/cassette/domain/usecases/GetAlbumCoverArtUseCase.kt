@@ -6,7 +6,9 @@ import fr.cassette.cassette.domain.repositories.AlbumRepository
 class GetAlbumCoverArtUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    suspend operator fun invoke(coverArtId: String, size: Int? = null, albumId: String? = null): AlbumCoverArt {
-        return albumRepository.getAlbumCoverArt(coverArtId = coverArtId, size = size, albumId = albumId)
-    }
+    suspend operator fun invoke(
+        coverArtId: String,
+        size: Int? = null,
+        albumId: String? = null,
+    ): AlbumCoverArt = albumRepository.getAlbumCoverArt(coverArtId = coverArtId, size = size, albumId = albumId)
 }

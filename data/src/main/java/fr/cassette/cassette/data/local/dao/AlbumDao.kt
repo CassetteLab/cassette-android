@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import fr.cassette.cassette.data.local.entities.AlbumEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface AlbumDao {
@@ -17,6 +18,21 @@ internal interface AlbumDao {
     @Query("SELECT * FROM albums WHERE id = :albumId LIMIT 1")
     suspend fun getAlbum(albumId: String): AlbumEntity?
 
+    @Query("SELECT * FROM albums ORDER BY created DESC")
+    fun getAllAlbums(): Flow<List<AlbumEntity>>
+
+    @Query("DELETE FROM albums")
+    suspend fun deleteAllAlbums()
+
     @Query("UPDATE albums SET coverArtFilePath = :coverArtFilePath WHERE id = :albumId")
-    suspend fun updateCoverArtFilePath(albumId: String, coverArtFilePath: String)
+    suspend fun updateCoverArtFilePath(
+        albumId: String,
+        coverArtFilePath: String,
+    )
+
+    @Query("UPDATE albums SET seedColor = :seedColor WHERE id = :albumId")
+    suspend fun updateSeedColor(
+        albumId: String,
+        seedColor: Int,
+    )
 }

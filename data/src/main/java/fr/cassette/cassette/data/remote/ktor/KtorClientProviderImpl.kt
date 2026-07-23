@@ -1,7 +1,5 @@
 package fr.cassette.cassette.data.remote.ktor
 
-import fr.cassette.cassette.core.helpers.CipherHelper
-import fr.cassette.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassette.cassette.data.remote.ktor.plugins.CassetteRequestAuthenticationPluginProvider
 import fr.cassette.cassette.data.remote.ktor.plugins.CassetteRequestDefaultsPluginProvider
 import io.ktor.client.HttpClient
@@ -14,29 +12,29 @@ import kotlinx.serialization.json.Json
 
 internal class KtorClientProviderImpl(
     private val applicationLogger: fr.cassette.cassette.core.logger.Logger,
-
     private val cassetteRequestAuthenticationPluginProvider: CassetteRequestAuthenticationPluginProvider,
-    private val cassetteRequestDefaultsPluginProvider: CassetteRequestDefaultsPluginProvider
+    private val cassetteRequestDefaultsPluginProvider: CassetteRequestDefaultsPluginProvider,
 ) : KtorClientProvider {
+    override fun getClient(): HttpClient =
+        HttpClient(Android) {
+            expectSuccess = true
 
-    override fun getClient(): HttpClient = HttpClient(Android) {
-        expectSuccess = true
-
-        install(cassetteRequestAuthenticationPluginProvider.getPlugin())
-        install(cassetteRequestDefaultsPluginProvider.getPlugin())
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    ignoreUnknownKeys = true
-                },
-            )
-        }
-        install(Logging){
-            logger = object: Logger {
-                override fun log(message: String) {
-                    applicationLogger.d(message)
-                }
+            install(cassetteRequestAuthenticationPluginProvider.getPlugin())
+            install(cassetteRequestDefaultsPluginProvider.getPlugin())
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                    },
+                )
+            }
+            install(Logging) {
+                logger =
+                    object : Logger {
+                        override fun log(message: String) {
+                            applicationLogger.d(message)
+                        }
+                    }
             }
         }
-    }
 }

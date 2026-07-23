@@ -1,7 +1,6 @@
 package fr.cassette.cassette.presentation.albumDetail.core
 
 import android.graphics.Bitmap
-import android.graphics.Color as AndroidColor
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,6 +11,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import kotlin.math.max
 import kotlin.math.min
+import android.graphics.Color as AndroidColor
 
 @Composable
 internal fun AlbumArtworkTheme(
@@ -19,9 +19,10 @@ internal fun AlbumArtworkTheme(
     content: @Composable () -> Unit,
 ) {
     val baseColorScheme = MaterialTheme.colorScheme
-    val albumColorScheme = remember(baseColorScheme, albumArt) {
-        albumArt?.let { buildAlbumColorScheme(baseColorScheme, it) } ?: baseColorScheme
-    }
+    val albumColorScheme =
+        remember(baseColorScheme, albumArt) {
+            albumArt?.let { buildAlbumColorScheme(baseColorScheme, it) } ?: baseColorScheme
+        }
 
     MaterialTheme(
         colorScheme = albumColorScheme,
@@ -31,7 +32,10 @@ internal fun AlbumArtworkTheme(
     )
 }
 
-private fun buildAlbumColorScheme(baseColorScheme: ColorScheme, bitmap: Bitmap): ColorScheme {
+private fun buildAlbumColorScheme(
+    baseColorScheme: ColorScheme,
+    bitmap: Bitmap,
+): ColorScheme {
     val seed = extractSeedColor(bitmap) ?: return baseColorScheme
     val seedArgb = seed.toArgb()
     val hsl = FloatArray(3)
@@ -47,7 +51,10 @@ private fun buildAlbumColorScheme(baseColorScheme: ColorScheme, bitmap: Bitmap):
     }
 }
 
-private fun buildDarkAlbumColorScheme(baseColorScheme: ColorScheme, seed: Color): ColorScheme {
+private fun buildDarkAlbumColorScheme(
+    baseColorScheme: ColorScheme,
+    seed: Color,
+): ColorScheme {
     val background = lerp(seed, Color.Black, 0.74f)
     val surfaceContainer = lerp(background, Color.White, 0.10f)
     val surfaceContainerHigh = lerp(background, Color.White, 0.14f)
@@ -55,14 +62,23 @@ private fun buildDarkAlbumColorScheme(baseColorScheme: ColorScheme, seed: Color)
     val primaryContainer = lerp(seed, Color.Black, 0.45f)
     val secondaryContainer = lerp(seed, Color.Black, 0.18f)
     val primary = buildAccentFromSeed(seed, lightnessDelta = 0.08f)
+    val secondary = buildSecondaryFromSeed(seed, isDark = true)
+    val tertiary = buildTertiaryFromSeed(seed, isDark = true)
+    val tertiaryContainer = lerp(tertiary, Color.Black, 0.45f)
 
     return baseColorScheme.copy(
         primary = primary,
         onPrimary = bestContrastContent(primary),
         primaryContainer = primaryContainer,
         onPrimaryContainer = bestContrastContent(primaryContainer),
+        secondary = secondary,
+        onSecondary = bestContrastContent(secondary),
         secondaryContainer = secondaryContainer,
         onSecondaryContainer = bestContrastContent(secondaryContainer),
+        tertiary = tertiary,
+        onTertiary = bestContrastContent(tertiary),
+        tertiaryContainer = tertiaryContainer,
+        onTertiaryContainer = bestContrastContent(tertiaryContainer),
         background = background,
         onBackground = Color(0xFFF7F2FF),
         surface = background,
@@ -74,7 +90,10 @@ private fun buildDarkAlbumColorScheme(baseColorScheme: ColorScheme, seed: Color)
     )
 }
 
-private fun buildLightAlbumColorScheme(baseColorScheme: ColorScheme, seed: Color): ColorScheme {
+private fun buildLightAlbumColorScheme(
+    baseColorScheme: ColorScheme,
+    seed: Color,
+): ColorScheme {
     val background = lerp(seed, Color.White, 0.80f)
     val surfaceContainer = lerp(seed, Color.White, 0.68f)
     val surfaceContainerHigh = lerp(seed, Color.White, 0.62f)
@@ -82,14 +101,23 @@ private fun buildLightAlbumColorScheme(baseColorScheme: ColorScheme, seed: Color
     val primaryContainer = lerp(seed, Color.White, 0.50f)
     val secondaryContainer = lerp(seed, Color.White, 0.62f)
     val primary = buildAccentFromSeed(seed, lightnessDelta = -0.12f)
+    val secondary = buildSecondaryFromSeed(seed, isDark = false)
+    val tertiary = buildTertiaryFromSeed(seed, isDark = false)
+    val tertiaryContainer = lerp(tertiary, Color.White, 0.50f)
 
     return baseColorScheme.copy(
         primary = primary,
         onPrimary = bestContrastContent(primary),
         primaryContainer = primaryContainer,
         onPrimaryContainer = bestContrastContent(primaryContainer),
+        secondary = secondary,
+        onSecondary = bestContrastContent(secondary),
         secondaryContainer = secondaryContainer,
         onSecondaryContainer = bestContrastContent(secondaryContainer),
+        tertiary = tertiary,
+        onTertiary = bestContrastContent(tertiary),
+        tertiaryContainer = tertiaryContainer,
+        onTertiaryContainer = bestContrastContent(tertiaryContainer),
         background = background,
         onBackground = Color(0xFF17141E),
         surface = background,
@@ -101,11 +129,37 @@ private fun buildLightAlbumColorScheme(baseColorScheme: ColorScheme, seed: Color
     )
 }
 
-private fun buildAccentFromSeed(seed: Color, lightnessDelta: Float): Color {
+private fun buildAccentFromSeed(
+    seed: Color,
+    lightnessDelta: Float,
+): Color {
     val hsl = FloatArray(3)
     ColorUtils.colorToHSL(seed.toArgb(), hsl)
     hsl[1] = (hsl[1] * 1.22f).coerceIn(0.46f, 0.92f)
     hsl[2] = (hsl[2] + lightnessDelta).coerceIn(0.34f, 0.72f)
+    return Color(ColorUtils.HSLToColor(hsl))
+}
+
+private fun buildSecondaryFromSeed(
+    seed: Color,
+    isDark: Boolean,
+): Color {
+    val hsl = FloatArray(3)
+    ColorUtils.colorToHSL(seed.toArgb(), hsl)
+    hsl[1] = (hsl[1] * 0.60f).coerceIn(0.12f, 0.38f)
+    hsl[2] = if (isDark) 0.48f else 0.44f
+    return Color(ColorUtils.HSLToColor(hsl))
+}
+
+private fun buildTertiaryFromSeed(
+    seed: Color,
+    isDark: Boolean,
+): Color {
+    val hsl = FloatArray(3)
+    ColorUtils.colorToHSL(seed.toArgb(), hsl)
+    hsl[0] = (hsl[0] + 60f) % 360f
+    hsl[1] = (hsl[1] * 0.90f).coerceIn(0.32f, 0.76f)
+    hsl[2] = if (isDark) 0.52f else 0.44f
     return Color(ColorUtils.HSLToColor(hsl))
 }
 
@@ -153,10 +207,11 @@ private fun extractSeedColor(bitmap: Bitmap): Color? {
     )
 }
 
-private fun Bitmap.readableCopy(): Bitmap? = when (config) {
-    Bitmap.Config.HARDWARE -> copy(Bitmap.Config.ARGB_8888, false)
-    else -> this
-}
+private fun Bitmap.readableCopy(): Bitmap? =
+    when (config) {
+        Bitmap.Config.HARDWARE -> copy(Bitmap.Config.ARGB_8888, false)
+        else -> this
+    }
 
 private fun bestContrastContent(background: Color): Color {
     val light = Color(0xFFF6F2FF)

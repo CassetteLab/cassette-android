@@ -28,16 +28,15 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun AnimatedCassetteHero(
-    modifier: Modifier = Modifier,
-) {
+internal fun AnimatedCassetteHero(modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition()
     val reelAngle by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3_500, easing = LinearEasing),
-        ),
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(durationMillis = 3_500, easing = LinearEasing),
+            ),
     )
     val accent = MaterialTheme.colorScheme.primary
     val accentContainer = MaterialTheme.colorScheme.primaryContainer
@@ -81,12 +80,13 @@ internal fun AnimatedCassetteHero(
                 accentContainer = accentContainer,
             )
 
-            val bodyPath = cassettePath(
-                left = left,
-                top = top,
-                width = cassetteWidth,
-                height = cassetteHeight,
-            )
+            val bodyPath =
+                cassettePath(
+                    left = left,
+                    top = top,
+                    width = cassetteWidth,
+                    height = cassetteHeight,
+                )
             drawPath(
                 path = bodyPath,
                 color = cassetteBody,
@@ -119,21 +119,23 @@ private fun cassettePath(
     top: Float,
     width: Float,
     height: Float,
-): Path = Path().apply {
-    val corner = width * 0.08f
-    val notch = height * 0.16f
-    addRoundRect(
-        roundRect = RoundRect(
-            rect = Rect(left, top, left + width, top + height),
-            cornerRadius = CornerRadius(corner, corner),
-        ),
-    )
-    moveTo(left + width * 0.25f, top + height)
-    lineTo(left + width * 0.33f, top + height - notch)
-    lineTo(left + width * 0.67f, top + height - notch)
-    lineTo(left + width * 0.75f, top + height)
-    close()
-}
+): Path =
+    Path().apply {
+        val corner = width * 0.08f
+        val notch = height * 0.16f
+        addRoundRect(
+            roundRect =
+                RoundRect(
+                    rect = Rect(left, top, left + width, top + height),
+                    cornerRadius = CornerRadius(corner, corner),
+                ),
+        )
+        moveTo(left + width * 0.25f, top + height)
+        lineTo(left + width * 0.33f, top + height - notch)
+        lineTo(left + width * 0.67f, top + height - notch)
+        lineTo(left + width * 0.75f, top + height)
+        close()
+    }
 
 private fun DrawScope.drawReel(
     center: Offset,

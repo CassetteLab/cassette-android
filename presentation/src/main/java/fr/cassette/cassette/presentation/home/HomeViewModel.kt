@@ -13,10 +13,10 @@ internal class HomeViewModel(
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     logger: Logger,
 ) : BaseViewModel<HomeUiState, HomeEvent>(
-    viewModelName = "HomeViewModel",
-    logger = logger,
-    initialState = HomeUiState(),
-) {
+        viewModelName = "HomeViewModel",
+        logger = logger,
+        initialState = HomeUiState(),
+    ) {
     init {
         loadRecentlyAddedAlbums()
     }
@@ -33,9 +33,11 @@ internal class HomeViewModel(
             updateState { it.copy(isLoading = true, hasError = false) }
             try {
                 val albums = getRecentlyAddedAlbumsUseCase(size = RECENT_ALBUMS_SIZE)
-                val albumCoverArts = albums.mapNotNull { album ->
-                    album.coverArtFilePath?.let { filePath -> album.id to AlbumCoverArt(filePath = filePath) }
-                }.toMap()
+                val albumCoverArts =
+                    albums
+                        .mapNotNull { album ->
+                            album.coverArtFilePath?.let { filePath -> album.id to AlbumCoverArt(filePath = filePath) }
+                        }.toMap()
                 updateState { it.copy(isLoading = false, albums = albums, albumCoverArts = albumCoverArts) }
 
                 albums.forEach { album ->

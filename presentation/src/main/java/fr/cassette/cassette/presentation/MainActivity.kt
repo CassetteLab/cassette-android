@@ -23,11 +23,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         lifecycleScope.launch {
-            val startDestination = if (hasServerConfigurationUseCase()) {
-                Screens.Main
-            } else {
-                Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen
-            }
+            val startDestination =
+                if (hasServerConfigurationUseCase()) {
+                    Screens.Main
+                } else {
+                    Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen
+                }
 
             setContent {
                 CassetteTheme {

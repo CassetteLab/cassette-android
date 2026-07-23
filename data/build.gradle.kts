@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -26,6 +27,10 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
 
+    // Media playback
+    implementation(libs.androidx.media3.datasource)
+    implementation(libs.androidx.media3.exoplayer)
+
     // Koin (Dependency Injection)
     implementation(libs.koin.android)
     implementation(libs.koin.core)
@@ -41,4 +46,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
+
+    // Palette
+    implementation(libs.androidx.palette)
 }

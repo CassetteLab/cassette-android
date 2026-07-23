@@ -11,8 +11,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val coreModule = module {
-    factoryOf(::LogcatLoggerImpl) bind Logger::class
-    singleOf(::AndroidApplicationInformationHelperImpl) bind ApplicationInformationHelper::class
-    singleOf(::AndroidKeystoreCipherHelperImpl) bind CipherHelper::class
-}
+val coreModule =
+    module {
+        factoryOf(::LogcatLoggerImpl) bind Logger::class
+        singleOf(::AndroidApplicationInformationHelperImpl) bind ApplicationInformationHelper::class
+        singleOf(::AndroidKeystoreCipherHelperImpl) bind CipherHelper::class
+    }

@@ -1,7 +1,7 @@
 package fr.cassette.cassette.presentation.albumDetail
 
-import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.domain.models.AlbumCoverArt
+import fr.cassette.cassette.domain.models.AlbumDetail
 import fr.cassette.cassette.domain.models.Track
 import fr.cassette.cassette.presentation.core.mvi.UiState
 
@@ -12,6 +12,4 @@ internal data class AlbumDetailUiState(
     val coverArt: AlbumCoverArt? = null,
     val isLoading: Boolean = false,
     val isTracksLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val hasTracksError: Boolean = false,
 ) : UiState

@@ -7,4 +7,5 @@ data class AlbumList(
     val coverArt: String?,
     val coverArtFilePath: String?,
     val created: String?,
+    val seedColor: Int? = null,
 )

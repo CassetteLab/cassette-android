@@ -44,9 +44,10 @@ internal fun SettingsAppInfoCard(
         tonalElevation = 2.dp,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp, vertical = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 18.dp, vertical = 16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -86,12 +87,13 @@ internal fun SettingsAppInfoCard(
             }
             Spacer(modifier = Modifier.height(12.dp))
             FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.tertiaryContainer),
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.tertiaryContainer),
                 ) {
                     Text(
                         text = versionLabel,
@@ -103,9 +105,10 @@ internal fun SettingsAppInfoCard(
                 }
 
                 Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.tertiaryContainer),
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.tertiaryContainer),
                 ) {
                     Text(
                         text = buildTypeLabel,
@@ -122,13 +125,13 @@ internal fun SettingsAppInfoCard(
 
 @Composable
 @PreviewLightDark
-private fun SettingsAppInfoCardPreview(){
+private fun SettingsAppInfoCardPreview() {
     CassetteTheme {
         SettingsAppInfoCard(
             appName = "Cassette",
             tagline = "HelloWord",
             versionLabel = "1.0.0",
-            buildTypeLabel = "Debug"
+            buildTypeLabel = "Debug",
         )
     }
 }

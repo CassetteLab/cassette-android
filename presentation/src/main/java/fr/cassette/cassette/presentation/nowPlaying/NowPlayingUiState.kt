@@ -1,10 +1,11 @@
 package fr.cassette.cassette.presentation.nowPlaying
 
 import fr.cassette.cassette.domain.models.AlbumCoverArt
+import fr.cassette.cassette.domain.models.RepeatMode
 import fr.cassette.cassette.presentation.core.mvi.UiState
 
 internal data class NowPlayingUiState(
-    val trackId: String,
+    val trackId: String = "",
     val title: String = "",
     val artist: String? = null,
     val album: String? = null,
@@ -16,20 +17,15 @@ internal data class NowPlayingUiState(
     val repeatMode: RepeatMode = RepeatMode.Off,
     val isFavorite: Boolean = false,
 ) : UiState {
-    val progress: Float = if (durationSeconds > 0) {
-        currentPositionSeconds.toFloat() / durationSeconds.toFloat()
-    } else {
-        0f
-    }.coerceIn(0f, 1f)
+    val progress: Float =
+        if (durationSeconds > 0) {
+            currentPositionSeconds.toFloat() / durationSeconds.toFloat()
+        } else {
+            0f
+        }.coerceIn(0f, 1f)
 
     val currentPositionLabel: String = currentPositionSeconds.toDurationLabel()
     val durationLabel: String = durationSeconds.toDurationLabel()
-}
-
-internal enum class RepeatMode {
-    Off,
-    All,
-    One,
 }
 
 private fun Int.toDurationLabel(): String = "%d:%02d".format(this / 60, this % 60)

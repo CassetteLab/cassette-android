@@ -28,10 +28,11 @@ internal fun ServerSection(
             placeholder = { Text(text = stringResource(R.string.server_configuration_server_url_placeholder)) },
             isError = !uiState.isUrlValid,
             singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.None,
-                keyboardType = KeyboardType.Uri,
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    keyboardType = KeyboardType.Uri,
+                ),
         )
         if (!uiState.isUrlValid) {
             Text(

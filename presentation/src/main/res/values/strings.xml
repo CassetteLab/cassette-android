@@ -53,11 +53,15 @@
     <!-- Album Detail -->
     <string name="album_detail_album_id">Album ID</string>
     <string name="album_detail_back">Back</string>
+    <string name="album_detail_loading_message">Loading album</string>
+    <string name="album_detail_tracks_loading_message">Loading album tracks</string>
     <string name="album_detail_cover_art">Cover art ID</string>
     <string name="album_detail_created">Created</string>
     <string name="album_detail_error_description">Check your server connection and try again.</string>
     <string name="album_detail_error_title">Unable to load album</string>
     <string name="album_detail_retry">Retry</string>
+    <string name="album_detail_meta_line">%1$s - %2$s</string>
+    <string name="album_detail_shuffle">Shuffle album</string>
     <string name="album_detail_title">Album</string>
     <string name="album_detail_tracks">Tracks</string>
     <plurals name="album_detail_tracks_count">
@@ -102,5 +106,36 @@
 
     <!-- Server Configuration Settings -->
     <string name="server_configuration_settings_title">Server configuration</string>
+
+    <!-- Album List -->
+    <string name="album_list_empty_description">All albums from your server will appear here.</string>
+    <string name="album_list_empty_title">No albums yet</string>
+    <string name="album_list_loading_albums">Loading albums</string>
+    <string name="album_list_error_description">Check your server connection and try again.</string>
+    <string name="album_list_error_title">Unable to load albums</string>
+    <string name="album_list_retry">Retry</string>
+    <string name="album_list_tab_title">Albums</string>
+    <string name="album_list_title">My Albums</string>
+    <string name="album_list_unknown_artist">Unknown artist</string>
+
+    <!-- Playlist List -->
+    <string name="playlist_list_empty_description">Your playlists will appear here.</string>
+    <string name="playlist_list_empty_title">No playlists yet</string>
+    <string name="playlist_list_error_description">Check your server connection and try again.</string>
+    <string name="playlist_list_error_title">Unable to load playlists</string>
+    <string name="playlist_list_loading_playlists">Loading playlists</string>
+    <string name="playlist_list_retry">Retry</string>
+    <string name="playlist_list_tab_title">Playlists</string>
+    <string name="playlist_list_title">Playlists</string>
+    <string name="playlist_list_track_count">%d tracks</string>
+
+    <!-- Playlist Detail -->
+    <string name="playlist_detail_loading_message">Loading playlist</string>
+    <string name="playlist_detail_tracks_loading_message">Loading playlist tracks</string>
+    <string name="playlist_detail_title">Playlist</string>
+    <plurals name="playlist_detail_tracks_count">
+        <item quantity="one">%d track</item>
+        <item quantity="other">%d tracks</item>
+    </plurals>
 
 </resources>

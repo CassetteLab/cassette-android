@@ -5,10 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import fr.cassette.cassette.data.local.embeddeds.ServerConfigurationWithCustomHeaders
 import fr.cassette.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
 import fr.cassette.cassette.data.local.entities.ServerConfigurationEntity
-import fr.cassette.cassette.data.local.embeddeds.ServerConfigurationWithCustomHeaders
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface ServerConfigurationDao {

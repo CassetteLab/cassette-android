@@ -25,9 +25,10 @@ internal fun PlayerControlButton(
     content: @Composable () -> Unit,
 ) {
     IconButton(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(containerColor),
+        modifier =
+            modifier
+                .clip(CircleShape)
+                .background(containerColor),
         onClick = onClick,
     ) {
         ProvideTextStyle(value = MaterialTheme.typography.titleLarge) {

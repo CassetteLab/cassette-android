@@ -10,22 +10,21 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 internal fun OnBoardingCacheScreen(
     uiState: OnBoardingCacheUiState,
-    onEvent: (OnBoardingCacheEvent) -> Unit
-){
+    onEvent: (OnBoardingCacheEvent) -> Unit,
+) {
     Scaffold { contentPadding ->
         Column(
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(contentPadding),
         ) {
-
         }
     }
 }
 
 @Composable
 @Preview
-private fun OnBoardingCacheScreenPreview(){
+private fun OnBoardingCacheScreenPreview() {
     OnBoardingCacheScreen(
         uiState = OnBoardingCacheUiState(),
-        onEvent = {}
+        onEvent = {},
     )
 }
