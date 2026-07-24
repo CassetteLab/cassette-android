@@ -6,14 +6,26 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
+    private var keepSplash = true
 
-        setContent {
-            App()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().setKeepOnScreenCondition { keepSplash }
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        lifecycleScope.launch {
+            val hasValidServerConfiguration = hasValidServerConfiguration(applicationContext)
+
+            setContent {
+                App(hasValidServerConfiguration = hasValidServerConfiguration)
+            }
+
+            keepSplash = false
         }
     }
 }
@@ -21,5 +33,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+    App(hasValidServerConfiguration = false)
 }

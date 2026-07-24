@@ -9,7 +9,7 @@ import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import org.koin.compose.KoinApplication
 
 @Composable
-fun App() {
+fun App(hasValidServerConfiguration: Boolean) {
     val platformModule = platformModule()
     KoinApplication(
         application = {
@@ -18,7 +18,12 @@ fun App() {
     ) {
         CassetteTheme {
             CassetteNavigation(
-                startDestination = Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen,
+                startDestination =
+                    if (hasValidServerConfiguration) {
+                        Screens.Main
+                    } else {
+                        Screens.OnBoardingScreens.OnBoardingScreensWelcomeScreen
+                    },
             )
         }
     }

@@ -29,4 +29,9 @@
     <string name="server_configuration_server_url_placeholder">https://music.example.com</string>
     <string name="server_configuration_title">Add Server</string>
     <string name="server_configuration_username_label">Username</string>
+    <string name="album_list_empty_description">Albums from your server will appear here after a refresh.</string>
+    <string name="album_list_empty_title">No albums yet</string>
+    <string name="album_list_refresh">Refresh</string>
+    <string name="album_list_title">Albums</string>
+    <string name="album_list_unknown_artist">Unknown artist</string>
 </resources>

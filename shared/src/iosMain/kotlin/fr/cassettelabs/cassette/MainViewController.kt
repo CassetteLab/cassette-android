@@ -2,4 +2,7 @@ package fr.cassettelabs.cassette
 
 import androidx.compose.ui.window.ComposeUIViewController
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController(hasValidServerConfiguration: Boolean) =
+    ComposeUIViewController {
+        App(hasValidServerConfiguration = hasValidServerConfiguration)
+    }

@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
+import fr.cassettelabs.cassette.presentation.home.HomeScreen
+import fr.cassettelabs.cassette.presentation.home.HomeViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteEvent
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteScreen
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
@@ -89,9 +91,14 @@ fun CassetteNavigation(
         }
 
         composable<Screens.Main> {
-            LaunchedEffect(Unit) {
-                onOnBoardingCompleted()
-            }
+            val viewModel = koinViewModel<HomeViewModel>()
+            val uiState by viewModel.uiState.collectAsState()
+
+            LaunchedEffect(Unit) { onOnBoardingCompleted() }
+            HomeScreen(
+                uiState = uiState,
+                onEvent = viewModel::onEvent,
+            )
         }
     }
 }

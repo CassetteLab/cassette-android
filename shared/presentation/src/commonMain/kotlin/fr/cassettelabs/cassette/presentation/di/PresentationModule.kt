@@ -1,6 +1,7 @@
 package fr.cassettelabs.cassette.presentation.di
 
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
+import fr.cassettelabs.cassette.presentation.home.HomeViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
@@ -13,4 +14,5 @@ val presentationModule =
         viewModelOf(::OnBoardingCacheViewModel)
         viewModelOf(::OnBoardingCompleteViewModel)
         viewModelOf(::OnBoardingWelcomeViewModel)
+        viewModelOf(::HomeViewModel)
     }
