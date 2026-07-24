@@ -24,12 +24,15 @@ import fr.cassettelabs.cassette.domain.repositories.ServerConfigurationRepositor
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val dataModule =
     module {
+        includes(dataPlatformModule)
+
         single<CassetteDatabase> {
             get<DatabaseBuilderFactory>()
                 .create()
@@ -56,4 +59,7 @@ val dataModule =
         singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
         singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class
         singleOf(::PlaybackRepositoryImpl) bind PlaybackRepository::class
+
     }
+
+expect val dataPlatformModule : Module

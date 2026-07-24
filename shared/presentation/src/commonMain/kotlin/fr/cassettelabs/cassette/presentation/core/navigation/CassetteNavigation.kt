@@ -20,12 +20,10 @@ import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingWelcome.OnBoar
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CassetteNavigation(
     startDestination: Screens,
     modifier: Modifier = Modifier,
-    onOnBoardingCompleted: () -> Unit = {},
 ) {
     val navController = rememberNavController()
 
@@ -92,7 +90,6 @@ fun CassetteNavigation(
         }
 
         composable<Screens.Main> {
-            LaunchedEffect(Unit) { onOnBoardingCompleted() }
             MainScreen()
         }
     }

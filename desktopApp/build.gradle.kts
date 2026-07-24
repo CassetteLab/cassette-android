@@ -8,8 +8,11 @@ plugins {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(project(":shared:domain"))
 
     implementation(compose.desktop.currentOs)
+    implementation(libs.koin.core)
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutinesSwing)
 
     implementation(libs.compose.uiToolingPreview)

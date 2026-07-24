@@ -22,11 +22,6 @@ struct ContentView: View {
                     .ignoresSafeArea()
             } else {
                 SplashView()
-                    .task {
-                        StartupConfiguration_iosKt.hasValidServerConfiguration { result in
-                            self.hasValidServerConfiguration = result.boolValue
-                        }
-                    }
             }
         }
     }

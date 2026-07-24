@@ -12,9 +12,11 @@ kotlin {
 }
 dependencies {
     implementation(project(":shared"))
+    implementation(project(":shared:domain"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.koin.android)
 
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)

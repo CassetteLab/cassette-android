@@ -20,24 +20,37 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.ui.window.awaitApplication
+import fr.cassettelabs.cassette.di.sharedModules
+import fr.cassettelabs.cassette.domain.usecases.HasServerConfigurationUseCase
+import kotlinx.coroutines.runBlocking
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.java.KoinJavaComponent.get
 
-fun main() = application {
-    var startupConfiguration by remember { mutableStateOf<Boolean?>(null) }
-
-    LaunchedEffect(Unit) {
-        startupConfiguration = hasValidServerConfiguration()
+fun main() = runBlocking {
+    startKoin {
+        modules(sharedModules())
     }
 
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Cassette",
-    ) {
-        val hasValidServerConfiguration = startupConfiguration
-        if (hasValidServerConfiguration == null) {
-            DesktopSplashScreen()
-        } else {
-            App(hasValidServerConfiguration = hasValidServerConfiguration)
+    awaitApplication {
+
+        val hasServerConfigurationUseCase : HasServerConfigurationUseCase = get(HasServerConfigurationUseCase::class.java)
+        var startupConfiguration by remember { mutableStateOf<Boolean?>(null) }
+
+        LaunchedEffect(Unit) {
+            startupConfiguration = hasServerConfigurationUseCase()
+        }
+
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Cassette",
+        ) {
+            val hasValidServerConfiguration = startupConfiguration
+            if (hasValidServerConfiguration == null) {
+                DesktopSplashScreen()
+            } else {
+                App(hasValidServerConfiguration = hasValidServerConfiguration)
+            }
         }
     }
 }

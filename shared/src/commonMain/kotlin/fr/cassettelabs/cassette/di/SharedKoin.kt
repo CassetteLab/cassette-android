@@ -1,6 +1,5 @@
 package fr.cassettelabs.cassette.di
 
-import androidx.compose.runtime.Composable
 import fr.cassettelabs.cassette.core.di.coreModule
 import fr.cassettelabs.cassette.data.di.dataModule
 import fr.cassettelabs.cassette.domain.di.domainModule
@@ -14,6 +13,3 @@ fun sharedModules(): List<Module> =
         dataModule,
         presentationModule,
     )
-
-@Composable
-expect fun platformModule(): Module
