@@ -1,5 +1,15 @@
 package fr.cassettelabs.cassette.presentation.core.serverConfiguration.core
 
+import cassette.shared.presentation.generated.resources.server_configuration_header_name_label
+import cassette.shared.presentation.generated.resources.server_configuration_header_name_placeholder
+import cassette.shared.presentation.generated.resources.server_configuration_header_name_error
+import cassette.shared.presentation.generated.resources.server_configuration_header_value_label
+import cassette.shared.presentation.generated.resources.server_configuration_header_value_hide
+import cassette.shared.presentation.generated.resources.server_configuration_header_value_show
+import cassette.shared.presentation.generated.resources.server_configuration_header_value_error
+import cassette.shared.presentation.generated.resources.server_configuration_remove_header
+import cassette.shared.presentation.generated.resources.Res
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,22 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import cassette.shared.presentation.generated.resources.Res
-import cassette.shared.presentation.generated.resources.server_configuration_header_name_error
-import cassette.shared.presentation.generated.resources.server_configuration_header_name_label
-import cassette.shared.presentation.generated.resources.server_configuration_header_name_placeholder
-import cassette.shared.presentation.generated.resources.server_configuration_header_value_error
-import cassette.shared.presentation.generated.resources.server_configuration_header_value_hide
-import cassette.shared.presentation.generated.resources.server_configuration_header_value_label
-import cassette.shared.presentation.generated.resources.server_configuration_header_value_show
-import cassette.shared.presentation.generated.resources.server_configuration_remove_header
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationHeaderUiState
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun CustomHeaderRow(

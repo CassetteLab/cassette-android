@@ -14,6 +14,7 @@ val CassetteTextSecondary = Color(0xFF8C7DB8)
 val CassetteTextTertiary = Color(0xFF5E5080)
 val CassetteSeparator = Color(0x268060F7)
 val CassetteOutline = Color(0x388060F7)
+
 val CassetteLightBackgroundPrimary = Color(0xFFF6F4FF)
 val CassetteLightBackgroundSecondary = Color(0xFFEDEAFF)
 val CassetteLightBackgroundTertiary = Color(0xFFFFFFFF)

@@ -28,9 +28,21 @@ internal class ServerConfigurationViewModel(
 
     override fun handleEvent(event: ServerConfigurationEvent) {
         when (event) {
-            is ServerConfigurationEvent.OnServerUrlChanged -> updateState { it.copy(serverUrl = event.value, error = null, isSaved = false) }
-            is ServerConfigurationEvent.OnUsernameChanged -> updateState { it.copy(username = event.value, error = null, isSaved = false) }
-            is ServerConfigurationEvent.OnPasswordChanged -> updateState { it.copy(password = event.value, error = null, isSaved = false) }
+            is ServerConfigurationEvent.OnServerUrlChanged ->
+                updateState { uiState ->
+                    uiState.copy(serverUrl = event.value, error = null, isSaved = false)
+                }
+
+            is ServerConfigurationEvent.OnUsernameChanged ->
+                updateState { uiState ->
+                    uiState.copy(username = event.value, error = null, isSaved = false)
+                }
+
+            is ServerConfigurationEvent.OnPasswordChanged ->
+                updateState { uiState ->
+                    uiState.copy(password = event.value, error = null, isSaved = false)
+                }
+
             ServerConfigurationEvent.OnAddHeaderClicked ->
                 updateState { uiState ->
                     uiState.copy(
@@ -39,11 +51,31 @@ internal class ServerConfigurationViewModel(
                         isSaved = false,
                     )
                 }
+
             is ServerConfigurationEvent.OnRemoveHeaderClicked ->
-                updateState { uiState -> uiState.copy(customHeaders = uiState.customHeaders.filterNot { it.id == event.id }, error = null, isSaved = false) }
-            is ServerConfigurationEvent.OnHeaderNameChanged -> updateHeader(event.id) { it.copy(name = event.value) }
-            is ServerConfigurationEvent.OnHeaderValueChanged -> updateHeader(event.id) { it.copy(value = event.value) }
-            is ServerConfigurationEvent.OnHeaderValueVisibilityChanged -> updateHeader(event.id) { it.copy(isValueVisible = event.isVisible) }
+                updateState { uiState ->
+                    uiState.copy(
+                        customHeaders = uiState.customHeaders.filterNot { it.id == event.id },
+                        error = null,
+                        isSaved = false,
+                    )
+                }
+
+            is ServerConfigurationEvent.OnHeaderNameChanged ->
+                updateHeader(event.id) { header ->
+                    header.copy(name = event.value)
+                }
+
+            is ServerConfigurationEvent.OnHeaderValueChanged ->
+                updateHeader(event.id) { header ->
+                    header.copy(value = event.value)
+                }
+
+            is ServerConfigurationEvent.OnHeaderValueVisibilityChanged ->
+                updateHeader(event.id) { header ->
+                    header.copy(isValueVisible = event.isVisible)
+                }
+
             ServerConfigurationEvent.OnConnectClicked -> saveServerConfiguration()
             ServerConfigurationEvent.OnBackClicked -> Unit
         }
@@ -84,7 +116,13 @@ internal class ServerConfigurationViewModel(
                 saveServerConfigurationUseCase(serverConfiguration)
                 updateState { it.copy(isLoading = false, isSaved = true) }
             } catch (_: Exception) {
-                updateState { it.copy(isLoading = false, error = ServerConfigurationError.ConnectionFailed, isSaved = false) }
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        error = ServerConfigurationError.ConnectionFailed,
+                        isSaved = false,
+                    )
+                }
             }
         }
     }
@@ -95,7 +133,10 @@ internal class ServerConfigurationViewModel(
     ) {
         updateState { uiState ->
             uiState.copy(
-                customHeaders = uiState.customHeaders.map { header -> if (header.id == id) transform(header) else header },
+                customHeaders =
+                    uiState.customHeaders.map { header ->
+                        if (header.id == id) transform(header) else header
+                    },
                 error = null,
                 isSaved = false,
             )
@@ -107,6 +148,12 @@ internal class ServerConfigurationViewModel(
             serverUrl = serverUrl,
             username = username,
             password = password,
-            customHeaders = customHeaders.map { ServerConfigurationCustomHeader(name = it.name, value = it.value) },
+            customHeaders =
+                customHeaders.map { header ->
+                    ServerConfigurationCustomHeader(
+                        name = header.name,
+                        value = header.value,
+                    )
+                },
         )
 }

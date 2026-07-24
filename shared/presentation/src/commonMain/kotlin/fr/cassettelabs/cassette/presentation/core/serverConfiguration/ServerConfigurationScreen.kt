@@ -9,13 +9,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.core.CredentialsSection
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.core.CustomHeadersSection
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.core.ServerSection
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun ServerConfigurationScreenContent(

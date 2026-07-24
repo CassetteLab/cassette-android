@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.presentation.core.navigation
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -9,8 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
-import fr.cassettelabs.cassette.presentation.home.HomeScreen
-import fr.cassettelabs.cassette.presentation.home.HomeViewModel
+import fr.cassettelabs.cassette.presentation.main.MainScreen
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteEvent
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteScreen
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
@@ -20,6 +20,7 @@ import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingWelcome.OnBoar
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CassetteNavigation(
     startDestination: Screens,
@@ -91,14 +92,8 @@ fun CassetteNavigation(
         }
 
         composable<Screens.Main> {
-            val viewModel = koinViewModel<HomeViewModel>()
-            val uiState by viewModel.uiState.collectAsState()
-
             LaunchedEffect(Unit) { onOnBoardingCompleted() }
-            HomeScreen(
-                uiState = uiState,
-                onEvent = viewModel::onEvent,
-            )
+            MainScreen()
         }
     }
 }

@@ -12,13 +12,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun FormSection(
-    title: StringResource,
+    titleRes: StringResource,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
@@ -31,7 +31,7 @@ internal fun FormSection(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = stringResource(title),
+                text = stringResource(titleRes),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium,
             )

@@ -1,7 +1,6 @@
 package fr.cassettelabs.cassette.presentation.core.mvi
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +12,6 @@ internal abstract class BaseViewModel<S : UiState, E : Event>(
     initialState: S,
     protected val logger: Logger,
 ) : ViewModel() {
-    protected val scope = viewModelScope
     private val _uiState = MutableStateFlow(initialState)
     val uiState: StateFlow<S> = _uiState.asStateFlow()
 
@@ -23,10 +21,11 @@ internal abstract class BaseViewModel<S : UiState, E : Event>(
 
     fun onEvent(event: E) {
         if (event is SensitiveEvent) {
-            logger.d("$viewModelName received new sensitive event")
+            logger.d("$viewModelName received new sensitive event: ${event::class.simpleName}")
         } else {
             logger.d("$viewModelName received new event: $event")
         }
+
         handleEvent(event)
     }
 
