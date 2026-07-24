@@ -1,7 +1,9 @@
 package fr.cassettelabs.cassette.data.remote.datasources
 
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
+import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.dto.AlbumListResponseDto
+import fr.cassettelabs.cassette.data.remote.ktor.sha256
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.AlbumDetail
 import fr.cassettelabs.cassette.domain.models.AlbumList
@@ -14,6 +16,7 @@ import io.ktor.client.request.parameter
 internal class AlbumRemoteDataSourceImpl(
     private val serverConfigurationDao: ServerConfigurationDao,
     private val httpClient: HttpClient,
+    private val coverArtProcessor: CoverArtProcessor,
 ) {
     suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> = getAlbumList(type = "newest", size = size)
 
@@ -75,6 +78,29 @@ internal class AlbumRemoteDataSourceImpl(
         coverArtId: String,
         size: Int?,
     ): AlbumCoverArt {
-        throw UnsupportedOperationException("Album cover art file caching is not migrated to commonMain yet")
+        val configuration =
+            serverConfigurationDao.getServerConfiguration()
+                ?: throw IllegalStateException("No server configuration found")
+        val server = configuration.serverConfiguration
+
+        val cacheKey = coverArtCacheKey(server.serverUrl, coverArtId, size)
+
+        val bytes =
+            httpClient
+                .get("${server.serverUrl.trimEnd('/')}/rest/getCoverArt.view") {
+                    parameter("id", coverArtId)
+                    size?.let { parameter("size", it) }
+                }.body<ByteArray>()
+
+        val filePath = coverArtProcessor.saveCoverArt(bytes, cacheKey)
+        return AlbumCoverArt(filePath = filePath)
     }
+
+    private fun coverArtCacheKey(
+        serverUrl: String,
+        coverArtId: String,
+        size: Int?,
+    ): String = sha256("${serverUrl.trimEnd('/')}|$coverArtId|${size.orEmpty()}")
+
+    private fun Int?.orEmpty(): String = this?.toString().orEmpty()
 }

@@ -33,6 +33,9 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
+            implementation(libs.androidx.media3.datasource)
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.palette)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
