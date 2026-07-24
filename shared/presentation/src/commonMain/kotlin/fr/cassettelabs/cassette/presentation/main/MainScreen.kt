@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -60,6 +61,9 @@ import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
 import fr.cassettelabs.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
+import navigation.ModalBottomSheetLayout
+import navigation.bottomSheet
+import navigation.rememberBottomSheetNavigator
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -70,7 +74,8 @@ internal fun MainScreen() {
     val uiState by viewModel.uiState.collectAsState()
     val startDestination = MainTab.Home
     var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
-    val navController = rememberNavController()
+    val bottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true)
+    val navController = rememberNavController(bottomSheetNavigator)
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(MainEvent.OnAppearing)
@@ -121,10 +126,18 @@ internal fun MainScreen() {
                     PaddingValues()
             }
 
-            NavHost(
-                startDestination = startDestination.destination,
-                navController = navController,
+            ModalBottomSheetLayout(
+                modifier =
+                    Modifier
+                        .fillMaxSize(),
+                dragHandle = null,
+                bottomSheetNavigator = bottomSheetNavigator,
+//                contentWindowInsets = { WindowInsets(0.dp) },
             ) {
+                NavHost(
+                    startDestination = startDestination.destination,
+                    navController = navController,
+                ) {
                     composable<Screens.Home> {
                         val viewModel: HomeViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsState()
@@ -274,7 +287,7 @@ internal fun MainScreen() {
                         )
                     }
 
-                    composable<Screens.NowPlaying> {
+                    bottomSheet<Screens.NowPlaying> {
                         val viewModel = koinViewModel<NowPlayingViewModel>()
                         val uiState by viewModel.uiState.collectAsState()
 
@@ -289,6 +302,7 @@ internal fun MainScreen() {
                             },
                         )
                     }
+                }
             }
 
             if (uiState.currentTrack != null) {
@@ -315,6 +329,7 @@ internal fun MainScreen() {
                         navController.navigate(Screens.NowPlaying)
                     },
                 )
+
             }
         }
     }
