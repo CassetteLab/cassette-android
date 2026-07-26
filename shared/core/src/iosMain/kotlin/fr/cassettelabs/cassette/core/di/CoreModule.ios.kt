@@ -11,7 +11,6 @@ import org.koin.dsl.module
 
 actual val corePlatformModule: Module
     get() = module {
-        singleOf(::IosApplicationInformationHelper) bind IosApplicationInformationHelper::class
+        singleOf(::IosApplicationInformationHelper) bind ApplicationInformationHelper::class
         singleOf(::IosCipherHelper) bind CipherHelper::class
-
     }
