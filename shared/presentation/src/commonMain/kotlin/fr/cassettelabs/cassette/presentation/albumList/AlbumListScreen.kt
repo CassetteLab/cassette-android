@@ -70,7 +70,10 @@ internal fun AlbumListScreen(
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = stringResource(Res.string.album_list_title))
+                        Text(
+                            text = stringResource(Res.string.album_list_title),
+                            style = MaterialTheme.typography.headlineLarge
+                        )
                     }
                 },
             )

@@ -53,6 +53,7 @@ fun CassetteTheme(
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+        typography = CassetteTypography(),
         content = content,
     )
 }
