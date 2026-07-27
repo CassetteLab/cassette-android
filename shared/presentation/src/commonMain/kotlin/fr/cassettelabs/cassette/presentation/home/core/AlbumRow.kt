@@ -27,13 +27,13 @@ import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.AlbumList
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
 @Composable
 internal fun AlbumRow(
-    album: AlbumList,
+    album: Album,
     coverArt: AlbumCoverArtModel?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

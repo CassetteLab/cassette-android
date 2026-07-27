@@ -3,7 +3,6 @@ package fr.cassettelabs.cassette.presentation.albumDetail
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
@@ -34,7 +33,7 @@ internal class AlbumDetailViewModel(
     init {
         getCurrentTrackUseCase()
             .onEach { currentTrack ->
-                updateState { it.copy(currentTrackId = currentTrack?.track?.id) }
+                updateState { it.copy(currentTrackId = currentTrack?.id) }
             }.launchIn(viewModelScope)
 
         getPlaybackStateUseCase()
@@ -58,16 +57,15 @@ internal class AlbumDetailViewModel(
         val album = uiState.value.album ?: return
         val contextTracks =
             uiState.value.tracks.map { track ->
-                CurrentTrack(
-                    track = track,
+                track.copy(
                     albumId = album.id,
                     albumName = album.name,
-                    coverArtId = album.coverArt ?: album.id,
+                    coverArt = album.coverArt ?: album.id,
                     coverArtFilePath = album.coverArtFilePath,
                 )
             }
         contextTracks
-            .firstOrNull { it.track.id == trackId }
+            .firstOrNull { it.id == trackId }
             ?.let { currentTrack ->
                 viewModelScope.launch {
                     playTrackUseCase(

@@ -37,14 +37,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import fr.cassettelabs.cassette.domain.models.AlbumList
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.presentation.core.seedColorToAlbumArtColors
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun AlbumListItem(
     modifier: Modifier = Modifier,
-    album: AlbumList,
+    album: Album,
     onClick: () -> Unit,
 ) {
     var albumColors by remember(album.seedColor) {
@@ -155,7 +155,7 @@ private fun AlbumListItemPreview() {
         Column {
             AlbumListItem(
                 album =
-                    AlbumList(
+                    Album(
                         id = "1",
                         name = "Little Dark Age",
                         artist = "MGMT",

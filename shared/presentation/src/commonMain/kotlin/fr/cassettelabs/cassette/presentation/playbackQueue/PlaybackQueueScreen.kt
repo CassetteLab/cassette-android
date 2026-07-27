@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueEmptyState
@@ -80,7 +79,7 @@ internal fun PlaybackQueueScreen(
             ) {
                 itemsIndexed(
                     items = uiState.upcomingTracks,
-                    key = { _, currentTrack -> currentTrack.track.id },
+                    key = { _, track -> track.id },
                 ) { index, currentTrack ->
                     PlaybackQueueTrackRow(
                         position = index + 1,
@@ -101,18 +100,26 @@ private fun PlaybackQueueScreenPreview() {
                 PlaybackQueueUiState(
                     upcomingTracks =
                         listOf(
-                            CurrentTrack(
-                                track = Track(id = "track-1", title = "Aerodynamic", artist = "Daft Punk", trackNumber = 2, durationSeconds = 212),
+                            Track(
+                                id = "track-1",
+                                title = "Aerodynamic",
+                                artist = "Daft Punk",
+                                trackNumber = 2,
+                                durationSeconds = 212,
                                 albumId = "album-1",
                                 albumName = "Discovery",
-                                coverArtId = null,
+                                coverArt = null,
                                 coverArtFilePath = null,
                             ),
-                            CurrentTrack(
-                                track = Track(id = "track-2", title = "Digital Love", artist = "Daft Punk", trackNumber = 3, durationSeconds = 301),
+                            Track(
+                                id = "track-2",
+                                title = "Digital Love",
+                                artist = "Daft Punk",
+                                trackNumber = 3,
+                                durationSeconds = 301,
                                 albumId = "album-1",
                                 albumName = "Discovery",
-                                coverArtId = null,
+                                coverArt = null,
                                 coverArtFilePath = null,
                             ),
                         ),

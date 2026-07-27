@@ -2,7 +2,7 @@ package fr.cassettelabs.cassette.presentation.main
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
+import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
@@ -61,8 +61,8 @@ internal class MainViewModel(
         }
     }
 
-    private fun loadCoverArt(currentTrack: CurrentTrack) {
-        val coverArtId = currentTrack.coverArtId ?: return
+    private fun loadCoverArt(currentTrack: Track) {
+        val coverArtId = currentTrack.coverArt ?: return
         viewModelScope.launch {
             runCatching {
                 getAlbumCoverArtUseCase(
@@ -72,7 +72,7 @@ internal class MainViewModel(
                 )
             }.onSuccess { coverArt ->
                 updateState { state ->
-                    if (state.currentTrack?.track?.id == currentTrack.track.id) {
+                    if (state.currentTrack?.id == currentTrack.id) {
                         state.copy(coverArtFilePath = coverArt.filePath)
                     } else {
                         state

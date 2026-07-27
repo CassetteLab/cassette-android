@@ -344,8 +344,8 @@ internal fun MainScreen() {
                         Modifier
                             .align(Alignment.BottomCenter)
                             .padding(12.dp),
-                    track = uiState.currentTrack?.track?.title ?: "",
-                    artist = uiState.currentTrack?.track?.artist ?: "",
+                    track = uiState.currentTrack?.title ?: "",
+                    artist = uiState.currentTrack?.artist ?: "",
                     coverArtFilePath = uiState.coverArtFilePath,
                     isPlaying = uiState.isPlaying,
                     onPlayPause = {

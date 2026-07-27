@@ -2,7 +2,7 @@ package fr.cassettelabs.cassette.presentation.playlistList
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.models.PlaylistList
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.usecases.playlistList.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.RefreshPlaylistsUseCase
@@ -58,7 +58,7 @@ internal class PlaylistListViewModel(
         }
     }
 
-    private suspend fun downloadMissingPlaylistCoverArts(playlists: List<PlaylistList>) {
+    private suspend fun downloadMissingPlaylistCoverArts(playlists: List<Playlist>) {
         playlists.forEach { playlist ->
             if (playlist.coverArtFilePath != null) return@forEach
 

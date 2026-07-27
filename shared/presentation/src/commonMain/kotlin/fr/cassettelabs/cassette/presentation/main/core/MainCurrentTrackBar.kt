@@ -34,17 +34,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
+import fr.cassettelabs.cassette.domain.models.Track
 
 @Composable
 internal fun MainCurrentTrackBar(
-    currentTrack: CurrentTrack,
+    currentTrack: Track,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val track = currentTrack.track
     val artist =
-        track.artist?.takeIf { it.isNotBlank() }
+        currentTrack.artist?.takeIf { it.isNotBlank() }
             ?: stringResource(Res.string.main_unknown_artist)
     val openNowPlayingDescription = stringResource(Res.string.main_open_now_playing)
 
@@ -88,7 +87,7 @@ internal fun MainCurrentTrackBar(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = track.title,
+                    text = currentTrack.title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,

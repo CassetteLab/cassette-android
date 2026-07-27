@@ -1,15 +1,14 @@
 package fr.cassettelabs.cassette.domain.repositories
 
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
-import fr.cassettelabs.cassette.domain.models.PlaylistDetail
-import fr.cassettelabs.cassette.domain.models.PlaylistList
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistRepository {
-    fun getAllPlaylists(): Flow<List<PlaylistList>>
+    fun getAllPlaylists(): Flow<List<Playlist>>
 
-    suspend fun getPlaylist(playlistId: String): PlaylistDetail
+    suspend fun getPlaylist(playlistId: String): Playlist
 
     suspend fun getPlaylistTracks(playlistId: String): List<Track>
 

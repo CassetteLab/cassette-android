@@ -1,7 +1,6 @@
 package fr.cassettelabs.cassette.data.remote.dto
 
-import fr.cassettelabs.cassette.domain.models.PlaylistDetail
-import fr.cassettelabs.cassette.domain.models.PlaylistList
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,8 +33,8 @@ internal data class PlaylistDto(
     val entry: List<PlaylistSongDto> = emptyList(),
     val song: List<PlaylistSongDto> = emptyList(),
 ) {
-    fun toListDomain(): PlaylistList =
-        PlaylistList(
+    fun toDomain(): Playlist =
+        Playlist(
             id = id,
             name = name,
             trackCount = songCount,
@@ -44,16 +43,7 @@ internal data class PlaylistDto(
             created = created?.takeIf { it.isNotBlank() },
         )
 
-    fun toDetailDomain(): PlaylistDetail =
-        PlaylistDetail(
-            id = id,
-            name = name,
-            trackCount = songCount,
-            coverArt = coverArt?.takeIf { it.isNotBlank() },
-            coverArtFilePath = null,
-            created = created?.takeIf { it.isNotBlank() },
-            tracks = (entry.ifEmpty { song }).map { it.toDomain() },
-        )
+    fun tracksToDomain(): List<Track> = (entry.ifEmpty { song }).map { it.toDomain() }
 }
 
 @Serializable

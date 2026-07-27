@@ -23,13 +23,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
+import fr.cassettelabs.cassette.domain.models.Track
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun PlaybackQueueTrackRow(
     position: Int,
-    currentTrack: CurrentTrack,
+    currentTrack: Track,
 ) {
     Row(
         modifier =
@@ -62,7 +62,7 @@ internal fun PlaybackQueueTrackRow(
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             Text(
-                text = currentTrack.track.title,
+                text = currentTrack.title,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
@@ -70,7 +70,7 @@ internal fun PlaybackQueueTrackRow(
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = currentTrack.track.artist?.takeIf { it.isNotBlank() } ?: stringResource(Res.string.playback_queue_unknown_artist),
+                text = currentTrack.artist?.takeIf { it.isNotBlank() } ?: stringResource(Res.string.playback_queue_unknown_artist),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

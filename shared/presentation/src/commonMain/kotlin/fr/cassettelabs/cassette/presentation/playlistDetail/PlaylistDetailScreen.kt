@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.PlaylistDetail
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
@@ -124,14 +124,13 @@ private fun PlaylistDetailScreenPreview() {
                 PlaylistDetailUiState(
                     playlistId = "playlist-1",
                     playlist =
-                        PlaylistDetail(
+                        Playlist(
                             id = "playlist-1",
                             name = "Workout Mix",
                             trackCount = 2,
                             coverArt = "pl-123",
                             coverArtFilePath = null,
                             created = "2026-07-15T12:00:00",
-                            tracks = emptyList(),
                         ),
                     tracks =
                         listOf(

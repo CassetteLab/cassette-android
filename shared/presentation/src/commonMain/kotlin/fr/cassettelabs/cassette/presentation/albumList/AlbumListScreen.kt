@@ -39,7 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
-import fr.cassettelabs.cassette.domain.models.AlbumList
+import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumList.core.AlbumListItem
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
@@ -138,11 +139,13 @@ internal fun AlbumListScreen(
                         items = uiState.albums,
                         key = { album -> album.id },
                     ) { album ->
-                        AlbumListItem(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            album = album,
-                            onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
-                        )
+                        AlbumArtworkTheme(albumArt = album.coverArtFilePath) {
+                            AlbumListItem(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                album = album,
+                                onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
+                            )
+                        }
                     }
                 }
             }
@@ -160,7 +163,7 @@ private fun AlbumListScreenPreview() {
                     isLoading = false,
                     albums =
                         listOf(
-                            AlbumList(
+                            Album(
                                 id = "1",
                                 name = "Discovery",
                                 artist = "Daft Punk",
@@ -169,7 +172,7 @@ private fun AlbumListScreenPreview() {
                                 created = null,
                                 seedColor = null,
                             ),
-                            AlbumList(
+                            Album(
                                 id = "2",
                                 name = "In Rainbows",
                                 artist = "Radiohead",

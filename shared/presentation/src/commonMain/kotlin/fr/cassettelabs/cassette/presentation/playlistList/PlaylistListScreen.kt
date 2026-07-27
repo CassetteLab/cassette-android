@@ -36,7 +36,7 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.PlaylistList
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.home.core.HomeMessage
@@ -147,7 +147,7 @@ private fun PlaylistListScreenPreview() {
                     isLoading = false,
                     playlists =
                         listOf(
-                            PlaylistList(
+                            Playlist(
                                 id = "1",
                                 name = "Workout Mix",
                                 trackCount = 42,
@@ -156,7 +156,7 @@ private fun PlaylistListScreenPreview() {
                                 created = null,
                                 seedColor = null,
                             ),
-                            PlaylistList(
+                            Playlist(
                                 id = "2",
                                 name = "Chill Vibes",
                                 trackCount = 18,

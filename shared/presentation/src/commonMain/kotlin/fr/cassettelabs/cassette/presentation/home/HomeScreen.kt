@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.AlbumList
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.home.core.AlbumRow
 import fr.cassettelabs.cassette.presentation.home.core.HomeMessage
@@ -107,7 +107,7 @@ private fun HomeScreenPreview() {
                     isLoading = false,
                     albums =
                         listOf(
-                            AlbumList(
+                            Album(
                                 id = "1",
                                 name = "Discovery",
                                 artist = "Daft Punk",
@@ -115,7 +115,7 @@ private fun HomeScreenPreview() {
                                 coverArtFilePath = null,
                                 created = null,
                             ),
-                            AlbumList(
+                            Album(
                                 id = "2",
                                 name = "In Rainbows",
                                 artist = "Radiohead",

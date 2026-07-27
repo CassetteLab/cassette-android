@@ -1,19 +1,19 @@
 package fr.cassettelabs.cassette.domain.repositories
 
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackState
 import fr.cassettelabs.cassette.domain.models.RepeatMode
+import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaybackRepository {
-    val currentTrack: Flow<CurrentTrack?>
+    val currentTrack: Flow<Track?>
     val playbackState: Flow<PlaybackState>
-    val playbackQueue: Flow<List<CurrentTrack>>
+    val playbackQueue: Flow<List<Track>>
 
     suspend fun play(
-        currentTrack: CurrentTrack,
-        contextTracks: List<CurrentTrack> = emptyList(),
+        currentTrack: Track,
+        contextTracks: List<Track> = emptyList(),
         context: PlaybackContext? = null,
     )
 

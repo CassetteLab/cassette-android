@@ -1,9 +1,7 @@
 package fr.cassettelabs.cassette.presentation.albumDetail.core
 
 import cassette.shared.presentation.generated.resources.album_detail_title
-import cassette.shared.presentation.generated.resources.album_detail_meta_line
 import cassette.shared.presentation.generated.resources.album_detail_unknown_artist
-import cassette.shared.presentation.generated.resources.album_detail_tracks_count
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
@@ -22,14 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.AlbumDetail
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
 import fr.cassettelabs.cassette.presentation.core.ShuffleButton
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
@@ -37,9 +34,8 @@ import fr.cassettelabs.cassette.domain.models.AlbumCoverArt as AlbumCoverArtMode
 
 @Composable
 internal fun AlbumDetailHeader(
-    album: AlbumDetail?,
+    album: Album?,
     coverArt: AlbumCoverArtModel?,
-    tracksCount: Int,
     height: Dp,
     onShuffleClick: () -> Unit,
 ) {
@@ -90,12 +86,7 @@ internal fun AlbumDetailHeader(
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Text(
-                    text =
-                        stringResource(
-                            Res.string.album_detail_meta_line,
-                            album?.artist ?: stringResource(Res.string.album_detail_unknown_artist),
-                            pluralStringResource(Res.plurals.album_detail_tracks_count, tracksCount, tracksCount),
-                        ),
+                    text = album?.artist ?: stringResource(Res.string.album_detail_unknown_artist),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -115,7 +106,6 @@ private fun AlbumDetailHeaderPreview(){
 //        AlbumDetailHeader(
 //            album = TODO(),
 //            coverArt = TODO(),
-//            tracksCount = TODO(),
 //            height = TODO(),
 //            onShuffleClick = TODO()
 //        )

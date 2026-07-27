@@ -4,9 +4,8 @@ import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.dto.AlbumListResponseDto
 import fr.cassettelabs.cassette.data.remote.ktor.sha256
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
-import fr.cassettelabs.cassette.domain.models.AlbumDetail
-import fr.cassettelabs.cassette.domain.models.AlbumList
 import fr.cassettelabs.cassette.domain.models.Track
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -18,14 +17,14 @@ internal class AlbumRemoteDataSourceImpl(
     private val httpClient: HttpClient,
     private val coverArtProcessor: CoverArtProcessor,
 ) {
-    suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList> = getAlbumList(type = "newest", size = size)
+    suspend fun getRecentlyAddedAlbums(size: Int): List<Album> = getAlbumList(type = "newest", size = size)
 
-    suspend fun getAllAlbums(size: Int): List<AlbumList> = getAlbumList(type = "alphabeticalByName", size = size)
+    suspend fun getAllAlbums(size: Int): List<Album> = getAlbumList(type = "alphabeticalByName", size = size)
 
     private suspend fun getAlbumList(
         type: String,
         size: Int,
-    ): List<AlbumList> {
+    ): List<Album> {
         val configuration =
             serverConfigurationDao.getServerConfiguration()
                 ?: throw IllegalStateException("No server configuration found")
@@ -47,10 +46,25 @@ internal class AlbumRemoteDataSourceImpl(
         return subsonicResponse.albumList2
             ?.album
             .orEmpty()
-            .map { it.toListDomain() }
+            .map { it.toDomain() }
     }
 
-    suspend fun getAlbum(albumId: String): AlbumDetail {
+    suspend fun getAlbum(albumId: String): Album {
+        return getAlbumDto(albumId).toDomain()
+    }
+
+    suspend fun getAlbumWithTracks(albumId: String): Pair<Album, List<Track>> {
+        val album = getAlbumDto(albumId)
+        return album.toDomain() to album.tracksToDomain()
+    }
+
+    suspend fun getAlbumTracks(albumId: String): List<Track> = getAlbumDto(albumId).tracksToDomain()
+
+    private suspend fun getAlbumDto(albumId: String) =
+        getAlbumResponse(albumId).subsonicResponse.album
+            ?: throw IllegalStateException("Subsonic getAlbum returned no album")
+
+    private suspend fun getAlbumResponse(albumId: String): AlbumListResponseDto {
         val configuration =
             serverConfigurationDao.getServerConfiguration()
                 ?: throw IllegalStateException("No server configuration found")
@@ -68,11 +82,8 @@ internal class AlbumRemoteDataSourceImpl(
             throw IllegalStateException("Subsonic getAlbum failed")
         }
 
-        return subsonicResponse.album?.toDetailDomain()
-            ?: throw IllegalStateException("Subsonic getAlbum returned no album")
+        return response
     }
-
-    suspend fun getAlbumTracks(albumId: String): List<Track> = getAlbum(albumId).tracks
 
     suspend fun getAlbumCoverArt(
         coverArtId: String,

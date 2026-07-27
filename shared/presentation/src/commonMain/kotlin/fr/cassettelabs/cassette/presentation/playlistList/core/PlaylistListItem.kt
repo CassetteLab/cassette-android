@@ -37,13 +37,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import fr.cassettelabs.cassette.domain.models.PlaylistList
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.presentation.core.seedColorToAlbumArtColors
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun PlaylistListItem(
-    playlist: PlaylistList,
+    playlist: Playlist,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -150,7 +150,7 @@ private fun PlaylistListItemPreview() {
         Column {
             PlaylistListItem(
                 playlist =
-                    PlaylistList(
+                    Playlist(
                         id = "1",
                         name = "Chill Vibes",
                         trackCount = 18,

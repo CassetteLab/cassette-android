@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.AlbumDetail
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
@@ -75,7 +75,6 @@ internal fun AlbumDetailScreen(
                             AlbumDetailHeader(
                                 album = uiState.album,
                                 coverArt = uiState.coverArt,
-                                tracksCount = uiState.tracks.size,
                                 height = maxHeaderHeight,
                                 onShuffleClick = {
                                     uiState.tracks.randomOrNull()?.let { track ->
@@ -127,14 +126,13 @@ private fun AlbumDetailScreenPreview() {
                 AlbumDetailUiState(
                     albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
                     album =
-                        AlbumDetail(
+                        Album(
                             id = "2YuwDgPuXhF5ir4SjAl6Iw",
                             name = "Discovery",
                             artist = "Daft Punk",
                             coverArt = "al-123",
                             coverArtFilePath = null,
                             created = "2026-07-15T12:00:00",
-                            tracks = emptyList(),
                         ),
                     tracks =
                         listOf(

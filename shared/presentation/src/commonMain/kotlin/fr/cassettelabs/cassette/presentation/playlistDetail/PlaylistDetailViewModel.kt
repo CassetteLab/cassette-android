@@ -3,7 +3,6 @@ package fr.cassettelabs.cassette.presentation.playlistDetail
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.models.Track
@@ -43,16 +42,15 @@ internal class PlaylistDetailViewModel(
         val playlist = uiState.value.playlist ?: return
         val contextTracks =
             uiState.value.tracks.map { track ->
-                CurrentTrack(
-                    track = track,
+                track.copy(
                     albumId = track.albumId ?: playlist.id,
                     albumName = track.albumName,
-                    coverArtId = track.coverArt,
+                    coverArt = track.coverArt,
                     coverArtFilePath = track.coverArtFilePath,
                 )
             }
         contextTracks
-            .firstOrNull { it.track.id == trackId }
+            .firstOrNull { it.id == trackId }
             ?.let { currentTrack ->
                 viewModelScope.launch {
                     playTrackUseCase(

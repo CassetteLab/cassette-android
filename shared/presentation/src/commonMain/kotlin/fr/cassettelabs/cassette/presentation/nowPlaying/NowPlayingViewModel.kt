@@ -3,8 +3,8 @@ package fr.cassettelabs.cassette.presentation.nowPlaying
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.RepeatMode
+import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
@@ -96,22 +96,22 @@ internal class NowPlayingViewModel(
         }
     }
 
-    private fun updateCurrentTrack(currentTrack: CurrentTrack) {
+    private fun updateCurrentTrack(currentTrack: Track) {
         updateState {
             it.copy(
-                trackId = currentTrack.track.id,
-                title = currentTrack.track.title,
-                artist = currentTrack.track.artist,
+                trackId = currentTrack.id,
+                title = currentTrack.title,
+                artist = currentTrack.artist,
                 album = currentTrack.albumName,
-                durationSeconds = currentTrack.track.durationSeconds ?: 0,
+                durationSeconds = currentTrack.durationSeconds ?: 0,
                 coverArt = currentTrack.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) },
             )
         }
 
         if (currentTrack.coverArtFilePath != null) return
 
-        val coverArtId = currentTrack.coverArtId ?: return
-        val trackId = currentTrack.track.id
+        val coverArtId = currentTrack.coverArt ?: return
+        val trackId = currentTrack.id
         viewModelScope.launch {
             runCatching {
                 getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)

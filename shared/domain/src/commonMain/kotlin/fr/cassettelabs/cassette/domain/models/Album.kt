@@ -1,9 +1,9 @@
 package fr.cassettelabs.cassette.domain.models
 
-data class PlaylistList(
+data class Album(
     val id: String,
     val name: String,
-    val trackCount: Int = 0,
+    val artist: String?,
     val coverArt: String?,
     val coverArtFilePath: String?,
     val created: String?,

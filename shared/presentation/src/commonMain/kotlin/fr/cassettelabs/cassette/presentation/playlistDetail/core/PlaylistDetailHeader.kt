@@ -26,14 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import fr.cassettelabs.cassette.domain.models.PlaylistDetail
+import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
 import fr.cassettelabs.cassette.presentation.core.ShuffleButton
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
 @Composable
 internal fun PlaylistDetailHeader(
-    playlist: PlaylistDetail?,
+    playlist: Playlist?,
     coverArt: AlbumCoverArtModel?,
     tracksCount: Int,
     height: Dp,

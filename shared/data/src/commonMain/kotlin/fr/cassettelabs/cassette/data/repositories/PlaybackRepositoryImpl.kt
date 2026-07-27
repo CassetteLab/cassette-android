@@ -13,7 +13,6 @@ import fr.cassettelabs.cassette.data.remote.ktor.md5
 import fr.cassettelabs.cassette.data.remote.player.PlayerEngine
 import fr.cassettelabs.cassette.data.remote.player.PlayerEngineListener
 import fr.cassettelabs.cassette.data.remote.player.PlayerState
-import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.models.PlaybackState
@@ -40,14 +39,14 @@ internal class PlaybackRepositoryImpl(
     private val cipherHelper: CipherHelper,
     private val playerEngine: PlayerEngine,
 ) : PlaybackRepository {
-    private val _currentTrack = MutableStateFlow<CurrentTrack?>(null)
-    override val currentTrack: StateFlow<CurrentTrack?> = _currentTrack
+    private val _currentTrack = MutableStateFlow<Track?>(null)
+    override val currentTrack: StateFlow<Track?> = _currentTrack
 
     private val _playbackState = MutableStateFlow(PlaybackState())
     override val playbackState: StateFlow<PlaybackState> = _playbackState
 
-    private val _playbackQueue = MutableStateFlow<List<CurrentTrack>>(emptyList())
-    override val playbackQueue: StateFlow<List<CurrentTrack>> = _playbackQueue
+    private val _playbackQueue = MutableStateFlow<List<Track>>(emptyList())
+    override val playbackQueue: StateFlow<List<Track>> = _playbackQueue
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var positionUpdatesJob: Job? = null
@@ -84,11 +83,11 @@ internal class PlaybackRepositoryImpl(
     }
 
     override suspend fun play(
-        currentTrack: CurrentTrack,
-        contextTracks: List<CurrentTrack>,
+        currentTrack: Track,
+        contextTracks: List<Track>,
         context: PlaybackContext?,
     ) {
-        val upcoming = contextTracks.dropWhile { it.track.id != currentTrack.track.id }.drop(1)
+        val upcoming = contextTracks.dropWhile { it.id != currentTrack.id }.drop(1)
         queueState =
             QueueState(
                 current = currentTrack,
@@ -185,7 +184,7 @@ internal class PlaybackRepositoryImpl(
             if (isEnabled) {
                 queueState.contextQueue.shuffled()
             } else {
-                queueState.contextQueue.sortedWith(compareBy<CurrentTrack> { it.track.trackNumber ?: Int.MAX_VALUE }.thenBy { it.track.title })
+                queueState.contextQueue.sortedWith(compareBy<Track> { it.trackNumber ?: Int.MAX_VALUE }.thenBy { it.title })
             }
         queueState = queueState.copy(isShuffleEnabled = isEnabled, contextQueue = contextQueue)
         updatePlaybackQueue()
@@ -253,11 +252,11 @@ internal class PlaybackRepositoryImpl(
     }
 
     private suspend fun playTrack(
-        currentTrack: CurrentTrack,
+        currentTrack: Track,
         positionMs: Long,
         shouldPlay: Boolean,
     ) {
-        val (url, headers) = buildStreamUrl(currentTrack.track.id)
+        val (url, headers) = buildStreamUrl(currentTrack.id)
         withContext(Dispatchers.Main.immediate) {
             restoredPositionMs = positionMs
             _currentTrack.value = currentTrack
@@ -329,10 +328,10 @@ internal class PlaybackRepositoryImpl(
 }
 
 private data class QueueState(
-    val history: List<CurrentTrack> = emptyList(),
-    val current: CurrentTrack? = null,
-    val userQueue: List<CurrentTrack> = emptyList(),
-    val contextQueue: List<CurrentTrack> = emptyList(),
+    val history: List<Track> = emptyList(),
+    val current: Track? = null,
+    val userQueue: List<Track> = emptyList(),
+    val contextQueue: List<Track> = emptyList(),
     val context: PlaybackContext? = null,
     val isShuffleEnabled: Boolean = false,
     val repeatMode: RepeatMode = RepeatMode.Off,
@@ -344,19 +343,19 @@ private fun QueueState.toEntities(addedAt: Long): List<PlaybackQueueItemEntity> 
         userQueue.toEntities(PlaybackQueueSection.UserQueue, PlaybackQueueItemSource.UserAdded, addedAt) +
         contextQueue.toEntities(PlaybackQueueSection.ContextQueue, PlaybackQueueItemSource.Context, addedAt)
 
-private fun List<CurrentTrack>.toEntities(
+private fun List<Track>.toEntities(
     section: PlaybackQueueSection,
     source: PlaybackQueueItemSource,
     addedAt: Long,
 ): List<PlaybackQueueItemEntity> =
-    mapIndexed { index, currentTrack ->
+    mapIndexed { index, track ->
         PlaybackQueueItemEntity(
-            id = "${section.name}-$index-${currentTrack.track.id}",
+            id = "${section.name}-$index-${track.id}",
             sessionId = "active",
             section = section.name,
             source = source.name,
             position = index,
-            trackId = currentTrack.track.id,
+            trackId = track.id,
             addedAt = addedAt,
         )
     }
@@ -380,23 +379,20 @@ private fun PlaybackSessionEntity.repeatMode(): RepeatMode =
         RepeatMode.Off
     }
 
-private fun List<PlaybackQueueItemWithTrack>.itemsIn(section: PlaybackQueueSection): List<CurrentTrack> =
+private fun List<PlaybackQueueItemWithTrack>.itemsIn(section: PlaybackQueueSection): List<Track> =
     filter { it.section == section.name }
         .sortedBy { it.position }
         .map { it.toDomain() }
 
-private fun PlaybackQueueItemWithTrack.toDomain(): CurrentTrack =
-    CurrentTrack(
-        track =
-            Track(
-                id = trackId,
-                title = title,
-                artist = artist,
-                trackNumber = trackNumber,
-                durationSeconds = durationSeconds,
-            ),
+private fun PlaybackQueueItemWithTrack.toDomain(): Track =
+    Track(
         albumId = albumId,
+        id = trackId,
+        title = title,
+        artist = artist,
+        trackNumber = trackNumber,
+        durationSeconds = durationSeconds,
         albumName = albumName,
-        coverArtId = coverArtId,
+        coverArt = coverArtId,
         coverArtFilePath = coverArtFilePath,
     )
