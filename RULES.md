@@ -1,27 +1,32 @@
 # Repository Instructions
 
 ## Project Shape
-- Android/Kotlin Gradle project named `Cassette`; modules are `:app`, `:core`, `:domain`, `:data`, and `:presentation` from `settings.gradle.kts`.
-- Dependency direction is explicit in Gradle: `:app` depends on all modules; `:data` depends on `:core` and `:domain`; `:presentation` depends on `:core` and `:domain`; `:domain` depends only on Koin.
-- `:domain` is a Kotlin/JVM module; `:core`, `:data`, `:presentation`, and `:app` are Android modules.
-- UI entrypoint is `presentation/src/main/java/fr/cassette/cassette/presentation/MainActivity.kt`, launched by `app/src/main/AndroidManifest.xml`.
-- Koin modules are declared per module under `*/di/*Module.kt`; `CassetteApplication` starts Koin.
+- Kotlin Multiplatform Gradle project named `Cassette`; modules are `:androidApp`, `:desktopApp`, `:shared`, `:shared:core`, `:shared:domain`, `:shared:data`, and `:shared:presentation` from `settings.gradle.kts`.
+- The project targets Android, desktop/JVM, and iOS source sets, but Android is the priority platform. When a trade-off is required, preserve Android behavior, quality, and build health first.
+- Dependency direction is explicit in Gradle: `:androidApp` and `:desktopApp` depend on `:shared`; `:shared` composes `:shared:core`, `:shared:domain`, `:shared:data`, and `:shared:presentation`; `:shared:domain` depends on `:shared:core`; `:shared:data` depends on `:shared:core` and `:shared:domain`; `:shared:presentation` depends on `:shared:core` and `:shared:domain`.
+- Shared code belongs in `commonMain` by default. Use platform source sets (`androidMain`, `iosMain`, `jvmMain`) only for APIs, dependencies, or behavior that cannot be implemented in common code.
+- Android entrypoint is `androidApp/src/main/kotlin/fr/cassettelabs/cassette/MainActivity.kt`, launched by `androidApp/src/main/AndroidManifest.xml`.
+- Shared Compose UI entrypoint is `shared/src/commonMain/kotlin/fr/cassettelabs/cassette/App.kt`; iOS exposes it through `shared/src/iosMain/kotlin/fr/cassettelabs/cassette/MainViewController.kt`; desktop starts from `desktopApp/src/main/kotlin/fr/cassettelabs/cassette/main.kt`.
+- Koin modules are declared under module-specific `di/*Module.kt` files. `androidApp/src/main/kotlin/fr/cassettelabs/cassette/CassetteApplication.kt` starts Koin on Android.
 
 ## UI Work
-- Before creating, editing, or reviewing Jetpack Compose UI, screens, previews, UI state/events, or files under `presentation/src/main`, load the `jetpack-compose-ui` skill first.
+- Before creating, editing, or reviewing Compose Multiplatform UI, screens, previews, UI state/events, or files under `shared/src/commonMain` or `shared/presentation/src/*Main`, load the `jetpack-compose-ui` skill first.
+- Prefer shared Compose UI in `commonMain` when possible. Keep Android-specific UI code in `androidMain` only when required by Android APIs or tooling.
 
 ## Build And Verification
 - Use the wrapper: `./gradlew ...`.
-- Quick app build: `./gradlew :app:assembleDebug`.
-- Full local build/check for a module: `./gradlew :module:build`.
-- Android unit tests: `./gradlew :app:testDebugUnitTest` or `./gradlew :module:testDebugUnitTest` for Android library modules.
-- JVM-only domain tests: `./gradlew :domain:test`.
-- Focus a single JVM/unit test with Gradle's filter, for example `./gradlew :app:testDebugUnitTest --tests 'fr.cassette.cassette.ExampleUnitTest'`.
-- Android lint exists only via AGP tasks; run `./gradlew :app:lint` or `./gradlew :module:lint` for Android modules.
-- Instrumentation tests require a connected Android device/emulator: `./gradlew :app:connectedDebugAndroidTest`.
+- Quick Android app build: `./gradlew :androidApp:assembleDebug`.
+- Full local build/check for a module: `./gradlew :module:build`, for example `./gradlew :shared:data:build`.
+- Android unit tests: `./gradlew :androidApp:testDebugUnitTest` or Android target test tasks on shared modules when available.
+- Common/JVM KMP tests: use the relevant KMP test task, for example `./gradlew :shared:domain:allTests`, `./gradlew :shared:data:allTests`, or `./gradlew :shared:presentation:allTests`.
+- Desktop run/build tasks live under `:desktopApp`; use them only when the change affects desktop behavior.
+- Focus a single JVM/unit test with Gradle's filter when the selected task supports it, for example `./gradlew :shared:domain:jvmTest --tests 'fr.cassettelabs.cassette.ExampleTest'`.
+- Android lint exists only via AGP tasks; run `./gradlew :androidApp:lint` or the relevant Android/KMP module lint task when available.
+- Instrumentation tests require a connected Android device/emulator: `./gradlew :androidApp:connectedDebugAndroidTest`.
 
 ## Toolchain Notes
 - Gradle daemon toolchain is pinned to Java 21 in `gradle/gradle-daemon-jvm.properties`; source/target compatibility is Java 11.
-- Android modules use `compileSdk`/`targetSdk` 37 and `minSdk` 26.
+- Android configuration uses versions from `gradle/libs.versions.toml`; currently `compileSdk`/`targetSdk` are 36 and `minSdk` is 24.
 - Dependencies and plugin versions are centralized in `gradle/libs.versions.toml`; add libraries there before using aliases in module Gradle files.
+- KMP dependencies should be added to the narrowest appropriate source set (`commonMain`, `androidMain`, `iosMain`, or `jvmMain`). Prefer `commonMain` only for dependencies that are truly multiplatform.
 - There is no repo-local ktlint, detekt, formatter, CI, or pre-commit config at the time this file was written.
