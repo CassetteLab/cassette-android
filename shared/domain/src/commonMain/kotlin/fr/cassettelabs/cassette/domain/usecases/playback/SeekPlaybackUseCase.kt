@@ -1,4 +1,4 @@
-package fr.cassettelabs.cassette.domain.usecases
+package fr.cassettelabs.cassette.domain.usecases.playback
 
 import fr.cassettelabs.cassette.domain.repositories.PlaybackRepository
 

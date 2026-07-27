@@ -36,7 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import fr.cassettelabs.cassette.domain.models.AlbumList
 import fr.cassettelabs.cassette.presentation.albumList.core.AlbumListItem
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
@@ -111,7 +113,7 @@ internal fun AlbumListScreen(
                     modifier =
                         Modifier
                             .fillMaxSize(),
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Adaptive(minSize = 160.dp),
                     contentPadding =
                         contentPadding.plus(
                             PaddingValues(
@@ -149,7 +151,7 @@ internal fun AlbumListScreen(
 }
 
 @Composable
-@Preview
+@PreviewLightDark
 private fun AlbumListScreenPreview() {
     CassetteTheme {
         AlbumListScreen(
@@ -177,6 +179,21 @@ private fun AlbumListScreenPreview() {
                                 seedColor = null,
                             ),
                         ),
+                ),
+            onEvent = {},
+        )
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun AlbumListScreenLoadingPreview() {
+    CassetteTheme {
+        AlbumListScreen(
+            uiState =
+                AlbumListUiState(
+                    isLoading = true,
+                    albums = emptyList()
                 ),
             onEvent = {},
         )

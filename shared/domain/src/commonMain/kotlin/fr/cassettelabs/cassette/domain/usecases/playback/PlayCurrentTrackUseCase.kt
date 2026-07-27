@@ -1,11 +1,11 @@
-package fr.cassettelabs.cassette.domain.usecases
+package fr.cassettelabs.cassette.domain.usecases.playback
 
 import fr.cassettelabs.cassette.domain.repositories.PlaybackRepository
 
-class PausePlaybackUseCase(
+class PlayCurrentTrackUseCase(
     private val playbackRepository: PlaybackRepository,
 ) {
     operator fun invoke() {
-        playbackRepository.pause()
+        playbackRepository.play()
     }
 }

@@ -7,6 +7,7 @@ import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
 import fr.cassettelabs.cassette.data.local.entities.TrackEntity
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
+import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.AlbumDetail
 import fr.cassettelabs.cassette.domain.models.AlbumList
@@ -34,7 +35,7 @@ internal class AlbumRepositoryImpl(
             albumWithLocalData
         }
 
-    override suspend fun getAlbum(albumId: Album): AlbumDetail {
+    override suspend fun getAlbum(albumId: AlbumId): AlbumDetail {
         val localAlbum = albumDao.getAlbum(albumId)
         if (localAlbum != null) {
             return localAlbum.toDetailDomain()

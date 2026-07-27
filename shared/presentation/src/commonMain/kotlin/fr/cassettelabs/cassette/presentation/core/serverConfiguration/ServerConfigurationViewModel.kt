@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.ServerConfiguration
 import fr.cassettelabs.cassette.domain.models.ServerConfigurationCustomHeader
-import fr.cassettelabs.cassette.domain.usecases.GetServerConfigurationUseCase
-import fr.cassettelabs.cassette.domain.usecases.PingServerUseCase
-import fr.cassettelabs.cassette.domain.usecases.SaveServerConfigurationUseCase
+import fr.cassettelabs.cassette.domain.usecases.configuration.GetServerConfigurationUseCase
+import fr.cassettelabs.cassette.domain.usecases.configuration.PingServerUseCase
+import fr.cassettelabs.cassette.domain.usecases.configuration.SaveServerConfigurationUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.launch
 

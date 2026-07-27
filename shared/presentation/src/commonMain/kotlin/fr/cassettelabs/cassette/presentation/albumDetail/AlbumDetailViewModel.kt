@@ -6,12 +6,12 @@ import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
-import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
-import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumTracksUseCase
-import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumUseCase
+import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumTracksUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
-import fr.cassettelabs.cassette.domain.usecases.GetPlaybackStateUseCase
-import fr.cassettelabs.cassette.domain.usecases.PlayTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

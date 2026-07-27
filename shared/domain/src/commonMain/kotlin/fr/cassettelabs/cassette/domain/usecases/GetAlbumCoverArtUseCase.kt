@@ -1,4 +1,4 @@
-package fr.cassettelabs.cassette.domain.usecases.album
+package fr.cassettelabs.cassette.domain.usecases
 
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.repositories.AlbumRepository

@@ -3,9 +3,9 @@ package fr.cassettelabs.cassette.presentation.playlistList
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.PlaylistList
-import fr.cassettelabs.cassette.domain.usecases.GetAllPlaylistsUseCase
+import fr.cassettelabs.cassette.domain.usecases.playlistList.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
-import fr.cassettelabs.cassette.domain.usecases.RefreshPlaylistsUseCase
+import fr.cassettelabs.cassette.domain.usecases.playlistList.RefreshPlaylistsUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch

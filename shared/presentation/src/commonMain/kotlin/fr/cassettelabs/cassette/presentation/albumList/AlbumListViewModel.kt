@@ -2,8 +2,8 @@ package fr.cassettelabs.cassette.presentation.albumList
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.usecases.GetAllAlbumsUseCase
-import fr.cassettelabs.cassette.domain.usecases.RefreshAlbumsUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumList.GetAllAlbumsUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumList.RefreshAlbumsUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch

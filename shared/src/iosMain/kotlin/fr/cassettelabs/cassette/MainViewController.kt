@@ -3,7 +3,7 @@ package fr.cassettelabs.cassette
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.window.ComposeUIViewController
 import fr.cassettelabs.cassette.di.sharedModules
-import fr.cassettelabs.cassette.domain.usecases.HasServerConfigurationUseCase
+import fr.cassettelabs.cassette.domain.usecases.configuration.HasServerConfigurationUseCase
 import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
 

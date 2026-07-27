@@ -3,12 +3,12 @@ package fr.cassettelabs.cassette.presentation.main
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.CurrentTrack
-import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
-import fr.cassettelabs.cassette.domain.usecases.GetPlaybackStateUseCase
-import fr.cassettelabs.cassette.domain.usecases.PausePlaybackUseCase
-import fr.cassettelabs.cassette.domain.usecases.PlayCurrentTrackUseCase
-import fr.cassettelabs.cassette.domain.usecases.SkipToNextTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.PausePlaybackUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.PlayCurrentTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.SkipToNextTrackUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

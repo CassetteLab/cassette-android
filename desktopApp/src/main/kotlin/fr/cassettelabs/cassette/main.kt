@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import fr.cassettelabs.cassette.di.sharedModules
-import fr.cassettelabs.cassette.domain.usecases.HasServerConfigurationUseCase
+import fr.cassettelabs.cassette.domain.usecases.configuration.HasServerConfigurationUseCase
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.get
