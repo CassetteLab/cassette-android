@@ -104,6 +104,8 @@ internal fun AlbumDetailScreen(
                             AlbumDetailTrackRow(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 track = track,
+                                isCurrentTrack = track.id == uiState.currentTrackId,
+                                isPlaying = uiState.isPlaying,
                                 onClick = { onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
                             )
                         }
@@ -151,6 +153,7 @@ private fun AlbumDetailScreenPreview() {
                                 durationSeconds = 212,
                             ),
                         ),
+                    currentTrackId = "track-1",
                 ),
             onEvent = {},
         )

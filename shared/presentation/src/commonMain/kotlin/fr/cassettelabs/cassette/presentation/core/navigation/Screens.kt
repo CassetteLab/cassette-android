@@ -46,4 +46,7 @@ sealed interface Screens {
 
     @Serializable
     data object NowPlaying : Screens
+
+    @Serializable
+    data object PlaybackQueue : Screens
 }

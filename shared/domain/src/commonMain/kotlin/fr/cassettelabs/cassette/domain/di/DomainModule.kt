@@ -1,12 +1,13 @@
 package fr.cassettelabs.cassette.domain.di
 
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumTracksUseCase
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumTracksUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetAllAlbumsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaybackStateUseCase
+import fr.cassettelabs.cassette.domain.usecases.GetPlaybackQueueUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistUseCase
@@ -53,6 +54,7 @@ val domainModule =
 
         // Playback
         singleOf(::GetCurrentTrackUseCase)
+        singleOf(::GetPlaybackQueueUseCase)
         singleOf(::GetPlaybackStateUseCase)
         singleOf(::PausePlaybackUseCase)
         singleOf(::PlayCurrentTrackUseCase)

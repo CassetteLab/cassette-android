@@ -34,7 +34,7 @@ internal class AlbumRepositoryImpl(
             albumWithLocalData
         }
 
-    override suspend fun getAlbum(albumId: String): AlbumDetail {
+    override suspend fun getAlbum(albumId: Album): AlbumDetail {
         val localAlbum = albumDao.getAlbum(albumId)
         if (localAlbum != null) {
             return localAlbum.toDetailDomain()

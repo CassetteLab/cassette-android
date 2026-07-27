@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,12 +22,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Track
+import fr.cassettelabs.cassette.presentation.core.PlayingEqIcon
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
 internal fun AlbumDetailTrackRow(
     modifier: Modifier = Modifier,
     track: Track,
+    isCurrentTrack: Boolean = false,
+    isPlaying: Boolean = false,
     onClick: () -> Unit,
 ) {
     Row(
@@ -60,14 +64,21 @@ internal fun AlbumDetailTrackRow(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Text(
-                text = track.title,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyLarge,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = track.title,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
             track.artist?.let { artist ->
                 Text(
                     text = artist,
@@ -77,6 +88,13 @@ internal fun AlbumDetailTrackRow(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
+        }
+
+        if (isCurrentTrack) {
+            PlayingEqIcon(
+                modifier = Modifier.size(width = 26.dp, height = 18.dp),
+                isPlaying = isPlaying,
+            )
         }
 
         track.durationSeconds?.let { durationSeconds ->
@@ -107,7 +125,9 @@ private fun AlbumDetailTrackRowPreview() {
                     artist = "MGMT",
                     trackNumber = 1,
                     durationSeconds = 146,
-                ),
+            ),
+            isCurrentTrack = true,
+            isPlaying = true,
             onClick = {},
         )
     }

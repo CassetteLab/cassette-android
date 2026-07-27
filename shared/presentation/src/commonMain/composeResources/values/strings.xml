@@ -87,6 +87,13 @@
     <string name="now_playing_unknown_artist">Unknown artist</string>
     <string name="now_playing_unknown_title">Unknown title</string>
 
+    <!-- Playback Queue -->
+    <string name="playback_queue_back">Back</string>
+    <string name="playback_queue_empty_description">There are no upcoming tracks in the queue.</string>
+    <string name="playback_queue_empty_title">Queue is empty</string>
+    <string name="playback_queue_title">Up next</string>
+    <string name="playback_queue_unknown_artist">Unknown artist</string>
+
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
     <string name="settings_app_build_type_format">Build: %1$s</string>

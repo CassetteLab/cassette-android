@@ -51,6 +51,9 @@ import fr.cassettelabs.cassette.presentation.main.core.MainTab
 import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingEvent
 import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingScreen
 import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingViewModel
+import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueEvent
+import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueScreen
+import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueViewModel
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailEvent
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailScreen
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewModel
@@ -76,9 +79,19 @@ internal fun MainScreen() {
     var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
     val bottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true)
     val navController = rememberNavController(bottomSheetNavigator)
+    var openPlaybackQueueAfterNowPlayingDismiss by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(MainEvent.OnAppearing)
+    }
+
+    LaunchedEffect(openPlaybackQueueAfterNowPlayingDismiss, bottomSheetNavigator.sheetEnabled) {
+        if (openPlaybackQueueAfterNowPlayingDismiss && !bottomSheetNavigator.sheetEnabled) {
+            openPlaybackQueueAfterNowPlayingDismiss = false
+            navController.navigate(Screens.PlaybackQueue) {
+                launchSingleTop = true
+            }
+        }
     }
 
     Scaffold(
@@ -287,6 +300,22 @@ internal fun MainScreen() {
                         )
                     }
 
+                    composable<Screens.PlaybackQueue> {
+                        val viewModel = koinViewModel<PlaybackQueueViewModel>()
+                        val uiState by viewModel.uiState.collectAsState()
+
+                        PlaybackQueueScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    PlaybackQueueEvent.OnBackClicked -> navController.navigateUp()
+                                }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
                     bottomSheet<Screens.NowPlaying> {
                         val viewModel = koinViewModel<NowPlayingViewModel>()
                         val uiState by viewModel.uiState.collectAsState()
@@ -296,6 +325,10 @@ internal fun MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     NowPlayingEvent.OnBackClicked -> navController.navigateUp()
+                                    NowPlayingEvent.OnQueueClicked -> {
+                                        openPlaybackQueueAfterNowPlayingDismiss = true
+                                        navController.navigateUp()
+                                    }
                                     else -> Unit
                                 }
                                 viewModel.onEvent(event)

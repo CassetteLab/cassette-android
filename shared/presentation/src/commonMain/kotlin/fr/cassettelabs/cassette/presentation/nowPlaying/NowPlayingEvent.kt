@@ -17,6 +17,8 @@ internal sealed interface NowPlayingEvent : Event {
 
     data object OnFavoriteClicked : NowPlayingEvent
 
+    data object OnQueueClicked : NowPlayingEvent
+
     data class OnSeekChanged(
         val progress: Float,
     ) : NowPlayingEvent

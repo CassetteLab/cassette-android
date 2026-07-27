@@ -5,7 +5,7 @@ import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.RepeatMode
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassettelabs.cassette.domain.usecases.PausePlaybackUseCase
@@ -85,6 +85,7 @@ internal class NowPlayingViewModel(
                 viewModelScope.launch { setPlaybackRepeatModeUseCase(repeatMode) }
             }
             NowPlayingEvent.OnFavoriteClicked -> updateState { it.copy(isFavorite = !it.isFavorite) }
+            NowPlayingEvent.OnQueueClicked -> Unit
             is NowPlayingEvent.OnSeekChanged -> {
                 val positionSeconds = (uiState.value.durationSeconds * event.progress).toInt()
                 seekPlaybackUseCase(positionSeconds * MILLIS_PER_SECOND)

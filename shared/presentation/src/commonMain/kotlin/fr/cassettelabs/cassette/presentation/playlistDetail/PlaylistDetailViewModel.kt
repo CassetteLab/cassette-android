@@ -7,7 +7,7 @@ import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.models.Track
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistUseCase

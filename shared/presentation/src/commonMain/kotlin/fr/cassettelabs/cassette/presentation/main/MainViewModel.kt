@@ -3,7 +3,7 @@ package fr.cassettelabs.cassette.presentation.main
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.CurrentTrack
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassettelabs.cassette.domain.usecases.PausePlaybackUseCase

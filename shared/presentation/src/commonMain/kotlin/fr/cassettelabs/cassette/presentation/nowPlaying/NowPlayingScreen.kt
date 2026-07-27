@@ -128,7 +128,7 @@ internal fun NowPlayingScreen(
                                             bottomEnd = 50.dp,
                                         ),
                                     ).background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.70f)),
-                            onClick = {},
+                            onClick = { onEvent(NowPlayingEvent.OnQueueClicked) },
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.QueueMusic,

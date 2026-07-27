@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.domain.repositories
 
+import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.AlbumDetail
 import fr.cassettelabs.cassette.domain.models.AlbumList
@@ -9,14 +10,14 @@ import kotlinx.coroutines.flow.Flow
 interface AlbumRepository {
     suspend fun getRecentlyAddedAlbums(size: Int): List<AlbumList>
 
-    suspend fun getAlbum(albumId: String): AlbumDetail
+    suspend fun getAlbum(albumId: AlbumId): AlbumDetail
 
-    suspend fun getAlbumTracks(albumId: String): List<Track>
+    suspend fun getAlbumTracks(albumId: AlbumId): List<Track>
 
     suspend fun getAlbumCoverArt(
         coverArtId: String,
         size: Int? = null,
-        albumId: String? = null,
+        albumId: AlbumId? = null,
     ): AlbumCoverArt
 
     fun getAllAlbums(): Flow<List<AlbumList>>

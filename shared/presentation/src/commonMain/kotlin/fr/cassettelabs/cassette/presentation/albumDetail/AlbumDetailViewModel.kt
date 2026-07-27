@@ -6,11 +6,15 @@ import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.CurrentTrack
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumTracksUseCase
-import fr.cassettelabs.cassette.domain.usecases.GetAlbumUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumCoverArtUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumTracksUseCase
+import fr.cassettelabs.cassette.domain.usecases.album.GetAlbumUseCase
+import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.GetPlaybackStateUseCase
 import fr.cassettelabs.cassette.domain.usecases.PlayTrackUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class AlbumDetailViewModel(
@@ -18,6 +22,8 @@ internal class AlbumDetailViewModel(
     private val getAlbumUseCase: GetAlbumUseCase,
     private val getAlbumTracksUseCase: GetAlbumTracksUseCase,
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
+    getCurrentTrackUseCase: GetCurrentTrackUseCase,
+    getPlaybackStateUseCase: GetPlaybackStateUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumDetailUiState, AlbumDetailEvent>(
@@ -25,6 +31,18 @@ internal class AlbumDetailViewModel(
         logger = logger,
         initialState = AlbumDetailUiState(albumId = albumId),
     ) {
+    init {
+        getCurrentTrackUseCase()
+            .onEach { currentTrack ->
+                updateState { it.copy(currentTrackId = currentTrack?.track?.id) }
+            }.launchIn(viewModelScope)
+
+        getPlaybackStateUseCase()
+            .onEach { playbackState ->
+                updateState { it.copy(isPlaying = playbackState.isPlaying) }
+            }.launchIn(viewModelScope)
+    }
+
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
             AlbumDetailEvent.OnAppearing -> {

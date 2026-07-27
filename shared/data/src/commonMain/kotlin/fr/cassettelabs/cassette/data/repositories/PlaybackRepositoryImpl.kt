@@ -46,6 +46,9 @@ internal class PlaybackRepositoryImpl(
     private val _playbackState = MutableStateFlow(PlaybackState())
     override val playbackState: StateFlow<PlaybackState> = _playbackState
 
+    private val _playbackQueue = MutableStateFlow<List<CurrentTrack>>(emptyList())
+    override val playbackQueue: StateFlow<List<CurrentTrack>> = _playbackQueue
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var positionUpdatesJob: Job? = null
     private var queueState = QueueState()
@@ -94,6 +97,7 @@ internal class PlaybackRepositoryImpl(
                 isShuffleEnabled = queueState.isShuffleEnabled,
                 repeatMode = queueState.repeatMode,
             )
+        updatePlaybackQueue()
         persistQueue(positionMs = 0L)
         playTrack(currentTrack = currentTrack, positionMs = 0L, shouldPlay = true)
     }
@@ -152,6 +156,7 @@ internal class PlaybackRepositoryImpl(
                 userQueue = queueState.userQueue.drop(1).takeIf { queueState.userQueue.firstOrNull() == next } ?: queueState.userQueue,
                 contextQueue = queueState.contextQueue.drop(1).takeIf { queueState.contextQueue.firstOrNull() == next } ?: queueState.contextQueue,
             )
+        updatePlaybackQueue()
         persistQueue(positionMs = 0L)
         playTrack(currentTrack = next, positionMs = 0L, shouldPlay = true)
     }
@@ -170,6 +175,7 @@ internal class PlaybackRepositoryImpl(
                 current = previous,
                 contextQueue = listOfNotNull(current) + queueState.contextQueue,
             )
+        updatePlaybackQueue()
         persistQueue(positionMs = 0L)
         playTrack(currentTrack = previous, positionMs = 0L, shouldPlay = true)
     }
@@ -182,6 +188,7 @@ internal class PlaybackRepositoryImpl(
                 queueState.contextQueue.sortedWith(compareBy<CurrentTrack> { it.track.trackNumber ?: Int.MAX_VALUE }.thenBy { it.track.title })
             }
         queueState = queueState.copy(isShuffleEnabled = isEnabled, contextQueue = contextQueue)
+        updatePlaybackQueue()
         persistQueue(positionMs = playerEngine.currentPosition)
     }
 
@@ -231,6 +238,7 @@ internal class PlaybackRepositoryImpl(
             )
         restoredPositionMs = session.currentPositionMs
         _currentTrack.value = queueState.current
+        updatePlaybackQueue()
         updatePlaybackState(positionMs = session.currentPositionMs)
     }
 
@@ -239,6 +247,7 @@ internal class PlaybackRepositoryImpl(
         val nextQueue = if (queueState.isShuffleEnabled) allContextTracks.shuffled() else allContextTracks
         val next = nextQueue.firstOrNull() ?: return
         queueState = queueState.copy(history = emptyList(), current = next, userQueue = emptyList(), contextQueue = nextQueue.drop(1))
+        updatePlaybackQueue()
         persistQueue(positionMs = 0L)
         playTrack(currentTrack = next, positionMs = 0L, shouldPlay = true)
     }
@@ -306,6 +315,10 @@ internal class PlaybackRepositoryImpl(
         scope.launch(Dispatchers.IO) {
             playbackQueueDao.updateCurrentPosition(ACTIVE_SESSION_ID, positionMs.coerceAtLeast(0L), currentTimeMillis())
         }
+    }
+
+    private fun updatePlaybackQueue() {
+        _playbackQueue.value = queueState.userQueue + queueState.contextQueue
     }
 
     private companion object {

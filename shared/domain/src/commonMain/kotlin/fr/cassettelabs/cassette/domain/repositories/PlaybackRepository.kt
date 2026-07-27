@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface PlaybackRepository {
     val currentTrack: Flow<CurrentTrack?>
     val playbackState: Flow<PlaybackState>
+    val playbackQueue: Flow<List<CurrentTrack>>
 
     suspend fun play(
         currentTrack: CurrentTrack,
