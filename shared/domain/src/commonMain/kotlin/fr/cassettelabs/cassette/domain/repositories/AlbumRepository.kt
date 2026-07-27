@@ -11,7 +11,11 @@ interface AlbumRepository {
 
     suspend fun getAlbum(albumId: AlbumId): Album
 
+    suspend fun refreshAlbum(albumId: AlbumId): Album
+
     suspend fun getAlbumTracks(albumId: AlbumId): List<Track>
+
+    suspend fun refreshAlbumTracks(albumId: AlbumId): List<Track>
 
     suspend fun getAlbumCoverArt(
         coverArtId: String,

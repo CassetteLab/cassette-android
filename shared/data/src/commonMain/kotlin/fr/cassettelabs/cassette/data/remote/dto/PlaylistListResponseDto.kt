@@ -32,6 +32,7 @@ internal data class PlaylistDto(
     val created: String? = null,
     val entry: List<PlaylistSongDto> = emptyList(),
     val song: List<PlaylistSongDto> = emptyList(),
+    val child: List<PlaylistSongDto> = emptyList(),
 ) {
     fun toDomain(): Playlist =
         Playlist(
@@ -43,7 +44,7 @@ internal data class PlaylistDto(
             created = created?.takeIf { it.isNotBlank() },
         )
 
-    fun tracksToDomain(): List<Track> = (entry.ifEmpty { song }).map { it.toDomain() }
+    fun tracksToDomain(): List<Track> = (entry.ifEmpty { song }.ifEmpty { child }).map { it.toDomain() }
 }
 
 @Serializable

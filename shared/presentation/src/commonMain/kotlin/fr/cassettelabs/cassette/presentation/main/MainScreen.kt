@@ -1,6 +1,8 @@
 package fr.cassettelabs.cassette.presentation.main
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -30,8 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import fr.cassettelabs.cassette.presentation.albumDetail.AlbumDetailEvent
@@ -93,44 +97,56 @@ internal fun MainScreen() {
             }
         }
     }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val showBottomBar =
+        currentDestination?.hasRoute<Screens.AlbumDetail>() != true &&
+            currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Bottom),
         bottomBar = {
-            BottomAppBar(
-                windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    MainTab.entries.forEach { tab ->
-                        NavigationBarItem(
-                            selected = tab == selectedDestination,
-                            onClick = {
-                                if (selectedDestination == tab) return@NavigationBarItem
+            Column {
+                AnimatedVisibility(visible = showBottomBar) {
+                    BottomAppBar(
+                        windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
+                    ) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            MainTab.entries.forEach { tab ->
+                                NavigationBarItem(
+                                    selected = tab == selectedDestination,
+                                    onClick = {
+                                        if (selectedDestination == tab) return@NavigationBarItem
 
-                                selectedDestination = tab
-                                navController.navigate(tab.destination) {
-                                    launchSingleTop = true
-                                    popUpTo(navController.graph.id)
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = tab.iconRes,
-                                    contentDescription = stringResource(tab.labelRes),
+                                        selectedDestination = tab
+                                        navController.navigate(tab.destination) {
+                                            launchSingleTop = true
+                                            popUpTo(navController.graph.id)
+                                        }
+                                    },
+                                    icon = {
+                                        Icon(
+                                            imageVector = tab.iconRes,
+                                            contentDescription = stringResource(tab.labelRes),
+                                        )
+                                    },
+                                    label = {
+                                        Text(text = stringResource(tab.labelRes))
+                                    },
                                 )
-                            },
-                            label = {
-                                Text(text = stringResource(tab.labelRes))
-                            },
-                        )
+                            }
+                        }
                     }
                 }
             }
         },
     ) { contentPadding ->
+        val mainContentPadding = if (showBottomBar) contentPadding else PaddingValues()
+        val nowPlayingSnackPadding = if (showBottomBar) PaddingValues() else contentPadding
+
         Box(
-            modifier = Modifier.padding(contentPadding),
+            modifier = Modifier.padding(mainContentPadding),
         ) {
             val subScreenContentPadding = remember(uiState.currentTrack) {
                 if (uiState.currentTrack != null)
@@ -343,6 +359,7 @@ internal fun MainScreen() {
                     modifier =
                         Modifier
                             .align(Alignment.BottomCenter)
+                            .padding(nowPlayingSnackPadding)
                             .padding(12.dp),
                     track = uiState.currentTrack?.title ?: "",
                     artist = uiState.currentTrack?.artist ?: "",

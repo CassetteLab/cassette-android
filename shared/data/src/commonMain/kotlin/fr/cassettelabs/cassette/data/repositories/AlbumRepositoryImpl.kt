@@ -47,6 +47,14 @@ internal class AlbumRepositoryImpl(
         return album
     }
 
+    override suspend fun refreshAlbum(albumId: AlbumId): Album {
+        val localAlbum = albumDao.getAlbum(albumId)
+        val album = albumRemoteDataSource.getAlbum(albumId)
+        val albumWithLocalData = album.withLocalAlbumData(localAlbum)
+        albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId))
+        return albumWithLocalData
+    }
+
     override suspend fun getAlbumTracks(albumId: String): List<Track> {
         val localTracks = trackDao.getAlbumTracks(albumId)
         if (localTracks.isNotEmpty()) {
@@ -55,8 +63,15 @@ internal class AlbumRepositoryImpl(
 
         val localAlbum = albumDao.getAlbum(albumId)
         val (remoteAlbum, remoteTracks) = albumRemoteDataSource.getAlbumWithTracks(albumId)
-        val albumWithLocalData = remoteAlbum.copy(coverArtFilePath = localAlbum?.validCoverArtFilePath())
+        val albumWithLocalData = remoteAlbum.withLocalAlbumData(localAlbum)
         albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId))
+        trackDao.deleteAlbumTracks(albumId)
+        trackDao.insertTracks(remoteTracks.map { track -> track.toEntity(albumId) })
+        return remoteTracks
+    }
+
+    override suspend fun refreshAlbumTracks(albumId: AlbumId): List<Track> {
+        val remoteTracks = albumRemoteDataSource.getAlbumTracks(albumId)
         trackDao.deleteAlbumTracks(albumId)
         trackDao.insertTracks(remoteTracks.map { track -> track.toEntity(albumId) })
         return remoteTracks
@@ -109,12 +124,17 @@ internal class AlbumRepositoryImpl(
         remoteAlbums.forEach { album ->
             val localAlbum = albumDao.getAlbum(album.id)
             val albumWithLocalData =
-                album.copy(
-                    coverArtFilePath = localAlbum?.validCoverArtFilePath(),
-                    seedColor = localAlbum?.seedColor,
-                )
+                album.withLocalAlbumData(localAlbum)
             albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
         }
+    }
+
+    private fun Album.withLocalAlbumData(localAlbum: AlbumEntity?): Album {
+        val canReuseLocalArtworkData = localAlbum?.coverArt == coverArt
+        return copy(
+            coverArtFilePath = localAlbum?.validCoverArtFilePath().takeIf { canReuseLocalArtworkData },
+            seedColor = localAlbum?.seedColor.takeIf { canReuseLocalArtworkData },
+        )
     }
 
     private suspend fun Album.toEntity(existingServerConfigurationId: Long?): AlbumEntity =

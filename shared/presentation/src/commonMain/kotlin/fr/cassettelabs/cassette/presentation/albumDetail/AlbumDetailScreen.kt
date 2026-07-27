@@ -8,17 +8,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -34,6 +34,7 @@ import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackRo
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AlbumDetailScreen(
     contentPadding: PaddingValues = PaddingValues(),
@@ -43,6 +44,8 @@ internal fun AlbumDetailScreen(
     LaunchedEffect(Unit) {
         onEvent(AlbumDetailEvent.OnAppearing)
     }
+
+    val pullToRefreshState = rememberPullToRefreshState()
 
     AlbumArtworkTheme(albumArt = uiState.coverArt?.filePath) {
         when {
@@ -56,11 +59,23 @@ internal fun AlbumDetailScreen(
             else -> {
                 val maxHeaderHeight = 312.dp
 
-                Box(
+                PullToRefreshBox(
+                    state = pullToRefreshState,
                     modifier =
                         Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.surface),
+                    isRefreshing = uiState.isPullToRefreshIndicatorVisible && uiState.isRefreshing,
+                    onRefresh = { onEvent(AlbumDetailEvent.OnRefresh) },
+                    indicator = {
+                        PullToRefreshDefaults.LoadingIndicator(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter),
+                            isRefreshing = uiState.isPullToRefreshIndicatorVisible && uiState.isRefreshing,
+                            state = pullToRefreshState,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
                 ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -124,7 +139,6 @@ private fun AlbumDetailScreenPreview() {
         AlbumDetailScreen(
             uiState =
                 AlbumDetailUiState(
-                    albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
                     album =
                         Album(
                             id = "2YuwDgPuXhF5ir4SjAl6Iw",
@@ -165,7 +179,6 @@ private fun AlbumDetailScreenLoadingPreview() {
         AlbumDetailScreen(
             uiState =
                 AlbumDetailUiState(
-                    albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
                     isLoading = true
                 ),
             onEvent = {},
@@ -180,7 +193,6 @@ private fun AlbumDetailScreenTracksLoadingPreview() {
         AlbumDetailScreen(
             uiState =
                 AlbumDetailUiState(
-                    albumId = "2YuwDgPuXhF5ir4SjAl6Iw",
                     isTracksLoading = true
                 ),
             onEvent = {},

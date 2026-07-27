@@ -2,6 +2,7 @@ package fr.cassettelabs.cassette.presentation.albumDetail
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
+import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
@@ -9,6 +10,8 @@ import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumTracksUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
@@ -21,34 +24,35 @@ internal class AlbumDetailViewModel(
     private val getAlbumUseCase: GetAlbumUseCase,
     private val getAlbumTracksUseCase: GetAlbumTracksUseCase,
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
-    getCurrentTrackUseCase: GetCurrentTrackUseCase,
-    getPlaybackStateUseCase: GetPlaybackStateUseCase,
+    private val refreshAlbumUseCase: RefreshAlbumUseCase,
+    private val refreshAlbumTracksUseCase: RefreshAlbumTracksUseCase,
+    private val getCurrentTrackUseCase: GetCurrentTrackUseCase,
+    private val getPlaybackStateUseCase: GetPlaybackStateUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumDetailUiState, AlbumDetailEvent>(
-        viewModelName = "AlbumDetailViewModel",
-        logger = logger,
-        initialState = AlbumDetailUiState(albumId = albumId),
-    ) {
-    init {
-        getCurrentTrackUseCase()
-            .onEach { currentTrack ->
-                updateState { it.copy(currentTrackId = currentTrack?.id) }
-            }.launchIn(viewModelScope)
-
-        getPlaybackStateUseCase()
-            .onEach { playbackState ->
-                updateState { it.copy(isPlaying = playbackState.isPlaying) }
-            }.launchIn(viewModelScope)
-    }
-
+    viewModelName = "AlbumDetailViewModel",
+    logger = logger,
+    initialState = AlbumDetailUiState(),
+) {
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
+            AlbumDetailEvent.OnBackClicked -> Unit
             AlbumDetailEvent.OnAppearing -> {
                 loadAlbum()
                 loadAlbumTracks()
+
+                getCurrentTrackUseCase()
+                    .onEach { currentTrack ->
+                        updateState { it.copy(currentTrackId = currentTrack?.id) }
+                    }.launchIn(viewModelScope)
+
+                getPlaybackStateUseCase()
+                    .onEach { playbackState ->
+                        updateState { it.copy(isPlaying = playbackState.isPlaying) }
+                    }.launchIn(viewModelScope)
             }
-            AlbumDetailEvent.OnBackClicked -> Unit
+            AlbumDetailEvent.OnRefresh -> refreshAlbumDetail()
             is AlbumDetailEvent.OnTrackClicked -> playTrack(event.trackId)
         }
     }
@@ -82,14 +86,7 @@ internal class AlbumDetailViewModel(
             updateState { it.copy(isLoading = true) }
             try {
                 val album = getAlbumUseCase(albumId)
-                val coverArt =
-                    album.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
-                        getAlbumCoverArtUseCase(
-                            coverArtId = album.coverArt ?: album.id,
-                            size = COVER_ART_SIZE,
-                            albumId = album.id,
-                        )
-                    }.getOrNull()
+                val coverArt = getCoverArt(album)
                 updateState { it.copy(isLoading = false, album = album, coverArt = coverArt) }
             } catch (exception: Exception) {
                 logger.w("Unable to load album $albumId" + ": " + exception.message)
@@ -97,6 +94,38 @@ internal class AlbumDetailViewModel(
             }
         }
     }
+
+    private fun refreshAlbumDetail() {
+        viewModelScope.launch {
+            updateState { it.copy(isRefreshing = true, isPullToRefreshIndicatorVisible = true) }
+
+            try {
+                val album = refreshAlbumUseCase(albumId)
+                val coverArt = getCoverArt(album)
+                updateState { it.copy(album = album, coverArt = coverArt) }
+            } catch (exception: Exception) {
+                logger.w("Unable to refresh album $albumId" + ": " + exception.message)
+            }
+
+            try {
+                val tracks = refreshAlbumTracksUseCase(albumId)
+                updateState { it.copy(tracks = tracks) }
+            } catch (exception: Exception) {
+                logger.w("Unable to refresh album tracks $albumId" + ": " + exception.message)
+            }
+        }.invokeOnCompletion {
+            updateState { it.copy(isRefreshing = false, isPullToRefreshIndicatorVisible = false) }
+        }
+    }
+
+    private suspend fun getCoverArt(album: Album): AlbumCoverArt? =
+        album.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
+            getAlbumCoverArtUseCase(
+                coverArtId = album.coverArt ?: album.id,
+                size = COVER_ART_SIZE,
+                albumId = album.id,
+            )
+        }.getOrNull()
 
     private fun loadAlbumTracks() {
         viewModelScope.launch {
@@ -112,6 +141,6 @@ internal class AlbumDetailViewModel(
     }
 
     private companion object {
-        const val COVER_ART_SIZE = 600
+        const val COVER_ART_SIZE = 900
     }
 }

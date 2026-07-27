@@ -3,6 +3,8 @@ package fr.cassettelabs.cassette.domain.di
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumTracksUseCase
+import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumList.GetAllAlbumsUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
@@ -40,6 +42,8 @@ val domainModule =
         // Albums
         singleOf(::GetAlbumUseCase)
         singleOf(::GetAlbumTracksUseCase)
+        singleOf(::RefreshAlbumUseCase)
+        singleOf(::RefreshAlbumTracksUseCase)
         singleOf(::GetAlbumCoverArtUseCase)
         singleOf(::GetRecentlyAddedAlbumsUseCase)
         singleOf(::GetAllAlbumsUseCase)

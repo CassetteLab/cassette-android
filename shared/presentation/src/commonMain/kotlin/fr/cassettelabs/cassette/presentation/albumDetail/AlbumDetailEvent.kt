@@ -5,6 +5,8 @@ import fr.cassettelabs.cassette.presentation.core.mvi.Event
 internal sealed interface AlbumDetailEvent : Event {
     data object OnAppearing : AlbumDetailEvent
 
+    data object OnRefresh : AlbumDetailEvent
+
     data object OnBackClicked : AlbumDetailEvent
 
     data class OnTrackClicked(
