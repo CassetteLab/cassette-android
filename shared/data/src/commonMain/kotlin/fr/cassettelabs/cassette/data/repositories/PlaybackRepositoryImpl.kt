@@ -31,6 +31,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import io.ktor.http.URLBuilder
+import io.ktor.http.encodedPath
 
 internal class PlaybackRepositoryImpl(
     private val serverConfigurationDao: ServerConfigurationDao,
@@ -66,6 +68,11 @@ internal class PlaybackRepositoryImpl(
                     if (state == PlayerState.ENDED) {
                         scope.launch { skipToNext() }
                     }
+                }
+
+                override fun onPlayerError(message: String) {
+                    stopPositionUpdates()
+                    updatePlaybackState()
                 }
             },
         )
@@ -191,14 +198,17 @@ internal class PlaybackRepositoryImpl(
         val server = configuration.serverConfiguration
         val salt = currentTimeMillis().toString(16)
         val password = cipherHelper.decrypt(server.encryptedPassword)
-        val params = mutableListOf<String>()
-        params.add("id=$trackId")
-        params.add("u=${server.username}")
-        params.add("t=${md5(password + salt)}")
-        params.add("s=$salt")
-        params.add("v=1.16.1")
-        params.add("c=Cassette")
-        val url = "${server.serverUrl.trimEnd('/')}/rest/stream.view?${params.joinToString("&")}"
+        val url =
+            URLBuilder(server.serverUrl.trimEnd('/')).apply {
+                encodedPath = "${encodedPath.trimEnd('/')}/rest/stream.view"
+                parameters.append("id", trackId)
+                parameters.append("u", server.username)
+                parameters.append("t", md5(password + salt))
+                parameters.append("s", salt)
+                parameters.append("v", "1.16.1")
+                parameters.append("c", "Cassette")
+                parameters.append("format", "mp3")
+            }.buildString()
         val headers =
             configuration.customHeaders
                 .filter { it.name.isNotBlank() }

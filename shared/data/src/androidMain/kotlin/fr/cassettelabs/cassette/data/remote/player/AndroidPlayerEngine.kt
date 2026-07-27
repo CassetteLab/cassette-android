@@ -1,10 +1,12 @@
 package fr.cassettelabs.cassette.data.remote.player
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -40,6 +42,12 @@ class AndroidPlayerEngine(context: Context) : PlayerEngine {
                     Player.STATE_BUFFERING -> listener?.onPlaybackStateChanged(PlayerState.READY)
                     Player.STATE_IDLE -> listener?.onPlaybackStateChanged(PlayerState.IDLE)
                 }
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                Log.e(TAG, "Unable to play media", error)
+                listener?.onPlayerError(error.message ?: "Unable to play media")
+                listener?.onPlaybackStateChanged(PlayerState.ERROR)
             }
         }
 
@@ -79,4 +87,8 @@ class AndroidPlayerEngine(context: Context) : PlayerEngine {
     override fun seekTo(positionMs: Long) = player.seekTo(positionMs)
 
     override fun dispose() = player.release()
+
+    private companion object {
+        const val TAG = "AndroidPlayerEngine"
+    }
 }

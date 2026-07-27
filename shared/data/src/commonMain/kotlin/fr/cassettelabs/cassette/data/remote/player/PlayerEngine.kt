@@ -17,6 +17,8 @@ interface PlayerEngine {
 interface PlayerEngineListener {
     fun onIsPlayingChanged(isPlaying: Boolean)
     fun onPlaybackStateChanged(state: Int)
+
+    fun onPlayerError(message: String) = Unit
 }
 
 object PlayerState {

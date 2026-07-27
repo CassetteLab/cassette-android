@@ -42,6 +42,7 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
+            implementation(libs.jlayer)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
