@@ -168,7 +168,7 @@ internal fun MainScreen() {
                         .fillMaxSize(),
                 dragHandle = null,
                 bottomSheetNavigator = bottomSheetNavigator,
-//                contentWindowInsets = { WindowInsets(0.dp) },
+                contentWindowInsets = { WindowInsets(0.dp) },
             ) {
                 NavHost(
                     startDestination = startDestination.destination,
