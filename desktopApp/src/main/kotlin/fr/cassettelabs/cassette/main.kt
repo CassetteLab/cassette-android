@@ -18,16 +18,21 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import fr.cassettelabs.cassette.di.sharedModules
 import fr.cassettelabs.cassette.domain.usecases.configuration.HasServerConfigurationUseCase
+import java.awt.Taskbar
+import javax.imageio.ImageIO
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.get
 
 fun main() = runBlocking {
+    configureDesktopIcon()
+
     startKoin {
         modules(sharedModules())
     }
@@ -44,6 +49,7 @@ fun main() = runBlocking {
         Window(
             onCloseRequest = ::exitApplication,
             title = "Cassette",
+            icon = painterResource(desktopIconResourcePath()),
         ) {
             val hasValidServerConfiguration = startupConfiguration
             if (hasValidServerConfiguration == null) {
@@ -54,6 +60,22 @@ fun main() = runBlocking {
         }
     }
 }
+
+private fun configureDesktopIcon() {
+    if (!Taskbar.isTaskbarSupported() || !Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
+        return
+    }
+
+    val icon = Thread.currentThread().contextClassLoader.getResource(desktopIconResourcePath()) ?: return
+    Taskbar.getTaskbar().iconImage = ImageIO.read(icon)
+}
+
+private fun desktopIconResourcePath(): String =
+    if (System.getProperty("os.name").contains("mac", ignoreCase = true)) {
+        "icons/cassette-icon-macos.png"
+    } else {
+        "icons/cassette-icon.png"
+    }
 
 @Composable
 private fun DesktopSplashScreen() {
