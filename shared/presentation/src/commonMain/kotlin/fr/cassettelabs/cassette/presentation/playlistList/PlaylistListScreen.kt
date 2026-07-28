@@ -109,7 +109,7 @@ internal fun PlaylistListScreen(
             } else {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxSize(),
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Adaptive(minSize = 160.dp),
                     contentPadding =
                         contentPadding.plus(
                             PaddingValues(
