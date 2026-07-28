@@ -88,7 +88,7 @@ internal fun HomeScreen(
                     ) { album ->
                         AlbumRow(
                             album = album,
-                            coverArt = uiState.albumCoverArts[album.id],
+                            coverArtStatus = uiState.albumCoverArtStatuses[album.id],
                             onClick = { onEvent(HomeEvent.OnAlbumClicked(album.id)) },
                         )
                     }

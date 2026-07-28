@@ -27,15 +27,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
 import fr.cassettelabs.cassette.presentation.core.ShuffleButton
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
 @Composable
 internal fun AlbumDetailHeader(
     album: Album?,
-    coverArt: AlbumCoverArtModel?,
+    coverArtStatus: CoverArtLoadingStatus?,
     height: Dp,
     onShuffleClick: () -> Unit,
 ) {
@@ -48,7 +48,7 @@ internal fun AlbumDetailHeader(
                 .height(height),
     ) {
         AlbumCoverArt(
-            coverArt = coverArt,
+            coverArtStatus = coverArtStatus,
             modifier = Modifier.fillMaxSize(),
         )
 

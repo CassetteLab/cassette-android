@@ -1,14 +1,15 @@
 package fr.cassettelabs.cassette.domain.usecases
 
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.repositories.PlaylistRepository
+import kotlinx.coroutines.flow.Flow
 
 class GetPlaylistCoverArtUseCase(
     private val playlistRepository: PlaylistRepository,
 ) {
-    suspend operator fun invoke(
+    operator fun invoke(
         coverArtId: String,
         size: Int? = null,
         playlistId: String? = null,
-    ): AlbumCoverArt = playlistRepository.getPlaylistCoverArt(coverArtId = coverArtId, size = size, playlistId = playlistId)
+    ): Flow<CoverArtLoadingStatus> = playlistRepository.getPlaylistCoverArt(coverArtId = coverArtId, size = size, playlistId = playlistId)
 }

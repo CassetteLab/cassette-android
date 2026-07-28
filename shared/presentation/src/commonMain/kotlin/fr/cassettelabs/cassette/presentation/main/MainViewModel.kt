@@ -2,6 +2,7 @@ package fr.cassettelabs.cassette.presentation.main
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
@@ -34,6 +35,7 @@ internal class MainViewModel(
                     it.copy(
                         currentTrack = track,
                         coverArtFilePath = track?.coverArtFilePath,
+                        coverArtStatus = track?.coverArtFilePath?.let { filePath -> CoverArtLoadingStatus.Loaded(filePath) },
                     )
                 }
                 if (track != null && track.coverArtFilePath == null) {
@@ -63,23 +65,25 @@ internal class MainViewModel(
 
     private fun loadCoverArt(currentTrack: Track) {
         val coverArtId = currentTrack.coverArt ?: return
-        viewModelScope.launch {
-            runCatching {
-                getAlbumCoverArtUseCase(
-                    coverArtId = coverArtId,
-                    size = COVER_ART_SIZE,
-                    albumId = currentTrack.albumId,
-                )
-            }.onSuccess { coverArt ->
-                updateState { state ->
-                    if (state.currentTrack?.id == currentTrack.id) {
-                        state.copy(coverArtFilePath = coverArt.filePath)
-                    } else {
-                        state
-                    }
+        getAlbumCoverArtUseCase(
+            coverArtId = coverArtId,
+            size = COVER_ART_SIZE,
+            albumId = currentTrack.albumId,
+        ).onEach { status ->
+            updateState { state ->
+                if (state.currentTrack?.id == currentTrack.id) {
+                    state.copy(
+                        coverArtFilePath = (status as? CoverArtLoadingStatus.Loaded)?.filePath ?: state.coverArtFilePath,
+                        coverArtStatus = status,
+                    )
+                } else {
+                    state
                 }
             }
-        }
+            if (status is CoverArtLoadingStatus.Error) {
+                logger.w("Unable to load cover art $coverArtId" + ": " + status.throwable.message)
+            }
+        }.launchIn(viewModelScope)
     }
 
     private companion object {

@@ -64,6 +64,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.RepeatMode
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
@@ -76,7 +77,7 @@ internal fun NowPlayingScreen(
     uiState: NowPlayingUiState,
     onEvent: (NowPlayingEvent) -> Unit,
 ) {
-    AlbumArtworkTheme(albumArt = uiState.coverArt?.filePath) {
+    AlbumArtworkTheme(albumArt = (uiState.coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath) {
         val playerContainer = MaterialTheme.colorScheme.primaryContainer
         val playerContent = MaterialTheme.colorScheme.onPrimaryContainer
         val playerAccent = MaterialTheme.colorScheme.primary
@@ -165,14 +166,14 @@ internal fun NowPlayingScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         AlbumCoverArt(
-                            coverArt = uiState.coverArt,
+                            coverArtStatus = uiState.coverArtStatus,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
                                     .height(340.dp),
                             onImageLoaded = {},
                         )
-                        if (uiState.coverArt == null) {
+                        if (uiState.coverArtStatus !is CoverArtLoadingStatus.Loaded && uiState.coverArtStatus != CoverArtLoadingStatus.Loading) {
                             Icon(
                                 modifier = Modifier.size(110.dp),
                                 imageVector = Icons.Rounded.Album,

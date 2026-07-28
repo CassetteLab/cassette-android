@@ -33,7 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Album
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
@@ -120,7 +120,9 @@ internal fun StarredScreen(
                                 AlbumRow(
                                     modifier = Modifier.padding(horizontal = 16.dp),
                                     album = album,
-                                    coverArt = album.coverArtFilePath?.let { AlbumCoverArt(filePath = it) },
+                                    coverArtStatus =
+                                        uiState.albumCoverArtStatuses[album.id]
+                                            ?: album.coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
                                     onClick = { onEvent(StarredEvent.OnAlbumClicked(album.id)) },
                                 )
                             }
@@ -135,6 +137,7 @@ internal fun StarredScreen(
                                 PlaylistDetailTrackItem(
                                     modifier = Modifier.padding(horizontal = 16.dp),
                                     track = track,
+                                    coverArtStatus = uiState.trackCoverArtStatuses[track.id],
                                     onClick = { onEvent(StarredEvent.OnTrackClicked(track.id)) },
                                 )
                             }

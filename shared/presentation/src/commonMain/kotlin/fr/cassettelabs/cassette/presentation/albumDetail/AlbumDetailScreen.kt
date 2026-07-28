@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
@@ -47,7 +48,7 @@ internal fun AlbumDetailScreen(
 
     val pullToRefreshState = rememberPullToRefreshState()
 
-    AlbumArtworkTheme(albumArt = uiState.coverArt?.filePath) {
+    AlbumArtworkTheme(albumArt = (uiState.coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath) {
         when {
             uiState.isLoading && uiState.album == null -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -89,7 +90,7 @@ internal fun AlbumDetailScreen(
                         item {
                             AlbumDetailHeader(
                                 album = uiState.album,
-                                coverArt = uiState.coverArt,
+                                coverArtStatus = uiState.coverArtStatus,
                                 height = maxHeaderHeight,
                                 onShuffleClick = {
                                     uiState.tracks.randomOrNull()?.let { track ->

@@ -2,7 +2,7 @@ package fr.cassettelabs.cassette.domain.repositories
 
 import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.Album
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.coroutines.flow.Flow
@@ -20,11 +20,11 @@ interface AlbumRepository {
 
     suspend fun refreshAlbumTracks(albumId: AlbumId): List<Track>
 
-    suspend fun getAlbumCoverArt(
+    fun getAlbumCoverArt(
         coverArtId: String,
         size: Int? = null,
         albumId: AlbumId? = null,
-    ): AlbumCoverArt
+    ): Flow<CoverArtLoadingStatus>
 
     fun getAllAlbums(): Flow<List<Album>>
 

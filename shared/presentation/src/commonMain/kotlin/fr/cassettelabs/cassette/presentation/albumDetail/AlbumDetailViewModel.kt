@@ -3,7 +3,7 @@ package fr.cassettelabs.cassette.presentation.albumDetail
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.Album
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
@@ -86,8 +86,8 @@ internal class AlbumDetailViewModel(
             updateState { it.copy(isLoading = true) }
             try {
                 val album = getAlbumUseCase(albumId)
-                val coverArt = getCoverArt(album)
-                updateState { it.copy(isLoading = false, album = album, coverArt = coverArt) }
+                updateState { it.copy(isLoading = false, album = album) }
+                loadCoverArt(album)
             } catch (exception: Exception) {
                 logger.w("Unable to load album $albumId" + ": " + exception.message)
                 updateState { it.copy(isLoading = false) }
@@ -101,8 +101,8 @@ internal class AlbumDetailViewModel(
 
             try {
                 val album = refreshAlbumUseCase(albumId)
-                val coverArt = getCoverArt(album)
-                updateState { it.copy(album = album, coverArt = coverArt) }
+                updateState { it.copy(album = album) }
+                loadCoverArt(album)
             } catch (exception: Exception) {
                 logger.w("Unable to refresh album $albumId" + ": " + exception.message)
             }
@@ -118,14 +118,18 @@ internal class AlbumDetailViewModel(
         }
     }
 
-    private suspend fun getCoverArt(album: Album): AlbumCoverArt? =
-        album.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
-            getAlbumCoverArtUseCase(
-                coverArtId = album.coverArt ?: album.id,
-                size = COVER_ART_SIZE,
-                albumId = album.id,
-            )
-        }.getOrNull()
+    private fun loadCoverArt(album: Album) {
+        getAlbumCoverArtUseCase(
+            coverArtId = album.coverArt ?: album.id,
+            size = COVER_ART_SIZE,
+            albumId = album.id,
+        ).onEach { status ->
+            if (status is CoverArtLoadingStatus.Error) {
+                logger.w("Unable to load cover art for album ${album.id}" + ": " + status.throwable.message)
+            }
+            updateState { it.copy(coverArtStatus = status) }
+        }.launchIn(viewModelScope)
+    }
 
     private fun loadAlbumTracks() {
         viewModelScope.launch {

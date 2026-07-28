@@ -1,6 +1,6 @@
 package fr.cassettelabs.cassette.domain.repositories
 
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.coroutines.flow.Flow
@@ -14,9 +14,9 @@ interface PlaylistRepository {
 
     suspend fun refreshPlaylists()
 
-    suspend fun getPlaylistCoverArt(
+    fun getPlaylistCoverArt(
         coverArtId: String,
         size: Int? = null,
         playlistId: String? = null,
-    ): AlbumCoverArt
+    ): Flow<CoverArtLoadingStatus>
 }

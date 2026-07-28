@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumList.core.AlbumListItem
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
@@ -139,10 +140,13 @@ internal fun AlbumListScreen(
                         items = uiState.albums,
                         key = { album -> album.id },
                     ) { album ->
-                        AlbumArtworkTheme(albumArt = album.coverArtFilePath) {
+                        val coverArtStatus = uiState.albumCoverArtStatuses[album.id]
+                        val coverArtFilePath = (coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath ?: album.coverArtFilePath
+                        AlbumArtworkTheme(albumArt = coverArtFilePath) {
                             AlbumListItem(
                                 modifier = Modifier.padding(horizontal = 8.dp),
                                 album = album,
+                                coverArtStatus = coverArtStatus,
                                 onClick = { onEvent(AlbumListEvent.OnAlbumClicked(album.id)) },
                             )
                         }

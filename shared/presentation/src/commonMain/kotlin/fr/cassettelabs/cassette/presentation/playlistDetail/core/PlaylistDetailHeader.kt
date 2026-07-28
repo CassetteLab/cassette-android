@@ -26,15 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
 import fr.cassettelabs.cassette.presentation.core.ShuffleButton
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt as AlbumCoverArtModel
 
 @Composable
 internal fun PlaylistDetailHeader(
     playlist: Playlist?,
-    coverArt: AlbumCoverArtModel?,
+    coverArtStatus: CoverArtLoadingStatus?,
     tracksCount: Int,
     height: Dp,
     onShuffleClick: () -> Unit,
@@ -48,7 +48,7 @@ internal fun PlaylistDetailHeader(
                 .height(height),
     ) {
         AlbumCoverArt(
-            coverArt = coverArt,
+            coverArtStatus = coverArtStatus,
             modifier = Modifier.fillMaxSize(),
         )
 

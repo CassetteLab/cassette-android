@@ -127,6 +127,7 @@ internal fun PlaylistListScreen(
                     ) { playlist ->
                         PlaylistListItem(
                             playlist = playlist,
+                            coverArtStatus = uiState.playlistCoverArtStatuses[playlist.id],
                             onClick = { onEvent(PlaylistListEvent.OnPlaylistClicked(playlist.id)) },
                             modifier = Modifier.fillMaxWidth(),
                         )

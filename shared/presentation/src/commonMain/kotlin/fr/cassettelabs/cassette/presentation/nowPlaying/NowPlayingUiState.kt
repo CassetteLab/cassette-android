@@ -1,6 +1,6 @@
 package fr.cassettelabs.cassette.presentation.nowPlaying
 
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.RepeatMode
 import fr.cassettelabs.cassette.presentation.core.mvi.UiState
 
@@ -9,7 +9,7 @@ internal data class NowPlayingUiState(
     val title: String = "",
     val artist: String? = null,
     val album: String? = null,
-    val coverArt: AlbumCoverArt? = null,
+    val coverArtStatus: CoverArtLoadingStatus? = null,
     val currentPositionSeconds: Int = 0,
     val durationSeconds: Int = 0,
     val isPlaying: Boolean = true,

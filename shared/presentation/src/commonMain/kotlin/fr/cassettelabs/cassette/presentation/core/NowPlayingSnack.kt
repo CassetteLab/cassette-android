@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
@@ -35,6 +36,7 @@ internal fun NowPlayingSnack(
     track: String,
     artist: String,
     coverArtFilePath: String?,
+    coverArtStatus: CoverArtLoadingStatus? = coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
     isPlaying: Boolean,
     onPlayPause: () -> Unit,
     onNext: () -> Unit,
@@ -57,18 +59,22 @@ internal fun NowPlayingSnack(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (coverArtFilePath != null) {
-                        AsyncImage(
-                            modifier =
-                                Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape),
-                            model = coverArtFilePath,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                        )
-                    } else {
-                        AlbumCoverArtPlaceholder()
+                    when (coverArtStatus) {
+                        is CoverArtLoadingStatus.Loaded -> {
+                            AsyncImage(
+                                modifier =
+                                    Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape),
+                                model = coverArtStatus.filePath,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
+                        CoverArtLoadingStatus.Loading -> CoverArtLoading()
+                        is CoverArtLoadingStatus.Error,
+                        null,
+                        -> AlbumCoverArtPlaceholder()
                     }
 
                     Column(

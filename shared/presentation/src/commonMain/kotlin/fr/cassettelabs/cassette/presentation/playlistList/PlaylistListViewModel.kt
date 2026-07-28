@@ -2,11 +2,14 @@ package fr.cassettelabs.cassette.presentation.playlistList
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.usecases.playlistList.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.RefreshPlaylistsUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
@@ -60,14 +63,16 @@ internal class PlaylistListViewModel(
 
     private suspend fun downloadMissingPlaylistCoverArts(playlists: List<Playlist>) {
         playlists.forEach { playlist ->
-            if (playlist.coverArtFilePath != null) return@forEach
-
             val coverArtId = playlist.coverArt ?: playlist.id
-            runCatching {
-                getPlaylistCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, playlistId = playlist.id)
-            }.onFailure { exception ->
-                logger.w("Unable to load cover art for playlist ${playlist.id}" + ": " + exception.message)
-            }
+            getPlaylistCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, playlistId = playlist.id)
+                .onEach { status ->
+                    if (status is CoverArtLoadingStatus.Error) {
+                        logger.w("Unable to load cover art for playlist ${playlist.id}" + ": " + status.throwable.message)
+                    }
+                    updateState { state ->
+                        state.copy(playlistCoverArtStatuses = state.playlistCoverArtStatuses + (playlist.id to status))
+                    }
+                }.launchIn(viewModelScope)
         }
     }
 

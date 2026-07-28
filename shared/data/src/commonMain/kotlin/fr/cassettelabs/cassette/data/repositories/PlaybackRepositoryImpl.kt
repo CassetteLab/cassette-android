@@ -20,6 +20,7 @@ import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.models.PlaybackState
 import fr.cassettelabs.cassette.domain.models.RepeatMode
 import fr.cassettelabs.cassette.domain.models.Track
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.repositories.AlbumRepository
 import fr.cassettelabs.cassette.domain.repositories.PlaybackRepository
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -289,12 +292,15 @@ internal class PlaybackRepositoryImpl(
         val trackId = currentTrack.id
         scope.launch {
             runCatching {
-                albumRepository.getAlbumCoverArt(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)
-            }.onSuccess { coverArt ->
+                albumRepository
+                    .getAlbumCoverArt(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)
+                    .filterIsInstance<CoverArtLoadingStatus.Loaded>()
+                    .first()
+            }.onSuccess { status ->
                 val activeTrack = _currentTrack.value ?: return@onSuccess
                 if (activeTrack.id != trackId) return@onSuccess
 
-                _currentTrack.value = activeTrack.copy(coverArtFilePath = coverArt.filePath)
+                _currentTrack.value = activeTrack.copy(coverArtFilePath = status.filePath)
                 mediaSessionController.update(_currentTrack.value, _playbackState.value)
             }
         }

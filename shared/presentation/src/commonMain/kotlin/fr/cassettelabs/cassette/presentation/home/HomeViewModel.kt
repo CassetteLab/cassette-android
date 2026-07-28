@@ -2,10 +2,13 @@ package fr.cassettelabs.cassette.presentation.home
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
@@ -33,32 +36,36 @@ internal class HomeViewModel(
             updateState { it.copy(isLoading = true, hasError = false) }
             try {
                 val albums = getRecentlyAddedAlbumsUseCase(size = RECENT_ALBUMS_SIZE)
-                val albumCoverArts =
+                val albumCoverArtStatuses =
                     albums
                         .mapNotNull { album ->
-                            album.coverArtFilePath?.let { filePath -> album.id to AlbumCoverArt(filePath = filePath) }
+                            album.coverArtFilePath?.let { filePath -> album.id to CoverArtLoadingStatus.Loaded(filePath) }
                         }.toMap()
-                updateState { it.copy(isLoading = false, albums = albums, albumCoverArts = albumCoverArts) }
+                updateState { it.copy(isLoading = false, albums = albums, albumCoverArtStatuses = albumCoverArtStatuses) }
 
                 albums.forEach { album ->
-                    if (album.coverArtFilePath != null) return@forEach
-
-                    val coverArtId = album.coverArt ?: album.id
-                    runCatching {
-                        getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = album.id)
-                    }.onSuccess { coverArt ->
-                        updateState { state ->
-                            state.copy(albumCoverArts = state.albumCoverArts + (album.id to coverArt))
-                        }
-                    }.onFailure { exception ->
-                        logger.w("Unable to load cover art for album ${album.id}" + ": " + exception.message)
-                    }
+                    loadCoverArt(album)
                 }
             } catch (exception: Exception) {
                 logger.w("Unable to load recently added albums" + ": " + exception.message)
                 updateState { it.copy(isLoading = false, hasError = true) }
             }
         }
+    }
+
+    private fun loadCoverArt(album: Album) {
+        getAlbumCoverArtUseCase(
+            coverArtId = album.coverArt ?: album.id,
+            size = COVER_ART_SIZE,
+            albumId = album.id,
+        ).onEach { status ->
+            if (status is CoverArtLoadingStatus.Error) {
+                logger.w("Unable to load cover art for album ${album.id}" + ": " + status.throwable.message)
+            }
+            updateState { state ->
+                state.copy(albumCoverArtStatuses = state.albumCoverArtStatuses + (album.id to status))
+            }
+        }.launchIn(viewModelScope)
     }
 
     private companion object {

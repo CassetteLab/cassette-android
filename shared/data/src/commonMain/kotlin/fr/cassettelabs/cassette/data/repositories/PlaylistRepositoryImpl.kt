@@ -6,11 +6,13 @@ import fr.cassettelabs.cassette.data.local.entities.PlaylistEntity
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassettelabs.cassette.data.remote.datasources.PlaylistRemoteDataSourceImpl
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.repositories.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 internal class PlaylistRepositoryImpl(
@@ -56,18 +58,21 @@ internal class PlaylistRepositoryImpl(
         }
     }
 
-    override suspend fun getPlaylistCoverArt(
+    override fun getPlaylistCoverArt(
         coverArtId: String,
         size: Int?,
         playlistId: String?,
-    ): AlbumCoverArt {
+    ): Flow<CoverArtLoadingStatus> = flow {
         playlistId?.let { id ->
             playlistDao.getPlaylist(id)?.validCoverArtFilePath()?.let { filePath ->
-                return AlbumCoverArt(filePath = filePath)
+                emit(CoverArtLoadingStatus.Loaded(filePath))
+                return@flow
             }
         }
 
-        return albumRemoteDataSource
+        emit(CoverArtLoadingStatus.Loading)
+
+        val coverArt = albumRemoteDataSource
             .getAlbumCoverArt(coverArtId = coverArtId, size = size)
             .also { coverArt ->
                 playlistId?.let { id ->
@@ -75,6 +80,9 @@ internal class PlaylistRepositoryImpl(
                     extractAndSaveSeedColor(id, coverArt.filePath)
                 }
             }
+        emit(CoverArtLoadingStatus.Loaded(coverArt.filePath))
+    }.catch { throwable ->
+        emit(CoverArtLoadingStatus.Error(throwable))
     }
 
     private suspend fun extractAndSaveSeedColor(

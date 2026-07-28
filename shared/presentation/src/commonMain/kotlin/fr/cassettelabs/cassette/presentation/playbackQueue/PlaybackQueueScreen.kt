@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,12 +22,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
+import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueCurrentTrackCard
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueEmptyState
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueTrackRow
 import org.jetbrains.compose.resources.stringResource
@@ -38,6 +41,10 @@ internal fun PlaybackQueueScreen(
     uiState: PlaybackQueueUiState,
     onEvent: (PlaybackQueueEvent) -> Unit,
 ) {
+    LaunchedEffect(Unit) {
+        onEvent(PlaybackQueueEvent.OnAppearing)
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
@@ -60,7 +67,7 @@ internal fun PlaybackQueueScreen(
             )
         },
     ) { innerPadding ->
-        if (uiState.upcomingTracks.isEmpty()) {
+        if (uiState.currentTrack == null && uiState.upcomingTracks.isEmpty()) {
             PlaybackQueueEmptyState(
                 modifier =
                     Modifier
@@ -73,10 +80,25 @@ internal fun PlaybackQueueScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding =
                     innerPadding.plus(contentPadding).plus(
-                        PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                        PaddingValues(horizontal = 16.dp, vertical = 16.dp),
                     ),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                uiState.currentTrack?.let { currentTrack ->
+                    item(key = "current-track") {
+                        PlaybackQueueCurrentTrackCard(currentTrack = currentTrack)
+                    }
+
+                    if (uiState.upcomingTracks.isNotEmpty()) {
+                        item(key = "queue-divider") {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = 6.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
+                            )
+                        }
+                    }
+                }
+
                 itemsIndexed(
                     items = uiState.upcomingTracks,
                     key = { _, track -> track.id },
@@ -92,12 +114,24 @@ internal fun PlaybackQueueScreen(
 }
 
 @Composable
-@Preview
+@PreviewLightDark
 private fun PlaybackQueueScreenPreview() {
     CassetteTheme {
         PlaybackQueueScreen(
             uiState =
                 PlaybackQueueUiState(
+                    currentTrack =
+                        Track(
+                            id = "track-3",
+                            title = "Aerodynamic",
+                            artist = "Daft Punk",
+                            trackNumber = 2,
+                            durationSeconds = 212,
+                            albumId = "album-1",
+                            albumName = "Discovery",
+                            coverArt = null,
+                            coverArtFilePath = null,
+                        ),
                     upcomingTracks =
                         listOf(
                             Track(

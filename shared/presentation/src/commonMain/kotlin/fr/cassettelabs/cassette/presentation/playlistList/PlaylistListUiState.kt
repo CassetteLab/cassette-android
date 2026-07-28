@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.presentation.playlistList
 
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.presentation.core.mvi.UiState
 
@@ -8,4 +9,5 @@ internal data class PlaylistListUiState(
     val isPullToRefreshIndicatorVisible: Boolean = false,
     val isRefreshing: Boolean = false,
     val playlists: List<Playlist> = emptyList(),
+    val playlistCoverArtStatuses: Map<String, CoverArtLoadingStatus> = emptyMap(),
 ) : UiState

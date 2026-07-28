@@ -2,11 +2,14 @@ package fr.cassettelabs.cassette.presentation.starred
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.starred.GetStarredLibraryUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class StarredViewModel(
@@ -75,38 +78,38 @@ internal class StarredViewModel(
         val albums = uiState.value.albums
         albums.forEach { album ->
             val coverArtId = album.coverArt ?: return@forEach
-            val coverArt =
-                runCatching {
-                    getAlbumCoverArtUseCase(
-                        coverArtId = coverArtId,
-                        size = ALBUM_COVER_ART_SIZE,
-                        albumId = album.id,
-                    )
-                }.getOrNull() ?: return@forEach
-
-            updateState { state ->
-                state.copy(
-                    albums =
-                        state.albums.map { stateAlbum ->
-                            if (stateAlbum.id == album.id) stateAlbum.copy(coverArtFilePath = coverArt.filePath) else stateAlbum
-                        },
-                )
-            }
+            getAlbumCoverArtUseCase(
+                coverArtId = coverArtId,
+                size = ALBUM_COVER_ART_SIZE,
+                albumId = album.id,
+            ).onEach { status ->
+                if (status is CoverArtLoadingStatus.Error) {
+                    logger.w("Unable to load cover art for album ${album.id}" + ": " + status.throwable.message)
+                }
+                updateState { state ->
+                    state.copy(albumCoverArtStatuses = state.albumCoverArtStatuses + (album.id to status))
+                }
+            }.launchIn(viewModelScope)
         }
 
         val tracks = uiState.value.tracks
         tracks.forEach { track ->
             val coverArtId = track.coverArt ?: return@forEach
-            val coverArt =
-                runCatching {
-                    getAlbumCoverArtUseCase(
-                        coverArtId = coverArtId,
-                        size = TRACK_COVER_ART_SIZE,
-                        albumId = track.albumId,
-                    )
-                }.getOrNull() ?: return@forEach
-
-            updateTrackCoverArt(track = track, coverArtFilePath = coverArt.filePath)
+            getAlbumCoverArtUseCase(
+                coverArtId = coverArtId,
+                size = TRACK_COVER_ART_SIZE,
+                albumId = track.albumId,
+            ).onEach { status ->
+                if (status is CoverArtLoadingStatus.Error) {
+                    logger.w("Unable to load cover art for track ${track.id}" + ": " + status.throwable.message)
+                }
+                if (status is CoverArtLoadingStatus.Loaded) {
+                    updateTrackCoverArt(track = track, coverArtFilePath = status.filePath)
+                }
+                updateState { state ->
+                    state.copy(trackCoverArtStatuses = state.trackCoverArtStatuses + (track.id to status))
+                }
+            }.launchIn(viewModelScope)
         }
     }
 

@@ -2,7 +2,7 @@ package fr.cassettelabs.cassette.presentation.playlistDetail
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.models.Track
@@ -12,6 +12,8 @@ import fr.cassettelabs.cassette.domain.usecases.playlistDetail.GetPlaylistTracks
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class PlaylistDetailViewModel(
@@ -67,15 +69,8 @@ internal class PlaylistDetailViewModel(
             updateState { it.copy(isLoading = true) }
             try {
                 val playlist = getPlaylistUseCase(playlistId)
-                val coverArt =
-                    playlist.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) } ?: runCatching {
-                        getPlaylistCoverArtUseCase(
-                            coverArtId = playlist.coverArt ?: playlist.id,
-                            size = COVER_ART_SIZE,
-                            playlistId = playlist.id,
-                        )
-                    }.getOrNull()
-                updateState { it.copy(isLoading = false, playlist = playlist, coverArt = coverArt) }
+                updateState { it.copy(isLoading = false, playlist = playlist) }
+                loadPlaylistCoverArt(playlist.id, playlist.coverArt ?: playlist.id)
             } catch (exception: Exception) {
                 logger.w("Unable to load playlist $playlistId" + ": " + exception.message)
                 updateState { it.copy(isLoading = false) }
@@ -100,28 +95,45 @@ internal class PlaylistDetailViewModel(
     private suspend fun downloadMissingTrackCoverArts(tracks: List<Track>) {
         tracks.forEach { track ->
             val coverArtId = track.coverArt ?: return@forEach
-            val coverArt =
-                runCatching {
-                    getAlbumCoverArtUseCase(
-                        coverArtId = coverArtId,
-                        size = TRACK_COVER_ART_SIZE,
-                        albumId = track.albumId,
+            getAlbumCoverArtUseCase(
+                coverArtId = coverArtId,
+                size = TRACK_COVER_ART_SIZE,
+                albumId = track.albumId,
+            ).onEach { status ->
+                if (status is CoverArtLoadingStatus.Error) {
+                    logger.w("Unable to load cover art for track ${track.id}" + ": " + status.throwable.message)
+                }
+                updateState { state ->
+                    state.copy(
+                        tracks =
+                            state.tracks.map { stateTrack ->
+                                if (stateTrack.id == track.id && status is CoverArtLoadingStatus.Loaded) {
+                                    stateTrack.copy(coverArtFilePath = status.filePath)
+                                } else {
+                                    stateTrack
+                                }
+                            },
+                        trackCoverArtStatuses = state.trackCoverArtStatuses + (track.id to status),
                     )
-                }.getOrNull() ?: return@forEach
-
-            updateState { state ->
-                state.copy(
-                    tracks =
-                        state.tracks.map { stateTrack ->
-                            if (stateTrack.id == track.id) {
-                                stateTrack.copy(coverArtFilePath = coverArt.filePath)
-                            } else {
-                                stateTrack
-                            }
-                        },
-                )
-            }
+                }
+            }.launchIn(viewModelScope)
         }
+    }
+
+    private fun loadPlaylistCoverArt(
+        playlistId: String,
+        coverArtId: String,
+    ) {
+        getPlaylistCoverArtUseCase(
+            coverArtId = coverArtId,
+            size = COVER_ART_SIZE,
+            playlistId = playlistId,
+        ).onEach { status ->
+            if (status is CoverArtLoadingStatus.Error) {
+                logger.w("Unable to load cover art for playlist $playlistId" + ": " + status.throwable.message)
+            }
+            updateState { it.copy(coverArtStatus = status) }
+        }.launchIn(viewModelScope)
     }
 
     private companion object {

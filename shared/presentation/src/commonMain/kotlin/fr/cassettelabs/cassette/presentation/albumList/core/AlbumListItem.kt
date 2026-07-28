@@ -38,6 +38,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
+import fr.cassettelabs.cassette.presentation.core.CoverArtLoading
 import fr.cassettelabs.cassette.presentation.core.seedColorToAlbumArtColors
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
@@ -45,6 +47,7 @@ import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 internal fun AlbumListItem(
     modifier: Modifier = Modifier,
     album: Album,
+    coverArtStatus: CoverArtLoadingStatus? = album.coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
     onClick: () -> Unit,
 ) {
     var albumColors by remember(album.seedColor) {
@@ -76,9 +79,10 @@ internal fun AlbumListItem(
         shape = RoundedCornerShape(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if (album.coverArtFilePath != null) {
+            val loadedCoverArtPath = (coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath ?: album.coverArtFilePath
+            if (loadedCoverArtPath != null) {
                 AsyncImage(
-                    model = album.coverArtFilePath,
+                    model = loadedCoverArtPath,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
@@ -104,7 +108,12 @@ internal fun AlbumListItem(
                         Modifier
                             .fillMaxSize()
                             .background(defaultBackground),
-                )
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (coverArtStatus == CoverArtLoadingStatus.Loading) {
+                        CoverArtLoading()
+                    }
+                }
             }
 
             Box(
@@ -164,6 +173,7 @@ private fun AlbumListItemPreview() {
                         created = "",
                         seedColor = null,
                     ),
+                coverArtStatus = null,
                 onClick = { },
             )
         }

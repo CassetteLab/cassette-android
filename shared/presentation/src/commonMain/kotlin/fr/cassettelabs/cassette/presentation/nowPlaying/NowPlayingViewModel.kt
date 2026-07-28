@@ -2,7 +2,7 @@ package fr.cassettelabs.cassette.presentation.nowPlaying
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.RepeatMode
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
@@ -104,7 +104,7 @@ internal class NowPlayingViewModel(
                 artist = currentTrack.artist,
                 album = currentTrack.albumName,
                 durationSeconds = currentTrack.durationSeconds ?: 0,
-                coverArt = currentTrack.coverArtFilePath?.let { filePath -> AlbumCoverArt(filePath = filePath) },
+                coverArtStatus = currentTrack.coverArtFilePath?.let { filePath -> CoverArtLoadingStatus.Loaded(filePath) },
             )
         }
 
@@ -112,21 +112,20 @@ internal class NowPlayingViewModel(
 
         val coverArtId = currentTrack.coverArt ?: return
         val trackId = currentTrack.id
-        viewModelScope.launch {
-            runCatching {
-                getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)
-            }.onSuccess { coverArt ->
+        getAlbumCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)
+            .onEach { status ->
                 updateState { state ->
                     if (state.trackId == trackId) {
-                        state.copy(coverArt = coverArt)
+                        state.copy(coverArtStatus = status)
                     } else {
                         state
                     }
                 }
-            }.onFailure { exception ->
-                logger.w("Unable to load cover art $coverArtId" + ": " + exception.message)
+                if (status is CoverArtLoadingStatus.Error) {
+                    logger.w("Unable to load cover art $coverArtId" + ": " + status.throwable.message)
+                }
             }
-        }
+            .launchIn(viewModelScope)
     }
 
     private companion object {

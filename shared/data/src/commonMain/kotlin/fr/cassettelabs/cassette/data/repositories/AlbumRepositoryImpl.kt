@@ -9,11 +9,13 @@ import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.Album
-import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.repositories.AlbumRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 internal class AlbumRepositoryImpl(
@@ -90,18 +92,21 @@ internal class AlbumRepositoryImpl(
         return remoteTracks
     }
 
-    override suspend fun getAlbumCoverArt(
+    override fun getAlbumCoverArt(
         coverArtId: String,
         size: Int?,
         albumId: String?,
-    ): AlbumCoverArt {
+    ): Flow<CoverArtLoadingStatus> = flow {
         albumId?.let { id ->
             albumDao.getAlbum(id)?.validCoverArtFilePath()?.let { filePath ->
-                return AlbumCoverArt(filePath = filePath)
+                emit(CoverArtLoadingStatus.Loaded(filePath))
+                return@flow
             }
         }
 
-        return albumRemoteDataSource
+        emit(CoverArtLoadingStatus.Loading)
+
+        val coverArt = albumRemoteDataSource
             .getAlbumCoverArt(coverArtId = coverArtId, size = size)
             .also { coverArt ->
                 albumId?.let { id ->
@@ -109,6 +114,9 @@ internal class AlbumRepositoryImpl(
                     extractAndSaveSeedColor(id, coverArt.filePath)
                 }
             }
+        emit(CoverArtLoadingStatus.Loaded(coverArt.filePath))
+    }.catch { throwable ->
+        emit(CoverArtLoadingStatus.Error(throwable))
     }
 
     private suspend fun extractAndSaveSeedColor(

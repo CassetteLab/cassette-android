@@ -354,6 +354,7 @@ internal fun MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     PlaybackQueueEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
                                 }
                                 viewModel.onEvent(event)
                             },
@@ -392,6 +393,7 @@ internal fun MainScreen() {
                     track = uiState.currentTrack?.title ?: "",
                     artist = uiState.currentTrack?.artist ?: "",
                     coverArtFilePath = uiState.coverArtFilePath,
+                    coverArtStatus = uiState.coverArtStatus,
                     isPlaying = uiState.isPlaying,
                     onPlayPause = {
                         if (uiState.isPlaying) {
