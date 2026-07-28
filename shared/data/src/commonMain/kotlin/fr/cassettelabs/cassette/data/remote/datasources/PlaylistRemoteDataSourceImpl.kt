@@ -38,7 +38,10 @@ internal class PlaylistRemoteDataSourceImpl(
 
     suspend fun getPlaylist(playlistId: String): Playlist = getPlaylistDto(playlistId).toDomain()
 
-    suspend fun getPlaylistTracks(playlistId: String): List<Track> = getPlaylistDto(playlistId).tracksToDomain()
+    suspend fun getPlaylistWithTracks(playlistId: String): Pair<Playlist, List<Track>> {
+        val playlist = getPlaylistDto(playlistId)
+        return playlist.toDomain() to playlist.tracksToDomain()
+    }
 
     private suspend fun getPlaylistDto(playlistId: String) =
         getPlaylistResponse(playlistId).subsonicResponse.playlist

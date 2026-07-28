@@ -7,12 +7,14 @@ import androidx.room.RoomDatabaseConstructor
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
 import fr.cassettelabs.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
+import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaybackQueueItemEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaybackSessionEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaylistEntity
+import fr.cassettelabs.cassette.data.local.entities.PlaylistTrackEntity
 import fr.cassettelabs.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
 import fr.cassettelabs.cassette.data.local.entities.ServerConfigurationEntity
 import fr.cassettelabs.cassette.data.local.entities.StarredAlbumEntity
@@ -26,12 +28,13 @@ import fr.cassettelabs.cassette.data.local.entities.TrackEntity
         AlbumEntity::class,
         TrackEntity::class,
         PlaylistEntity::class,
+        PlaylistTrackEntity::class,
         StarredAlbumEntity::class,
         StarredTrackEntity::class,
         PlaybackSessionEntity::class,
         PlaybackQueueItemEntity::class,
     ],
-    version = 4,
+    version = 5,
 )
 @ConstructedBy(CassetteDatabaseConstructor::class)
 internal abstract class CassetteDatabase : RoomDatabase() {
@@ -42,6 +45,8 @@ internal abstract class CassetteDatabase : RoomDatabase() {
     abstract fun trackDao(): TrackDao
 
     abstract fun playlistDao(): PlaylistDao
+
+    abstract fun playlistTrackDao(): PlaylistTrackDao
 
     abstract fun playbackQueueDao(): PlaybackQueueDao
 }

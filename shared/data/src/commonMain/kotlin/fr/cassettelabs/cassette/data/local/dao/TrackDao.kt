@@ -11,6 +11,9 @@ internal interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTracks(tracks: List<TrackEntity>)
 
+    @Query("SELECT * FROM tracks WHERE id = :trackId LIMIT 1")
+    suspend fun getTrack(trackId: String): TrackEntity?
+
     @Query("SELECT * FROM tracks WHERE albumId = :albumId ORDER BY trackNumber, title")
     suspend fun getAlbumTracks(albumId: String): List<TrackEntity>
 

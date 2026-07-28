@@ -192,6 +192,10 @@ internal class AlbumRepositoryImpl(
             artist = artist,
             trackNumber = trackNumber,
             durationSeconds = durationSeconds,
+            albumName = albumName,
+            coverArt = coverArt,
+            coverArtFilePath = coverArtFilePath,
+            starredAt = starredAt,
         )
 
     private fun TrackEntity.toDomain(): Track =
@@ -201,6 +205,11 @@ internal class AlbumRepositoryImpl(
             artist = artist,
             trackNumber = trackNumber,
             durationSeconds = durationSeconds,
+            albumId = albumId,
+            albumName = albumName,
+            coverArt = coverArt,
+            coverArtFilePath = coverArtFilePath,
+            starredAt = starredAt,
         )
 
     private suspend fun currentServerConfigurationId(): Long =

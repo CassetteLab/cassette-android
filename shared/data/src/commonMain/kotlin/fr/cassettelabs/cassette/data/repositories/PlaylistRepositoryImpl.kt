@@ -1,8 +1,12 @@
 package fr.cassettelabs.cassette.data.repositories
 
 import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
+import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
+import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.local.entities.PlaylistEntity
+import fr.cassettelabs.cassette.data.local.entities.PlaylistTrackEntity
+import fr.cassettelabs.cassette.data.local.entities.TrackEntity
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassettelabs.cassette.data.remote.datasources.PlaylistRemoteDataSourceImpl
@@ -19,6 +23,8 @@ internal class PlaylistRepositoryImpl(
     private val playlistRemoteDataSource: PlaylistRemoteDataSourceImpl,
     private val albumRemoteDataSource: AlbumRemoteDataSourceImpl,
     private val playlistDao: PlaylistDao,
+    private val playlistTrackDao: PlaylistTrackDao,
+    private val trackDao: TrackDao,
     private val serverConfigurationDao: ServerConfigurationDao,
     private val coverArtProcessor: CoverArtProcessor,
 ) : PlaylistRepository {
@@ -37,10 +43,32 @@ internal class PlaylistRepositoryImpl(
                     seedColor = localPlaylist?.seedColor,
                 )
         playlistDao.insertPlaylist(playlist.toEntity(localPlaylist?.serverConfigurationId ?: currentServerConfigurationId()))
-        return playlist
+        return playlistDao.getPlaylist(playlistId)?.toDomain()
+            ?: throw IllegalStateException("Playlist $playlistId was not stored")
     }
 
-    override suspend fun getPlaylistTracks(playlistId: String): List<Track> = playlistRemoteDataSource.getPlaylistTracks(playlistId)
+    override suspend fun getPlaylistTracks(playlistId: String): List<Track> {
+        val localPlaylist = playlistDao.getPlaylist(playlistId)
+        try {
+            val (remotePlaylist, remoteTracks) = playlistRemoteDataSource.getPlaylistWithTracks(playlistId)
+            val playlistWithLocalData =
+                remotePlaylist.copy(
+                    coverArtFilePath = localPlaylist?.validCoverArtFilePath(),
+                    seedColor = localPlaylist?.seedColor,
+                )
+            playlistDao.insertPlaylist(playlistWithLocalData.toEntity(localPlaylist?.serverConfigurationId ?: currentServerConfigurationId()))
+            trackDao.insertTracks(remoteTracks.map { track -> track.toEntity() })
+            playlistTrackDao.replacePlaylistTracks(
+                playlistId = playlistId,
+                tracks = remoteTracks.mapIndexed { index, track -> track.toPlaylistTrackEntity(playlistId, index) },
+            )
+        } catch (exception: Exception) {
+            val localTracks = playlistTrackDao.getPlaylistTracks(playlistId)
+            if (localTracks.isEmpty() && localPlaylist?.trackCount != 0) throw exception
+        }
+
+        return playlistTrackDao.getPlaylistTracks(playlistId).map { it.toDomain() }
+    }
 
     override suspend fun refreshPlaylists() {
         val remotePlaylists = playlistRemoteDataSource.getAllPlaylists()
@@ -121,6 +149,44 @@ internal class PlaylistRepositoryImpl(
             coverArtFilePath = validCoverArtFilePath(),
             created = created,
             seedColor = seedColor,
+        )
+
+    private fun Track.toPlaylistTrackEntity(
+        playlistId: String,
+        position: Int,
+    ): PlaylistTrackEntity =
+        PlaylistTrackEntity(
+            playlistId = playlistId,
+            trackId = id,
+            position = position,
+        )
+
+    private fun Track.toEntity(): TrackEntity =
+        TrackEntity(
+            id = id,
+            albumId = albumId,
+            title = title,
+            artist = artist,
+            trackNumber = trackNumber,
+            durationSeconds = durationSeconds,
+            albumName = albumName,
+            coverArt = coverArt,
+            coverArtFilePath = coverArtFilePath,
+            starredAt = starredAt,
+        )
+
+    private fun TrackEntity.toDomain(): Track =
+        Track(
+            id = id,
+            title = title,
+            artist = artist,
+            trackNumber = trackNumber,
+            durationSeconds = durationSeconds,
+            albumId = albumId,
+            albumName = albumName,
+            coverArt = coverArt,
+            coverArtFilePath = coverArtFilePath,
+            starredAt = starredAt,
         )
 
     private suspend fun currentServerConfigurationId(): Long =

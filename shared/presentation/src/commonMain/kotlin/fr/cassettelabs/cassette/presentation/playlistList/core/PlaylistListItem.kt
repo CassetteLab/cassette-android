@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -141,7 +141,11 @@ internal fun PlaylistListItem(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = stringResource(Res.string.playlist_list_track_count, playlist.trackCount),
+                        text = pluralStringResource(
+                            Res.plurals.playlist_list_track_count,
+                            playlist.trackCount,
+                            playlist.trackCount,
+                        ),
                         color = animatedTextColor.copy(alpha = 0.85f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

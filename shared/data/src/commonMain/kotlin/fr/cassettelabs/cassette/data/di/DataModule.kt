@@ -7,6 +7,7 @@ import fr.cassettelabs.cassette.data.local.DatabaseBuilderFactory
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
 import fr.cassettelabs.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
+import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
@@ -14,6 +15,7 @@ import fr.cassettelabs.cassette.data.remote.datasources.PlaylistRemoteDataSource
 import fr.cassettelabs.cassette.data.remote.ktor.KtorClientProviderImpl
 import fr.cassettelabs.cassette.data.remote.ktor.plugins.CassetteRequestAuthenticationPluginProvider
 import fr.cassettelabs.cassette.data.remote.ktor.plugins.CassetteRequestDefaultsPluginProvider
+import fr.cassettelabs.cassette.data.remote.ktor.plugins.LoggerPluginProvider
 import fr.cassettelabs.cassette.data.repositories.AlbumRepositoryImpl
 import fr.cassettelabs.cassette.data.repositories.PlaybackRepositoryImpl
 import fr.cassettelabs.cassette.data.repositories.PlaylistRepositoryImpl
@@ -44,12 +46,14 @@ val dataModule =
         single<AlbumDao> { get<CassetteDatabase>().albumDao() }
         single<TrackDao> { get<CassetteDatabase>().trackDao() }
         single<PlaylistDao> { get<CassetteDatabase>().playlistDao() }
+        single<PlaylistTrackDao> { get<CassetteDatabase>().playlistTrackDao() }
         single<PlaybackQueueDao> { get<CassetteDatabase>().playbackQueueDao() }
 
         singleOf(::KtorClientProviderImpl)
         single<HttpClient> { get<KtorClientProviderImpl>().getClient() }
         singleOf(::CassetteRequestDefaultsPluginProvider)
         singleOf(::CassetteRequestAuthenticationPluginProvider)
+        singleOf(::LoggerPluginProvider)
 
         singleOf(::AlbumRemoteDataSourceImpl)
         singleOf(::PlaylistRemoteDataSourceImpl)

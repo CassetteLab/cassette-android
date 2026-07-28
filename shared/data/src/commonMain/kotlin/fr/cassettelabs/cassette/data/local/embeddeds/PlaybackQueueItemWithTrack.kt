@@ -12,8 +12,8 @@ internal data class PlaybackQueueItemWithTrack(
     val artist: String?,
     val trackNumber: Int?,
     val durationSeconds: Int?,
-    val albumId: String,
-    val albumName: String,
+    val albumId: String?,
+    val albumName: String?,
     val coverArtId: String?,
     val coverArtFilePath: String?,
 )

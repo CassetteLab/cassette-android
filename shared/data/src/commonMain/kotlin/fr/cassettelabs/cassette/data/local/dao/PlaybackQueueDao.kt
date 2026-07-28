@@ -31,13 +31,13 @@ internal interface PlaybackQueueDao {
             tracks.artist AS artist,
             tracks.trackNumber AS trackNumber,
             tracks.durationSeconds AS durationSeconds,
-            albums.id AS albumId,
-            albums.name AS albumName,
-            albums.coverArt AS coverArtId,
-            albums.coverArtFilePath AS coverArtFilePath
+            tracks.albumId AS albumId,
+            COALESCE(albums.name, tracks.albumName) AS albumName,
+            COALESCE(albums.coverArt, tracks.coverArt) AS coverArtId,
+            COALESCE(albums.coverArtFilePath, tracks.coverArtFilePath) AS coverArtFilePath
         FROM playback_queue_items AS queue
         INNER JOIN tracks ON tracks.id = queue.trackId
-        INNER JOIN albums ON albums.id = tracks.albumId
+        LEFT JOIN albums ON albums.id = tracks.albumId
         WHERE queue.sessionId = :sessionId
         ORDER BY queue.section, queue.position
         """,
