@@ -37,6 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Playlist
+import fr.cassettelabs.cassette.presentation.core.AppearingEffect
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.home.core.HomeMessage
@@ -49,7 +50,7 @@ internal fun PlaylistListScreen(
     uiState: PlaylistListUiState,
     onEvent: (PlaylistListEvent) -> Unit,
 ) {
-    LaunchedEffect(Unit) {
+    AppearingEffect {
         onEvent(PlaylistListEvent.OnAppearing)
     }
 

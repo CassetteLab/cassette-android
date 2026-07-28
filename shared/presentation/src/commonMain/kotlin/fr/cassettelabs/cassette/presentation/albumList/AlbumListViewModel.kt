@@ -25,8 +25,8 @@ internal class AlbumListViewModel(
     initialState = AlbumListUiState(),
 ) {
 
-    private var observingAlbumsJob : Job? = null
-    private var refreshingAlbumsJob : Job? = null
+    private var observingAlbumsJob: Job? = null
+    private var refreshingAlbumsJob: Job? = null
 
     override fun handleEvent(event: AlbumListEvent) {
         when (event) {
@@ -42,7 +42,7 @@ internal class AlbumListViewModel(
                         }
                 }
 
-                if (refreshingAlbumsJob?.isActive?.not() ?: true){
+                if (refreshingAlbumsJob?.isActive?.not() ?: true) {
                     refreshingAlbumsJob = viewModelScope.launch {
                         updateState { it.copy(isRefreshing = true) }
                         refreshAlbums()
@@ -53,7 +53,7 @@ internal class AlbumListViewModel(
                 }
             }
             AlbumListEvent.OnRefresh -> {
-                if (refreshingAlbumsJob?.isActive ?: true){
+                if (refreshingAlbumsJob?.isActive == true) {
                     logger.w("refreshingAlbumsJob is active, can't refresh albums")
                     return
                 }
