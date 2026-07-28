@@ -13,6 +13,7 @@ import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewMo
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListViewModel
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueViewModel
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
+import fr.cassettelabs.cassette.presentation.starred.StarredViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -31,4 +32,5 @@ val presentationModule =
         viewModelOf(::PlaylistListViewModel)
         viewModelOf(::PlaylistDetailViewModel)
         viewModelOf(::PlaybackQueueViewModel)
+        viewModelOf(::StarredViewModel)
     }

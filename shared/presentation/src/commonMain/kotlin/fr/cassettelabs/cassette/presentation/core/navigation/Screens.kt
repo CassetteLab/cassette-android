@@ -35,6 +35,9 @@ sealed interface Screens {
     data object PlaylistList : Screens
 
     @Serializable
+    data object Starred : Screens
+
+    @Serializable
     data class AlbumDetail(
         val albumId: String,
     ) : Screens

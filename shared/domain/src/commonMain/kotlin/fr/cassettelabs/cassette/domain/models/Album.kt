@@ -8,4 +8,5 @@ data class Album(
     val coverArtFilePath: String?,
     val created: String?,
     val seedColor: Int? = null,
+    val starredAt: String? = null,
 )

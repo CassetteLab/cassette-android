@@ -68,7 +68,7 @@
 
     <!-- Now Playing -->
     <string name="now_playing_back">Back</string>
-    <string name="now_playing_favorite">Favorite</string>
+    <string name="now_playing_starred">Starred</string>
     <string name="now_playing_next">Next</string>
     <string name="now_playing_output_this_device">This device</string>
     <string name="now_playing_pause">Pause</string>
@@ -119,6 +119,15 @@
     <string name="album_list_tab_title">Albums</string>
     <string name="album_list_title">My Albums</string>
     <string name="album_list_unknown_artist">Unknown artist</string>
+
+    <!-- Starred -->
+    <string name="starred_albums_section_title">Starred albums</string>
+    <string name="starred_empty_description">Albums and tracks starred on your Subsonic server will appear here.</string>
+    <string name="starred_empty_title">No starred music yet</string>
+    <string name="starred_loading_message">Loading starred music</string>
+    <string name="starred_tab_title">Starred</string>
+    <string name="starred_title">Starred</string>
+    <string name="starred_tracks_section_title">Starred tracks</string>
 
     <!-- Playlist List -->
     <string name="playlist_list_empty_description">Your playlists will appear here.</string>

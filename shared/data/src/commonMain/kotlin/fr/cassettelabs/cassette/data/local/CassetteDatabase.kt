@@ -10,13 +10,13 @@ import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
-import fr.cassettelabs.cassette.data.local.entities.FavoriteAlbumEntity
-import fr.cassettelabs.cassette.data.local.entities.FavoriteTrackEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaybackQueueItemEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaybackSessionEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaylistEntity
 import fr.cassettelabs.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
 import fr.cassettelabs.cassette.data.local.entities.ServerConfigurationEntity
+import fr.cassettelabs.cassette.data.local.entities.StarredAlbumEntity
+import fr.cassettelabs.cassette.data.local.entities.StarredTrackEntity
 import fr.cassettelabs.cassette.data.local.entities.TrackEntity
 
 @Database(
@@ -26,12 +26,12 @@ import fr.cassettelabs.cassette.data.local.entities.TrackEntity
         AlbumEntity::class,
         TrackEntity::class,
         PlaylistEntity::class,
-        FavoriteAlbumEntity::class,
-        FavoriteTrackEntity::class,
+        StarredAlbumEntity::class,
+        StarredTrackEntity::class,
         PlaybackSessionEntity::class,
         PlaybackQueueItemEntity::class,
     ],
-    version = 3,
+    version = 4,
 )
 @ConstructedBy(CassetteDatabaseConstructor::class)
 internal abstract class CassetteDatabase : RoomDatabase() {

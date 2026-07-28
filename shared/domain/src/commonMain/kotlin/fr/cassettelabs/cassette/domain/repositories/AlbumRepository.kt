@@ -3,11 +3,14 @@ package fr.cassettelabs.cassette.domain.repositories
 import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface AlbumRepository {
     suspend fun getRecentlyAddedAlbums(size: Int): List<Album>
+
+    suspend fun getStarredLibrary(): StarredLibrary
 
     suspend fun getAlbum(albumId: AlbumId): Album
 

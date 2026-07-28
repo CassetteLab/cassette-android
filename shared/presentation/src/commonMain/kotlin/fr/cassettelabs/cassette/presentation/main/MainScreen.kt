@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -68,6 +69,9 @@ import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
 import fr.cassettelabs.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
+import fr.cassettelabs.cassette.presentation.starred.StarredEvent
+import fr.cassettelabs.cassette.presentation.starred.StarredScreen
+import fr.cassettelabs.cassette.presentation.starred.StarredViewModel
 import navigation.ModalBottomSheetLayout
 import navigation.bottomSheet
 import navigation.rememberBottomSheetNavigator
@@ -78,7 +82,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 internal fun MainScreen() {
     val viewModel: MainViewModel = koinViewModel()
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val startDestination = MainTab.Home
     var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
     val bottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true)
@@ -101,7 +105,9 @@ internal fun MainScreen() {
     val currentDestination = navBackStackEntry?.destination
     val showBottomBar =
         currentDestination?.hasRoute<Screens.AlbumDetail>() != true &&
-            currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true
+            currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true &&
+            currentDestination?.hasRoute<Screens.NowPlaying>() != true &&
+            currentDestination?.hasRoute<Screens.PlaybackQueue>() != true
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -169,7 +175,7 @@ internal fun MainScreen() {
                 ) {
                     composable<Screens.Home> {
                         val viewModel: HomeViewModel = koinViewModel()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         HomeScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,
@@ -190,7 +196,7 @@ internal fun MainScreen() {
 
                     composable<Screens.AlbumList> {
                         val viewModel: AlbumListViewModel = koinViewModel()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         AlbumListScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,
@@ -211,7 +217,7 @@ internal fun MainScreen() {
 
                     composable<Screens.PlaylistList> {
                         val viewModel: PlaylistListViewModel = koinViewModel()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         PlaylistListScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,
@@ -230,9 +236,30 @@ internal fun MainScreen() {
                         )
                     }
 
+                    composable<Screens.Starred> {
+                        val viewModel: StarredViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                        StarredScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    is StarredEvent.OnAlbumClicked -> {
+                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    else -> Unit
+                                }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
                     composable<Screens.Settings> {
                         val viewModel: SettingsViewModel = koinViewModel()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         SettingsScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,
@@ -258,7 +285,7 @@ internal fun MainScreen() {
                             koinViewModel<AlbumDetailViewModel>(
                                 parameters = { parametersOf(route.albumId) },
                             )
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         AlbumDetailScreen(
                             contentPadding = subScreenContentPadding,
@@ -279,7 +306,7 @@ internal fun MainScreen() {
                             koinViewModel<PlaylistDetailViewModel>(
                                 parameters = { parametersOf(route.playlistId) },
                             )
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         PlaylistDetailScreen(
                             contentPadding = subScreenContentPadding,
@@ -296,7 +323,7 @@ internal fun MainScreen() {
 
                     composable<Screens.SettingsServerConfiguration> {
                         val viewModel = koinViewModel<ServerConfigurationViewModel>()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         LaunchedEffect(uiState.isSaved) {
                             if (uiState.isSaved) {
@@ -318,7 +345,7 @@ internal fun MainScreen() {
 
                     composable<Screens.PlaybackQueue> {
                         val viewModel = koinViewModel<PlaybackQueueViewModel>()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         PlaybackQueueScreen(
                             contentPadding = subScreenContentPadding,
@@ -334,7 +361,7 @@ internal fun MainScreen() {
 
                     bottomSheet<Screens.NowPlaying> {
                         val viewModel = koinViewModel<NowPlayingViewModel>()
-                        val uiState by viewModel.uiState.collectAsState()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                         NowPlayingScreen(
                             uiState = uiState,

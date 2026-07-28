@@ -15,7 +15,7 @@ internal sealed interface NowPlayingEvent : Event {
 
     data object OnRepeatClicked : NowPlayingEvent
 
-    data object OnFavoriteClicked : NowPlayingEvent
+    data object OnStarredClicked : NowPlayingEvent
 
     data object OnQueueClicked : NowPlayingEvent
 

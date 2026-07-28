@@ -6,6 +6,7 @@ import fr.cassettelabs.cassette.data.remote.dto.AlbumListResponseDto
 import fr.cassettelabs.cassette.data.remote.ktor.sha256
 import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -20,6 +21,30 @@ internal class AlbumRemoteDataSourceImpl(
     suspend fun getRecentlyAddedAlbums(size: Int): List<Album> = getAlbumList(type = "newest", size = size)
 
     suspend fun getAllAlbums(size: Int): List<Album> = getAlbumList(type = "alphabeticalByName", size = size)
+
+    suspend fun getStarredLibrary(): StarredLibrary {
+        val configuration =
+            serverConfigurationDao.getServerConfiguration()
+                ?: throw IllegalStateException("No server configuration found")
+        val server = configuration.serverConfiguration
+
+        val response =
+            httpClient
+                .get("${server.serverUrl.trimEnd('/')}/rest/getStarred2.view") {
+                    parameter("f", "json")
+                }.body<AlbumListResponseDto>()
+
+        val subsonicResponse = response.subsonicResponse
+        if (subsonicResponse.status != "ok") {
+            throw IllegalStateException("Subsonic getStarred2 failed")
+        }
+
+        val starred = subsonicResponse.starred2
+        return StarredLibrary(
+            albums = starred?.album.orEmpty().map { it.toDomain() },
+            tracks = starred?.song.orEmpty().map { it.toDomain() },
+        )
+    }
 
     private suspend fun getAlbumList(
         type: String,

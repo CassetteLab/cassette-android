@@ -84,7 +84,7 @@ internal class NowPlayingViewModel(
                 val repeatMode = uiState.value.repeatMode.next()
                 viewModelScope.launch { setPlaybackRepeatModeUseCase(repeatMode) }
             }
-            NowPlayingEvent.OnFavoriteClicked -> updateState { it.copy(isFavorite = !it.isFavorite) }
+            NowPlayingEvent.OnStarredClicked -> updateState { it.copy(isStarred = !it.isStarred) }
             NowPlayingEvent.OnQueueClicked -> Unit
             is NowPlayingEvent.OnSeekChanged -> {
                 val positionSeconds = (uiState.value.durationSeconds * event.progress).toInt()

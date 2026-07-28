@@ -6,7 +6,7 @@ import cassette.shared.presentation.generated.resources.now_playing_queue
 import cassette.shared.presentation.generated.resources.now_playing_unknown_title
 import cassette.shared.presentation.generated.resources.now_playing_unknown_artist
 import cassette.shared.presentation.generated.resources.now_playing_unknown_album
-import cassette.shared.presentation.generated.resources.now_playing_favorite
+import cassette.shared.presentation.generated.resources.now_playing_starred
 import cassette.shared.presentation.generated.resources.now_playing_shuffle
 import cassette.shared.presentation.generated.resources.now_playing_previous
 import cassette.shared.presentation.generated.resources.now_playing_pause
@@ -33,8 +33,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Album
 import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -43,6 +41,8 @@ import androidx.compose.material.icons.rounded.RepeatOne
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -227,12 +227,12 @@ internal fun NowPlayingScreen(
                                     .size(48.dp)
                                     .clip(CircleShape)
                                     .background(MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.70f)),
-                            onClick = { onEvent(NowPlayingEvent.OnFavoriteClicked) },
+                            onClick = { onEvent(NowPlayingEvent.OnStarredClicked) },
                         ) {
                             Icon(
-                                imageVector = if (uiState.isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                                contentDescription = stringResource(Res.string.now_playing_favorite),
-                                tint = if (uiState.isFavorite) MaterialTheme.colorScheme.error else playerContent,
+                                imageVector = if (uiState.isStarred) Icons.Rounded.Star else Icons.Rounded.StarBorder,
+                                contentDescription = stringResource(Res.string.now_playing_starred),
+                                tint = if (uiState.isStarred) MaterialTheme.colorScheme.tertiary else playerContent,
                             )
                         }
                     }

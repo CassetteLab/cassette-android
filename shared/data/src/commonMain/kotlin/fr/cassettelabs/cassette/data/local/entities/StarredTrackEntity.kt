@@ -5,18 +5,18 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "favorite_albums",
+    tableName = "starred_tracks",
     foreignKeys = [
         ForeignKey(
-            entity = AlbumEntity::class,
+            entity = TrackEntity::class,
             parentColumns = ["id"],
-            childColumns = ["albumId"],
+            childColumns = ["trackId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-internal data class FavoriteAlbumEntity(
+internal data class StarredTrackEntity(
     @PrimaryKey
-    val albumId: String,
+    val trackId: String,
     val starredAt: String? = null,
 )

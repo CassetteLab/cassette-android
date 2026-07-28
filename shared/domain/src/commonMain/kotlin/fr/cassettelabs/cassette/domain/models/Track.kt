@@ -10,4 +10,5 @@ data class Track(
     val albumName: String? = null,
     val coverArt: String? = null,
     val coverArtFilePath: String? = null,
+    val starredAt: String? = null,
 )

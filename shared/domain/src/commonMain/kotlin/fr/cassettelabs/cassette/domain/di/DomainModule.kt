@@ -28,6 +28,7 @@ import fr.cassettelabs.cassette.domain.usecases.playback.SetPlaybackRepeatModeUs
 import fr.cassettelabs.cassette.domain.usecases.playback.SetPlaybackShuffleEnabledUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.SkipToNextTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.SkipToPreviousTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.starred.GetStarredLibraryUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -48,6 +49,7 @@ val domainModule =
         singleOf(::GetRecentlyAddedAlbumsUseCase)
         singleOf(::GetAllAlbumsUseCase)
         singleOf(::RefreshAlbumsUseCase)
+        singleOf(::GetStarredLibraryUseCase)
 
         // Playlists
         singleOf(::GetAllPlaylistsUseCase)

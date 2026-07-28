@@ -15,7 +15,7 @@ internal data class NowPlayingUiState(
     val isPlaying: Boolean = true,
     val isShuffleEnabled: Boolean = false,
     val repeatMode: RepeatMode = RepeatMode.Off,
-    val isFavorite: Boolean = false,
+    val isStarred: Boolean = false,
 ) : UiState {
     val progress: Float =
         if (durationSeconds > 0) {

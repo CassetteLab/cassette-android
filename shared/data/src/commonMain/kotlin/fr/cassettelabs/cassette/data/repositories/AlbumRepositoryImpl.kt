@@ -10,6 +10,7 @@ import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImp
 import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.repositories.AlbumRepository
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,18 @@ internal class AlbumRepositoryImpl(
             albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId))
             albumWithLocalData
         }
+
+    override suspend fun getStarredLibrary(): StarredLibrary {
+        val starredLibrary = albumRemoteDataSource.getStarredLibrary()
+        val serverConfigurationId = currentServerConfigurationId()
+
+        starredLibrary.albums.forEach { album ->
+            val localAlbum = albumDao.getAlbum(album.id)
+            val albumWithLocalData = album.withLocalAlbumData(localAlbum)
+            albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
+        }
+        return starredLibrary
+    }
 
     override suspend fun getAlbum(albumId: AlbumId): Album {
         val localAlbum = albumDao.getAlbum(albumId)
