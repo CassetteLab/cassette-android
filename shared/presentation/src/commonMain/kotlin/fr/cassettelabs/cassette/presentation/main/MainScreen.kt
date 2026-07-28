@@ -105,6 +105,7 @@ internal fun MainScreen() {
     val currentDestination = navBackStackEntry?.destination
     val showBottomBar =
         currentDestination?.hasRoute<Screens.AlbumDetail>() != true &&
+            currentDestination?.hasRoute<Screens.PlaylistDetail>() != true &&
             currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true &&
             currentDestination?.hasRoute<Screens.NowPlaying>() != true &&
             currentDestination?.hasRoute<Screens.PlaybackQueue>() != true

@@ -72,6 +72,6 @@ internal class PlaylistListViewModel(
     }
 
     private companion object {
-        const val COVER_ART_SIZE = 320
+        const val COVER_ART_SIZE = 900
     }
 }

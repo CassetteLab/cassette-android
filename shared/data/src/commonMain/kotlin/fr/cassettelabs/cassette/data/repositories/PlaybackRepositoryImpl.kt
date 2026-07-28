@@ -13,11 +13,14 @@ import fr.cassettelabs.cassette.data.remote.ktor.md5
 import fr.cassettelabs.cassette.data.remote.player.PlayerEngine
 import fr.cassettelabs.cassette.data.remote.player.PlayerEngineListener
 import fr.cassettelabs.cassette.data.remote.player.PlayerState
+import fr.cassettelabs.cassette.data.remote.player.PlatformMediaSessionCallbacks
+import fr.cassettelabs.cassette.data.remote.player.PlatformMediaSessionController
 import fr.cassettelabs.cassette.domain.models.PlaybackContext
 import fr.cassettelabs.cassette.domain.models.PlaybackContextType
 import fr.cassettelabs.cassette.domain.models.PlaybackState
 import fr.cassettelabs.cassette.domain.models.RepeatMode
 import fr.cassettelabs.cassette.domain.models.Track
+import fr.cassettelabs.cassette.domain.repositories.AlbumRepository
 import fr.cassettelabs.cassette.domain.repositories.PlaybackRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +41,8 @@ internal class PlaybackRepositoryImpl(
     private val playbackQueueDao: PlaybackQueueDao,
     private val cipherHelper: CipherHelper,
     private val playerEngine: PlayerEngine,
+    private val mediaSessionController: PlatformMediaSessionController,
+    private val albumRepository: AlbumRepository,
 ) : PlaybackRepository {
     private val _currentTrack = MutableStateFlow<Track?>(null)
     override val currentTrack: StateFlow<Track?> = _currentTrack
@@ -54,6 +59,16 @@ internal class PlaybackRepositoryImpl(
     private var restoredPositionMs = 0L
 
     init {
+        mediaSessionController.setCallbacks(
+            PlatformMediaSessionCallbacks(
+                play = ::play,
+                pause = ::pause,
+                seekTo = ::seekTo,
+                skipToNext = { scope.launch { skipToNext() } },
+                skipToPrevious = { scope.launch { skipToPrevious() } },
+            ),
+        )
+
         playerEngine.setListener(
             object : PlayerEngineListener {
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -263,6 +278,25 @@ internal class PlaybackRepositoryImpl(
             playerEngine.setMediaItem(url, headers, positionMs)
             if (shouldPlay) playerEngine.play()
             updatePlaybackState(positionMs = positionMs)
+            loadCurrentTrackCoverArtIfNeeded(currentTrack)
+        }
+    }
+
+    private fun loadCurrentTrackCoverArtIfNeeded(currentTrack: Track) {
+        if (currentTrack.coverArtFilePath != null) return
+
+        val coverArtId = currentTrack.coverArt ?: return
+        val trackId = currentTrack.id
+        scope.launch {
+            runCatching {
+                albumRepository.getAlbumCoverArt(coverArtId = coverArtId, size = COVER_ART_SIZE, albumId = currentTrack.albumId)
+            }.onSuccess { coverArt ->
+                val activeTrack = _currentTrack.value ?: return@onSuccess
+                if (activeTrack.id != trackId) return@onSuccess
+
+                _currentTrack.value = activeTrack.copy(coverArtFilePath = coverArt.filePath)
+                mediaSessionController.update(_currentTrack.value, _playbackState.value)
+            }
         }
     }
 
@@ -311,6 +345,7 @@ internal class PlaybackRepositoryImpl(
                 isShuffleEnabled = queueState.isShuffleEnabled,
                 repeatMode = queueState.repeatMode,
             )
+        mediaSessionController.update(_currentTrack.value, _playbackState.value)
         scope.launch(Dispatchers.IO) {
             playbackQueueDao.updateCurrentPosition(ACTIVE_SESSION_ID, positionMs.coerceAtLeast(0L), currentTimeMillis())
         }
@@ -324,6 +359,7 @@ internal class PlaybackRepositoryImpl(
         const val ACTIVE_SESSION_ID = "active"
         const val POSITION_UPDATE_INTERVAL_MS = 500L
         const val PREVIOUS_RESTART_THRESHOLD_MS = 5_000L
+        const val COVER_ART_SIZE = 900
     }
 }
 

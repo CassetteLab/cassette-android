@@ -3,6 +3,7 @@ package fr.cassettelabs.cassette.data.remote.player
 import android.content.Context
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -20,6 +21,16 @@ class AndroidPlayerEngine(context: Context) : PlayerEngine {
             .Builder(context)
             .setMediaSourceFactory(DefaultMediaSourceFactory(context).setDataSourceFactory(httpDataSourceFactory))
             .build()
+            .apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(C.USAGE_MEDIA)
+                        .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                        .build(),
+                    true,
+                )
+                setWakeMode(C.WAKE_MODE_NETWORK)
+            }
 
     private var listener: PlayerEngineListener? = null
 

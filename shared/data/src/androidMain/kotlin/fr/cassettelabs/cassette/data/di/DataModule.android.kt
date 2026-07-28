@@ -5,8 +5,10 @@ import fr.cassettelabs.cassette.core.helpers.AndroidKeystoreCipherHelper
 import fr.cassettelabs.cassette.data.local.DatabaseBuilderFactory
 import fr.cassettelabs.cassette.data.remote.coverart.AndroidCoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
+import fr.cassettelabs.cassette.data.remote.player.AndroidMediaSessionController
 import fr.cassettelabs.cassette.data.remote.player.AndroidPlayerEngine
 import fr.cassettelabs.cassette.data.remote.player.PlayerEngine
+import fr.cassettelabs.cassette.data.remote.player.PlatformMediaSessionController
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -22,4 +24,5 @@ actual val dataPlatformModule: Module
             )
         }
         singleOf(::AndroidPlayerEngine) bind PlayerEngine::class
+        singleOf(::AndroidMediaSessionController) bind PlatformMediaSessionController::class
     }
