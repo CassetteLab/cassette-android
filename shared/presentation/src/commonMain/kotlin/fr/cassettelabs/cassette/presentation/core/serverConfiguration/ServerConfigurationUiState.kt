@@ -30,7 +30,7 @@ internal data class ServerConfigurationHeaderUiState(
     val value: String = "",
     val isValueVisible: Boolean = false,
 ) {
-    val isNameValid: Boolean = name.isBlank() || ServerConfigurationValidator.isValidHeaderName(name)
-    val isValueValid: Boolean = value.isBlank() || ServerConfigurationValidator.isValidHeaderValue(value)
+    val isNameValid: Boolean = name.isNotBlank() && ServerConfigurationValidator.isValidHeaderName(name.trim())
+    val isValueValid: Boolean = value.isNotBlank() && ServerConfigurationValidator.isValidHeaderValue(value.trim())
     val isValid: Boolean = isNameValid && isValueValid
 }

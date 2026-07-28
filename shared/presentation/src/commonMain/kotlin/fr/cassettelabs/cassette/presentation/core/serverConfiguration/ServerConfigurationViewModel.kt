@@ -105,7 +105,7 @@ internal class ServerConfigurationViewModel(
     }
 
     private fun saveServerConfiguration() {
-        val currentUiState = uiState.value.trimmedCredentials()
+        val currentUiState = uiState.value.trimmedInputs()
         if (!currentUiState.canSubmit) return
         val serverConfiguration = currentUiState.toServerConfiguration()
 
@@ -127,11 +127,18 @@ internal class ServerConfigurationViewModel(
         }
     }
 
-    private fun ServerConfigurationUiState.trimmedCredentials(): ServerConfigurationUiState =
+    private fun ServerConfigurationUiState.trimmedInputs(): ServerConfigurationUiState =
         copy(
             serverUrl = serverUrl.trim(),
             username = username.trim(),
             password = password.trim(),
+            customHeaders =
+                customHeaders.map { header ->
+                    header.copy(
+                        name = header.name.trim(),
+                        value = header.value.trim(),
+                    )
+                },
         )
 
     private fun updateHeader(
