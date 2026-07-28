@@ -105,12 +105,12 @@ internal class ServerConfigurationViewModel(
     }
 
     private fun saveServerConfiguration() {
-        val currentUiState = uiState.value
+        val currentUiState = uiState.value.trimmedCredentials()
         if (!currentUiState.canSubmit) return
         val serverConfiguration = currentUiState.toServerConfiguration()
 
         viewModelScope.launch {
-            updateState { it.copy(isLoading = true, error = null, isSaved = false) }
+            updateState { currentUiState.copy(isLoading = true, error = null, isSaved = false) }
             try {
                 pingServerUseCase(serverConfiguration)
                 saveServerConfigurationUseCase(serverConfiguration)
@@ -126,6 +126,13 @@ internal class ServerConfigurationViewModel(
             }
         }
     }
+
+    private fun ServerConfigurationUiState.trimmedCredentials(): ServerConfigurationUiState =
+        copy(
+            serverUrl = serverUrl.trim(),
+            username = username.trim(),
+            password = password.trim(),
+        )
 
     private fun updateHeader(
         id: Long,
