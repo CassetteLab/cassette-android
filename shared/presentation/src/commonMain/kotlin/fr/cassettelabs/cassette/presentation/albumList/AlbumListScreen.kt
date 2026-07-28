@@ -43,6 +43,7 @@ import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumList.core.AlbumListItem
+import fr.cassettelabs.cassette.presentation.core.AppearingEffect
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.home.core.HomeMessage
@@ -54,7 +55,7 @@ internal fun AlbumListScreen(
     uiState: AlbumListUiState,
     onEvent: (AlbumListEvent) -> Unit,
 ) {
-    LaunchedEffect(Unit) {
+    AppearingEffect {
         onEvent(AlbumListEvent.OnAppearing)
     }
 

@@ -1,6 +1,7 @@
 package fr.cassettelabs.cassette.data.di
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
 import fr.cassettelabs.cassette.data.local.CassetteDatabase
 import fr.cassettelabs.cassette.data.local.DatabaseBuilderFactory
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
@@ -22,8 +23,6 @@ import fr.cassettelabs.cassette.domain.repositories.PlaybackRepository
 import fr.cassettelabs.cassette.domain.repositories.PlaylistRepository
 import fr.cassettelabs.cassette.domain.repositories.ServerConfigurationRepository
 import io.ktor.client.HttpClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -37,7 +36,7 @@ val dataModule =
             get<DatabaseBuilderFactory>()
                 .create()
                 .setDriver(BundledSQLiteDriver())
-                .setQueryCoroutineContext(Dispatchers.IO)
+                .setQueryCoroutineContext(get<CoroutineDispatchers>().io)
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
         }

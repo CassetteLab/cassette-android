@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.data.remote.datasources
 
+import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.dto.AlbumListResponseDto
@@ -12,11 +13,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import kotlinx.coroutines.withContext
 
 internal class AlbumRemoteDataSourceImpl(
     private val serverConfigurationDao: ServerConfigurationDao,
     private val httpClient: HttpClient,
     private val coverArtProcessor: CoverArtProcessor,
+    private val coroutineDispatchers: CoroutineDispatchers,
 ) {
     suspend fun getRecentlyAddedAlbums(size: Int): List<Album> = getAlbumList(type = "newest", size = size)
 
@@ -113,7 +116,7 @@ internal class AlbumRemoteDataSourceImpl(
     suspend fun getAlbumCoverArt(
         coverArtId: String,
         size: Int?,
-    ): AlbumCoverArt {
+    ): AlbumCoverArt = withContext(coroutineDispatchers.io) {
         val configuration =
             serverConfigurationDao.getServerConfiguration()
                 ?: throw IllegalStateException("No server configuration found")
@@ -129,7 +132,7 @@ internal class AlbumRemoteDataSourceImpl(
                 }.body<ByteArray>()
 
         val filePath = coverArtProcessor.saveCoverArt(bytes, cacheKey)
-        return AlbumCoverArt(filePath = filePath)
+        AlbumCoverArt(filePath = filePath)
     }
 
     private fun coverArtCacheKey(

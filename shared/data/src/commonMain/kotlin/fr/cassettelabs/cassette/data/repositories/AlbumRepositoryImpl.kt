@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.data.repositories
 
+import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
@@ -16,6 +17,7 @@ import fr.cassettelabs.cassette.domain.repositories.AlbumRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 internal class AlbumRepositoryImpl(
@@ -24,6 +26,7 @@ internal class AlbumRepositoryImpl(
     private val trackDao: TrackDao,
     private val serverConfigurationDao: ServerConfigurationDao,
     private val coverArtProcessor: CoverArtProcessor,
+    private val coroutineDispatchers: CoroutineDispatchers,
 ) : AlbumRepository {
     override suspend fun getRecentlyAddedAlbums(size: Int): List<Album> =
         albumRemoteDataSource.getRecentlyAddedAlbums(size).map { album ->
@@ -115,7 +118,7 @@ internal class AlbumRepositoryImpl(
                 }
             }
         emit(CoverArtLoadingStatus.Loaded(coverArt.filePath))
-    }.catch { throwable ->
+    }.flowOn(coroutineDispatchers.io).catch { throwable ->
         emit(CoverArtLoadingStatus.Error(throwable))
     }
 

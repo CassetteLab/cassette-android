@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.data.repositories
 
+import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
 import fr.cassettelabs.cassette.core.helpers.CipherHelper
 import fr.cassettelabs.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
@@ -24,8 +25,6 @@ import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.repositories.AlbumRepository
 import fr.cassettelabs.cassette.domain.repositories.PlaybackRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -46,6 +45,7 @@ internal class PlaybackRepositoryImpl(
     private val playerEngine: PlayerEngine,
     private val mediaSessionController: PlatformMediaSessionController,
     private val albumRepository: AlbumRepository,
+    private val coroutineDispatchers: CoroutineDispatchers,
 ) : PlaybackRepository {
     private val _currentTrack = MutableStateFlow<Track?>(null)
     override val currentTrack: StateFlow<Track?> = _currentTrack
@@ -56,7 +56,7 @@ internal class PlaybackRepositoryImpl(
     private val _playbackQueue = MutableStateFlow<List<Track>>(emptyList())
     override val playbackQueue: StateFlow<List<Track>> = _playbackQueue
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val scope = CoroutineScope(SupervisorJob() + coroutineDispatchers.mainImmediate)
     private var positionUpdatesJob: Job? = null
     private var queueState = QueueState()
     private var restoredPositionMs = 0L
@@ -139,7 +139,7 @@ internal class PlaybackRepositoryImpl(
     override fun seekTo(positionMs: Long) {
         playerEngine.seekTo(positionMs)
         restoredPositionMs = positionMs
-        scope.launch(Dispatchers.IO) {
+        scope.launch(coroutineDispatchers.io) {
             playbackQueueDao.updateCurrentPosition(ACTIVE_SESSION_ID, positionMs.coerceAtLeast(0L), currentTimeMillis())
         }
         updatePlaybackState(positionMs = positionMs)
@@ -147,7 +147,7 @@ internal class PlaybackRepositoryImpl(
 
     override suspend fun skipToNext() {
         if (queueState.repeatMode == RepeatMode.One) {
-            withContext(Dispatchers.Main.immediate) {
+            withContext(coroutineDispatchers.mainImmediate) {
                 playerEngine.seekTo(0L)
                 playerEngine.play()
                 updatePlaybackState(positionMs = 0L)
@@ -241,8 +241,8 @@ internal class PlaybackRepositoryImpl(
     }
 
     private suspend fun restoreQueue() {
-        val session = withContext(Dispatchers.IO) { playbackQueueDao.getSession(ACTIVE_SESSION_ID) } ?: return
-        val items = withContext(Dispatchers.IO) { playbackQueueDao.getItemsWithTracks(ACTIVE_SESSION_ID) }
+        val session = withContext(coroutineDispatchers.io) { playbackQueueDao.getSession(ACTIVE_SESSION_ID) } ?: return
+        val items = withContext(coroutineDispatchers.io) { playbackQueueDao.getItemsWithTracks(ACTIVE_SESSION_ID) }
         queueState =
             QueueState(
                 history = items.itemsIn(PlaybackQueueSection.History),
@@ -275,7 +275,7 @@ internal class PlaybackRepositoryImpl(
         shouldPlay: Boolean,
     ) {
         val (url, headers) = buildStreamUrl(currentTrack.id)
-        withContext(Dispatchers.Main.immediate) {
+        withContext(coroutineDispatchers.mainImmediate) {
             restoredPositionMs = positionMs
             _currentTrack.value = currentTrack
             playerEngine.setMediaItem(url, headers, positionMs)
@@ -319,7 +319,7 @@ internal class PlaybackRepositoryImpl(
                 updatedAt = now,
             )
         val items = queueState.toEntities(now)
-        withContext(Dispatchers.IO) { playbackQueueDao.replaceQueue(session = session, items = items) }
+        withContext(coroutineDispatchers.io) { playbackQueueDao.replaceQueue(session = session, items = items) }
         updatePlaybackState(positionMs = positionMs)
     }
 
@@ -352,7 +352,7 @@ internal class PlaybackRepositoryImpl(
                 repeatMode = queueState.repeatMode,
             )
         mediaSessionController.update(_currentTrack.value, _playbackState.value)
-        scope.launch(Dispatchers.IO) {
+        scope.launch(coroutineDispatchers.io) {
             playbackQueueDao.updateCurrentPosition(ACTIVE_SESSION_ID, positionMs.coerceAtLeast(0L), currentTimeMillis())
         }
     }

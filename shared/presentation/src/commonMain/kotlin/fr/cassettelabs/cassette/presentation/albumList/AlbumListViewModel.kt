@@ -8,6 +8,7 @@ import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumList.GetAllAlbumsUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumList.RefreshAlbumsUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -19,14 +20,20 @@ internal class AlbumListViewModel(
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumListUiState, AlbumListEvent>(
-        viewModelName = "AlbumListViewModel",
-        logger = logger,
-        initialState = AlbumListUiState(),
-    ) {
+    viewModelName = "AlbumListViewModel",
+    logger = logger,
+    initialState = AlbumListUiState(),
+) {
+
+    private var observingAlbumsJob : Job? = null
+    private var refreshingAlbumsJob : Job? = null
+
     override fun handleEvent(event: AlbumListEvent) {
         when (event) {
+            is AlbumListEvent.OnAlbumClicked -> Unit
             AlbumListEvent.OnAppearing -> {
-                viewModelScope.launch {
+                observingAlbumsJob?.cancel()
+                observingAlbumsJob = viewModelScope.launch {
                     getAllAlbumsUseCase()
                         .onStart { updateState { it.copy(isLoading = true) } }
                         .collect { albums ->
@@ -34,24 +41,30 @@ internal class AlbumListViewModel(
                             downloadMissingAlbumCoverArts(albums)
                         }
                 }
-                viewModelScope.launch {
-                    updateState { it.copy(isRefreshing = true) }
-                    refreshAlbums()
-                }
-                    .invokeOnCompletion {
+
+                if (refreshingAlbumsJob?.isActive?.not() ?: true){
+                    refreshingAlbumsJob = viewModelScope.launch {
+                        updateState { it.copy(isRefreshing = true) }
+                        refreshAlbums()
+                    }
+                    refreshingAlbumsJob?.invokeOnCompletion {
                         updateState { it.copy(isRefreshing = false) }
                     }
-
+                }
             }
-            is AlbumListEvent.OnAlbumClicked -> Unit
             AlbumListEvent.OnRefresh -> {
-                viewModelScope.launch {
+                if (refreshingAlbumsJob?.isActive ?: true){
+                    logger.w("refreshingAlbumsJob is active, can't refresh albums")
+                    return
+                }
+
+                refreshingAlbumsJob = viewModelScope.launch {
                     updateState { it.copy(isRefreshing = true, isPullToRefreshIndicatorVisible = true) }
                     refreshAlbums()
                 }
-                    .invokeOnCompletion {
-                        updateState { it.copy(isRefreshing = false, isPullToRefreshIndicatorVisible = false) }
-                    }
+                refreshingAlbumsJob?.invokeOnCompletion {
+                    updateState { it.copy(isRefreshing = false, isPullToRefreshIndicatorVisible = false) }
+                }
             }
         }
     }
