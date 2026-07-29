@@ -2,7 +2,6 @@ package fr.cassettelabs.cassette.presentation.albumList
 
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
-import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumList.GetAllAlbumsUseCase
@@ -27,6 +26,7 @@ internal class AlbumListViewModel(
 
     private var observingAlbumsJob: Job? = null
     private var refreshingAlbumsJob: Job? = null
+    private val coverArtJobs = mutableMapOf<String, Job>()
 
     override fun handleEvent(event: AlbumListEvent) {
         when (event) {
@@ -38,7 +38,6 @@ internal class AlbumListViewModel(
                         .onStart { updateState { it.copy(isLoading = true) } }
                         .collect { albums ->
                             updateState { it.copy(isLoading = false, albums = albums) }
-                            downloadMissingAlbumCoverArts(albums)
                         }
                 }
 
@@ -66,6 +65,7 @@ internal class AlbumListViewModel(
                     updateState { it.copy(isRefreshing = false, isPullToRefreshIndicatorVisible = false) }
                 }
             }
+            is AlbumListEvent.OnAlbumCoverArtAppeared -> downloadAlbumCoverArtIfNeeded(event.albumId)
         }
     }
 
@@ -77,21 +77,27 @@ internal class AlbumListViewModel(
         }
     }
 
-    private fun downloadMissingAlbumCoverArts(albums: List<Album>) {
-        albums.forEach { album ->
-            val coverArtId = album.coverArt ?: album.id
-            getAlbumCoverArtUseCase(
-                coverArtId = coverArtId,
-                size = COVER_ART_SIZE,
-                albumId = album.id,
-            ).onEach { status ->
-                if (status is CoverArtLoadingStatus.Error) {
-                    logger.w("Unable to load cover art for album ${album.id}" + ": " + status.throwable.message)
-                }
-                updateState { state ->
-                    state.copy(albumCoverArtStatuses = state.albumCoverArtStatuses + (album.id to status))
-                }
-            }.launchIn(viewModelScope)
+    private fun downloadAlbumCoverArtIfNeeded(albumId: String) {
+        val state = uiState.value
+        val album = state.albums.firstOrNull { it.id == albumId } ?: return
+        val currentStatus = state.albumCoverArtStatuses[albumId]
+
+        if (album.coverArtFilePath != null || currentStatus != null || coverArtJobs[albumId]?.isActive == true) return
+
+        val coverArtId = album.coverArt ?: album.id
+        coverArtJobs[albumId] = getAlbumCoverArtUseCase(
+            coverArtId = coverArtId,
+            size = COVER_ART_SIZE,
+            albumId = album.id,
+        ).onEach { status ->
+            if (status is CoverArtLoadingStatus.Error) {
+                logger.w("Unable to load cover art for album ${album.id}" + ": " + status.throwable.message)
+            }
+            updateState { currentState ->
+                currentState.copy(albumCoverArtStatuses = currentState.albumCoverArtStatuses + (album.id to status))
+            }
+        }.launchIn(viewModelScope).also { job ->
+            job.invokeOnCompletion { coverArtJobs.remove(albumId) }
         }
     }
 

@@ -10,4 +10,8 @@ internal sealed interface PlaylistListEvent : Event {
     data class OnPlaylistClicked(
         val playlistId: String,
     ) : PlaylistListEvent
+
+    data class OnPlaylistCoverArtAppeared(
+        val playlistId: String,
+    ) : PlaylistListEvent
 }

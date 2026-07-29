@@ -3,7 +3,6 @@ package fr.cassettelabs.cassette.presentation.playlistList
 import androidx.lifecycle.viewModelScope
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
-import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.RefreshPlaylistsUseCase
@@ -27,6 +26,7 @@ internal class PlaylistListViewModel(
 
     private var observingPlaylistsJob: Job? = null
     private var refreshingPlaylistsJob: Job? = null
+    private val coverArtJobs = mutableMapOf<String, Job>()
 
     override fun handleEvent(event: PlaylistListEvent) {
         when (event) {
@@ -37,7 +37,6 @@ internal class PlaylistListViewModel(
                         .onStart { updateState { it.copy(isLoading = true) } }
                         .collect { playlists ->
                             updateState { it.copy(isLoading = false, playlists = playlists) }
-                            downloadMissingPlaylistCoverArts(playlists)
                         }
                 }
 
@@ -52,6 +51,7 @@ internal class PlaylistListViewModel(
                 }
             }
             is PlaylistListEvent.OnPlaylistClicked -> Unit
+            is PlaylistListEvent.OnPlaylistCoverArtAppeared -> downloadPlaylistCoverArtIfNeeded(event.playlistId)
             PlaylistListEvent.OnRefresh -> {
                 if (refreshingPlaylistsJob?.isActive == true) {
                     logger.w("refreshingPlaylistsJob is active, can't refresh playlists")
@@ -77,18 +77,27 @@ internal class PlaylistListViewModel(
         }
     }
 
-    private fun downloadMissingPlaylistCoverArts(playlists: List<Playlist>) {
-        playlists.forEach { playlist ->
-            val coverArtId = playlist.coverArt ?: playlist.id
-            getPlaylistCoverArtUseCase(coverArtId = coverArtId, size = COVER_ART_SIZE, playlistId = playlist.id)
-                .onEach { status ->
-                    if (status is CoverArtLoadingStatus.Error) {
-                        logger.w("Unable to load cover art for playlist ${playlist.id}" + ": " + status.throwable.message)
-                    }
-                    updateState { state ->
-                        state.copy(playlistCoverArtStatuses = state.playlistCoverArtStatuses + (playlist.id to status))
-                    }
-                }.launchIn(viewModelScope)
+    private fun downloadPlaylistCoverArtIfNeeded(playlistId: String) {
+        val state = uiState.value
+        val playlist = state.playlists.firstOrNull { it.id == playlistId } ?: return
+        val currentStatus = state.playlistCoverArtStatuses[playlistId]
+
+        if (playlist.coverArtFilePath != null || currentStatus != null || coverArtJobs[playlistId]?.isActive == true) return
+
+        val coverArtId = playlist.coverArt ?: playlist.id
+        coverArtJobs[playlistId] = getPlaylistCoverArtUseCase(
+            coverArtId = coverArtId,
+            size = COVER_ART_SIZE,
+            playlistId = playlist.id,
+        ).onEach { status ->
+            if (status is CoverArtLoadingStatus.Error) {
+                logger.w("Unable to load cover art for playlist ${playlist.id}" + ": " + status.throwable.message)
+            }
+            updateState { currentState ->
+                currentState.copy(playlistCoverArtStatuses = currentState.playlistCoverArtStatuses + (playlist.id to status))
+            }
+        }.launchIn(viewModelScope).also { job ->
+            job.invokeOnCompletion { coverArtJobs.remove(playlistId) }
         }
     }
 

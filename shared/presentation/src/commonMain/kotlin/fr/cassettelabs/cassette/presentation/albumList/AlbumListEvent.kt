@@ -7,8 +7,11 @@ internal sealed interface AlbumListEvent : Event {
 
     data object OnRefresh : AlbumListEvent
 
-
     data class OnAlbumClicked(
+        val albumId: String,
+    ) : AlbumListEvent
+
+    data class OnAlbumCoverArtAppeared(
         val albumId: String,
     ) : AlbumListEvent
 }

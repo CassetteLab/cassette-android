@@ -126,6 +126,12 @@ internal fun PlaylistListScreen(
                         items = uiState.playlists,
                         key = { playlist -> playlist.id },
                     ) { playlist ->
+                        LaunchedEffect(playlist.id) {
+                            if (playlist.coverArtFilePath.isNullOrBlank()) {
+                                onEvent(PlaylistListEvent.OnPlaylistCoverArtAppeared(playlist.id))
+                            }
+                        }
+
                         PlaylistListItem(
                             playlist = playlist,
                             coverArtStatus = uiState.playlistCoverArtStatuses[playlist.id],

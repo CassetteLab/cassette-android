@@ -141,6 +141,12 @@ internal fun AlbumListScreen(
                         items = uiState.albums,
                         key = { album -> album.id },
                     ) { album ->
+                        LaunchedEffect(album.id) {
+                            if (album.coverArtFilePath.isNullOrBlank()){
+                                onEvent(AlbumListEvent.OnAlbumCoverArtAppeared(album.id))
+                            }
+                        }
+
                         val coverArtStatus = uiState.albumCoverArtStatuses[album.id]
                         val coverArtFilePath = (coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath ?: album.coverArtFilePath
                         AlbumArtworkTheme(albumArt = coverArtFilePath) {
