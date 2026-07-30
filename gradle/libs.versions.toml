@@ -26,6 +26,7 @@ coil = "3.3.0"
 media3 = "1.10.1"
 palette = "1.0.0"
 jlayer = "1.0.1"
+reorderable = "3.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -69,6 +70,7 @@ androidx-palette = { module = "androidx.palette:palette-ktx", version.ref = "pal
 androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 jlayer = { module = "javazoom:jlayer", version.ref = "jlayer" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }

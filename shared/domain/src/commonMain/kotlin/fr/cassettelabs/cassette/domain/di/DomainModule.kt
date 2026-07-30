@@ -20,6 +20,7 @@ import fr.cassettelabs.cassette.domain.usecases.playback.PausePlaybackUseCase
 import fr.cassettelabs.cassette.domain.usecases.configuration.PingServerUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.playback.ReorderPlaybackQueueUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumList.RefreshAlbumsUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.RefreshPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.configuration.SaveServerConfigurationUseCase
@@ -65,6 +66,7 @@ val domainModule =
         singleOf(::PausePlaybackUseCase)
         singleOf(::PlayCurrentTrackUseCase)
         singleOf(::PlayTrackUseCase)
+        singleOf(::ReorderPlaybackQueueUseCase)
         singleOf(::SeekPlaybackUseCase)
         singleOf(::SetPlaybackRepeatModeUseCase)
         singleOf(::SetPlaybackShuffleEnabledUseCase)

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -34,6 +35,8 @@ import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueCur
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueEmptyState
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueTrackRow
 import org.jetbrains.compose.resources.stringResource
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +47,16 @@ internal fun PlaybackQueueScreen(
 ) {
     LaunchedEffect(Unit) {
         onEvent(PlaybackQueueEvent.OnAppearing)
+    }
+
+    val lazyListState = rememberLazyListState()
+    val upcomingTracksStartIndex = if (uiState.currentTrack != null && uiState.upcomingTracks.isNotEmpty()) 2 else 0
+    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+        val fromIndex = from.index - upcomingTracksStartIndex
+        val toIndex = to.index - upcomingTracksStartIndex
+        if (fromIndex in uiState.upcomingTracks.indices && toIndex in uiState.upcomingTracks.indices) {
+            onEvent(PlaybackQueueEvent.OnTrackMoved(fromIndex = fromIndex, toIndex = toIndex))
+        }
     }
 
     AlbumArtworkTheme(albumArt = uiState.currentTrack?.coverArtFilePath) {
@@ -84,6 +97,7 @@ internal fun PlaybackQueueScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
                     contentPadding =
                         innerPadding.plus(contentPadding).plus(
                             PaddingValues(horizontal = 16.dp, vertical = 16.dp),
@@ -109,9 +123,13 @@ internal fun PlaybackQueueScreen(
                         items = uiState.upcomingTracks,
                         key = { _, track -> track.id },
                     ) { _, currentTrack ->
-                        PlaybackQueueTrackRow(
-                            currentTrack = currentTrack,
-                        )
+                        ReorderableItem(reorderableLazyListState, key = currentTrack.id) { isDragging ->
+                            PlaybackQueueTrackRow(
+                                currentTrack = currentTrack,
+                                isDragging = isDragging,
+                                dragHandleModifier = with(this) { Modifier.draggableHandle() },
+                            )
+                        }
                     }
                 }
             }

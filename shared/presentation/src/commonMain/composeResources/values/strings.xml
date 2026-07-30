@@ -87,6 +87,7 @@
     <string name="playback_queue_empty_description">There are no upcoming tracks in the queue.</string>
     <string name="playback_queue_empty_title">Queue is empty</string>
     <string name="playback_queue_now_playing">Now playing</string>
+    <string name="playback_queue_reorder_track">Reorder track</string>
     <string name="playback_queue_title">Up next</string>
     <string name="playback_queue_unknown_album">Unknown album</string>
     <string name="playback_queue_unknown_artist">Unknown artist</string>

@@ -215,6 +215,16 @@ internal class PlaybackRepositoryImpl(
         updatePlaybackState()
     }
 
+    override suspend fun reorderPlaybackQueue(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        val upcomingQueue = (queueState.userQueue + queueState.contextQueue).move(fromIndex = fromIndex, toIndex = toIndex) ?: return
+        queueState = queueState.copy(userQueue = emptyList(), contextQueue = upcomingQueue)
+        updatePlaybackQueue()
+        persistQueue(positionMs = playerEngine.currentPosition)
+    }
+
     private suspend fun buildStreamUrl(trackId: String): Pair<String, Map<String, String>> {
         val configuration =
             serverConfigurationDao.getServerConfiguration()
@@ -425,6 +435,17 @@ private fun List<PlaybackQueueItemWithTrack>.itemsIn(section: PlaybackQueueSecti
     filter { it.section == section.name }
         .sortedBy { it.position }
         .map { it.toDomain() }
+
+private fun List<Track>.move(
+    fromIndex: Int,
+    toIndex: Int,
+): List<Track>? {
+    if (fromIndex !in indices || toIndex !in indices || fromIndex == toIndex) return null
+
+    return toMutableList().apply {
+        add(toIndex, removeAt(fromIndex))
+    }
+}
 
 private fun PlaybackQueueItemWithTrack.toDomain(): Track =
     Track(

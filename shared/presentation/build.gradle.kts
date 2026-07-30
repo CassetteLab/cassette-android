@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.reorderable)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiTooling)

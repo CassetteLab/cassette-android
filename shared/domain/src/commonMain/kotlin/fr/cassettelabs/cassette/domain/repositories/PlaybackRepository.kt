@@ -30,4 +30,9 @@ interface PlaybackRepository {
     suspend fun setShuffleEnabled(isEnabled: Boolean)
 
     suspend fun setRepeatMode(repeatMode: RepeatMode)
+
+    suspend fun reorderPlaybackQueue(
+        fromIndex: Int,
+        toIndex: Int,
+    )
 }
