@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="export-b1zoh-l" cx="35%" cy="32%" r="80%">
+      <stop offset="0%"  stop-color="#A58DF9"/>
+      <stop offset="55%" stop-color="#6C47F5"/>
+      <stop offset="100%" stop-color="#5232D8"/>
+    </radialGradient>
+    <radialGradient id="export-b1zoh-r" cx="65%" cy="32%" r="80%">
+      <stop offset="0%"  stop-color="#A58DF9"/>
+      <stop offset="55%" stop-color="#8060F7"/>
+      <stop offset="100%" stop-color="#5232D8"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="#0F0D1A"/>
+  <circle cx="343.03999999999996" cy="512" r="240.64" fill="url(#export-b1zoh-l)"/>
+  <circle cx="680.96" cy="512" r="240.64" fill="url(#export-b1zoh-r)" style="mix-blend-mode: screen"/>
+  <circle cx="343.03999999999996" cy="512" r="87.04" fill="none" stroke="#0F0D1A" stroke-width="18.432" stroke-opacity="0.55"/>
+  <circle cx="680.96" cy="512" r="87.04" fill="none" stroke="#0F0D1A" stroke-width="18.432" stroke-opacity="0.55"/>
+  <circle cx="343.03999999999996" cy="512" r="53.248" fill="#0F0D1A"/>
+  <circle cx="680.96" cy="512" r="53.248" fill="#0F0D1A"/>
+</svg>

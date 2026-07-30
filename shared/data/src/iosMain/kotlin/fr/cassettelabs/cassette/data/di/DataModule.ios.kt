@@ -1,0 +1,21 @@
+package fr.cassettelabs.cassette.data.di
+
+import fr.cassettelabs.cassette.data.local.DatabaseBuilderFactory
+import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
+import fr.cassettelabs.cassette.data.remote.coverart.IosCoverArtProcessor
+import fr.cassettelabs.cassette.data.remote.player.IosMediaSessionController
+import fr.cassettelabs.cassette.data.remote.player.IosPlayerEngine
+import fr.cassettelabs.cassette.data.remote.player.PlayerEngine
+import fr.cassettelabs.cassette.data.remote.player.PlatformMediaSessionController
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+actual val dataPlatformModule: Module
+    get() = module {
+        singleOf(::DatabaseBuilderFactory)
+        singleOf(::IosCoverArtProcessor) bind CoverArtProcessor::class
+        singleOf(::IosPlayerEngine) bind PlayerEngine::class
+        singleOf(::IosMediaSessionController) bind PlatformMediaSessionController::class
+    }

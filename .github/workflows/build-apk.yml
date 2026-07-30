@@ -1,0 +1,117 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: build-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build APKs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK platform
+        run: sdkmanager "platforms;android-36"
+
+      - name: Decode release keystore
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$RELEASE_KEYSTORE_BASE64"
+          printf '%s' "$RELEASE_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.keystore"
+
+      - name: Build APKs
+        run: ./gradlew :androidApp:assembleDebug :androidApp:assembleRelease
+
+      - name: Resolve release version
+        id: release_version
+        run: |
+          VERSION_NAME=$(jq -r '.elements[0].versionName' androidApp/build/outputs/apk/release/output-metadata.json)
+          test -n "$VERSION_NAME"
+          test "$VERSION_NAME" != "null"
+          TAG_NAME="v$VERSION_NAME"
+          printf 'version_name=%s\n' "$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          printf 'tag_name=%s\n' "$TAG_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Check release availability
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ steps.release_version.outputs.tag_name }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG_NAME" >/dev/null 2>&1; then
+            printf 'Tag %s already exists. Aborting.\n' "$TAG_NAME"
+            exit 1
+          fi
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            printf 'Release %s already exists. Aborting.\n' "$TAG_NAME"
+            exit 1
+          fi
+
+      - name: Prepare APK artifacts
+        env:
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          test -n "$RELEASE_STORE_PASSWORD"
+          test -n "$RELEASE_KEY_ALIAS"
+          test -n "$RELEASE_KEY_PASSWORD"
+
+          mkdir -p artifacts
+          cp androidApp/build/outputs/apk/release/androidApp-release-unsigned.apk artifacts/release-unsigned.apk
+          cp androidApp/build/outputs/apk/debug/androidApp-debug.apk artifacts/debug-unsigned.apk
+
+          zip -qd artifacts/debug-unsigned.apk 'META-INF/*'
+
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort | tail -n 1)
+          "$APKSIGNER" sign \
+            --ks "$RUNNER_TEMP/release.keystore" \
+            --ks-pass "pass:$RELEASE_STORE_PASSWORD" \
+            --ks-key-alias "$RELEASE_KEY_ALIAS" \
+            --key-pass "pass:$RELEASE_KEY_PASSWORD" \
+            --out artifacts/debug-signed.apk \
+            artifacts/debug-unsigned.apk
+          "$APKSIGNER" sign \
+            --ks "$RUNNER_TEMP/release.keystore" \
+            --ks-pass "pass:$RELEASE_STORE_PASSWORD" \
+            --ks-key-alias "$RELEASE_KEY_ALIAS" \
+            --key-pass "pass:$RELEASE_KEY_PASSWORD" \
+            --out artifacts/release-signed.apk \
+            artifacts/release-unsigned.apk
+
+          "$APKSIGNER" verify artifacts/debug-signed.apk
+          "$APKSIGNER" verify artifacts/release-signed.apk
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ steps.release_version.outputs.tag_name }}
+          VERSION_NAME: ${{ steps.release_version.outputs.version_name }}
+        run: |
+          gh release create "$TAG_NAME" artifacts/*.apk \
+            --target "${{ github.sha }}" \
+            --title "$TAG_NAME" \
+            --notes "Android build for version $VERSION_NAME"

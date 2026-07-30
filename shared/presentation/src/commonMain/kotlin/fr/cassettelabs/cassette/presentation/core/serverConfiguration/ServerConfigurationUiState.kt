@@ -1,0 +1,36 @@
+package fr.cassettelabs.cassette.presentation.core.serverConfiguration
+
+import fr.cassettelabs.cassette.presentation.core.mvi.UiState
+import fr.cassettelabs.cassette.presentation.core.serverConfiguration.core.ServerConfigurationValidator
+
+internal data class ServerConfigurationUiState(
+    val serverUrl: String = "",
+    val username: String = "",
+    val password: String = "",
+    val customHeaders: List<ServerConfigurationHeaderUiState> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: ServerConfigurationError? = null,
+    val isSaved: Boolean = false,
+) : UiState {
+    val isUrlValid: Boolean = serverUrl.isBlank() || ServerConfigurationValidator.isValidUrl(serverUrl)
+    val isHttp: Boolean = ServerConfigurationValidator.isHttpUrl(serverUrl)
+    val areHeadersValid: Boolean = customHeaders.all { it.isValid }
+    val canSubmit: Boolean =
+        serverUrl.isNotBlank() &&
+            username.isNotBlank() &&
+            password.isNotBlank() &&
+            isUrlValid &&
+            areHeadersValid &&
+            !isLoading
+}
+
+internal data class ServerConfigurationHeaderUiState(
+    val id: Long,
+    val name: String = "",
+    val value: String = "",
+    val isValueVisible: Boolean = false,
+) {
+    val isNameValid: Boolean = name.isNotBlank() && ServerConfigurationValidator.isValidHeaderName(name.trim())
+    val isValueValid: Boolean = value.isNotBlank() && ServerConfigurationValidator.isValidHeaderValue(value.trim())
+    val isValid: Boolean = isNameValid && isValueValid
+}
