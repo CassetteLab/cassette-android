@@ -87,7 +87,7 @@ internal class AlbumDetailViewModel(
             try {
                 val album = getAlbumUseCase(albumId)
                 updateState { it.copy(isLoading = false, album = album) }
-                loadCoverArt(album)
+                album?.let { loadCoverArt(it) }
             } catch (exception: Exception) {
                 logger.w("Unable to load album $albumId" + ": " + exception.message)
                 updateState { it.copy(isLoading = false) }

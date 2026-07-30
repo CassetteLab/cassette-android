@@ -1,6 +1,7 @@
 package fr.cassettelabs.cassette.data.repositories
 
 import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
+import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 internal class AlbumRepositoryImpl(
+    private val logger: Logger,
     private val albumRemoteDataSource: AlbumRemoteDataSourceImpl,
     private val albumDao: AlbumDao,
     private val trackDao: TrackDao,
@@ -28,6 +30,11 @@ internal class AlbumRepositoryImpl(
     private val coverArtProcessor: CoverArtProcessor,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) : AlbumRepository {
+
+    init {
+        logger.init("AlbumRepositoryImpl")
+    }
+
     override suspend fun getRecentlyAddedAlbums(size: Int): List<Album> =
         albumRemoteDataSource.getRecentlyAddedAlbums(size).map { album ->
             val localAlbum = albumDao.getAlbum(album.id)
@@ -52,17 +59,14 @@ internal class AlbumRepositoryImpl(
         return starredLibrary
     }
 
-    override suspend fun getAlbum(albumId: AlbumId): Album {
+    override suspend fun getAlbum(albumId: AlbumId): Album? {
         val localAlbum = albumDao.getAlbum(albumId)
-        if (localAlbum != null) {
-            return localAlbum.toDomain()
+        if (localAlbum == null) {
+            logger.w("Can't find album with id: $albumId")
+            return null
         }
 
-        val album =
-            albumRemoteDataSource
-                .getAlbum(albumId)
-        albumDao.insertAlbum(album.toEntity(localAlbum?.serverConfigurationId))
-        return album
+        return localAlbum.toDomain()
     }
 
     override suspend fun refreshAlbum(albumId: AlbumId): Album {

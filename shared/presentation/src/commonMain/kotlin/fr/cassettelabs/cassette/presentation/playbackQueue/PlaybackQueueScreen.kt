@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Track
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueCurrentTrackCard
 import fr.cassettelabs.cassette.presentation.playbackQueue.core.PlaybackQueueEmptyState
@@ -45,68 +46,73 @@ internal fun PlaybackQueueScreen(
         onEvent(PlaybackQueueEvent.OnAppearing)
     }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.playback_queue_title),
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onEvent(PlaybackQueueEvent.OnBackClicked) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(Res.string.playback_queue_back),
-                        )
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
-        if (uiState.currentTrack == null && uiState.upcomingTracks.isEmpty()) {
-            PlaybackQueueEmptyState(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(contentPadding),
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding =
-                    innerPadding.plus(contentPadding).plus(
-                        PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+    AlbumArtworkTheme(albumArt = uiState.currentTrack?.coverArtFilePath) {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.surface,
+            topBar = {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                     ),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                uiState.currentTrack?.let { currentTrack ->
-                    item(key = "current-track") {
-                        PlaybackQueueCurrentTrackCard(currentTrack = currentTrack)
-                    }
-
-                    if (uiState.upcomingTracks.isNotEmpty()) {
-                        item(key = "queue-divider") {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = 6.dp),
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.playback_queue_title),
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { onEvent(PlaybackQueueEvent.OnBackClicked) }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(Res.string.playback_queue_back),
                             )
                         }
-                    }
-                }
+                    },
+                )
+            },
+        ) { innerPadding ->
+            if (uiState.currentTrack == null && uiState.upcomingTracks.isEmpty()) {
+                PlaybackQueueEmptyState(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(contentPadding),
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding =
+                        innerPadding.plus(contentPadding).plus(
+                            PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    uiState.currentTrack?.let { currentTrack ->
+                        item(key = "current-track") {
+                            PlaybackQueueCurrentTrackCard(currentTrack = currentTrack)
+                        }
 
-                itemsIndexed(
-                    items = uiState.upcomingTracks,
-                    key = { _, track -> track.id },
-                ) { index, currentTrack ->
-                    PlaybackQueueTrackRow(
-                        position = index + 1,
-                        currentTrack = currentTrack,
-                    )
+                        if (uiState.upcomingTracks.isNotEmpty()) {
+                            item(key = "queue-divider") {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = 6.dp),
+                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
+                                )
+                            }
+                        }
+                    }
+
+                    itemsIndexed(
+                        items = uiState.upcomingTracks,
+                        key = { _, track -> track.id },
+                    ) { _, currentTrack ->
+                        PlaybackQueueTrackRow(
+                            currentTrack = currentTrack,
+                        )
+                    }
                 }
             }
         }

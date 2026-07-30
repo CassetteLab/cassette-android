@@ -12,7 +12,7 @@ interface AlbumRepository {
 
     suspend fun getStarredLibrary(): StarredLibrary
 
-    suspend fun getAlbum(albumId: AlbumId): Album
+    suspend fun getAlbum(albumId: AlbumId): Album?
 
     suspend fun refreshAlbum(albumId: AlbumId): Album
 
