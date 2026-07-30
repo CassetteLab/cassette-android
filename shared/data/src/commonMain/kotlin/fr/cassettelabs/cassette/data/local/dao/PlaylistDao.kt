@@ -21,8 +21,14 @@ internal interface PlaylistDao {
     @Query("SELECT * FROM playlists ORDER BY created DESC")
     fun getAllPlaylists(): Flow<List<PlaylistEntity>>
 
-    @Query("DELETE FROM playlists")
-    suspend fun deleteAllPlaylists()
+    @Query("DELETE FROM playlists WHERE serverConfigurationId = :serverConfigurationId")
+    suspend fun deleteAllPlaylists(serverConfigurationId: Long)
+
+    @Query("DELETE FROM playlists WHERE serverConfigurationId = :serverConfigurationId AND id NOT IN (:playlistIds)")
+    suspend fun deletePlaylistsNotIn(
+        serverConfigurationId: Long,
+        playlistIds: List<String>,
+    )
 
     @Query("UPDATE playlists SET coverArtFilePath = :coverArtFilePath WHERE id = :playlistId")
     suspend fun updateCoverArtFilePath(

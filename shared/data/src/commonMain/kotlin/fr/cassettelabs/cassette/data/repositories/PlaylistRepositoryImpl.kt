@@ -73,6 +73,15 @@ internal class PlaylistRepositoryImpl(
     override suspend fun refreshPlaylists() {
         val remotePlaylists = playlistRemoteDataSource.getAllPlaylists()
         val serverConfigurationId = currentServerConfigurationId()
+        if (remotePlaylists.isEmpty()) {
+            playlistDao.deleteAllPlaylists(serverConfigurationId)
+            return
+        }
+
+        playlistDao.deletePlaylistsNotIn(
+            serverConfigurationId = serverConfigurationId,
+            playlistIds = remotePlaylists.map { it.id },
+        )
         remotePlaylists.forEach { playlist ->
             val localPlaylist = playlistDao.getPlaylist(playlist.id)
             val playlistWithLocalData =

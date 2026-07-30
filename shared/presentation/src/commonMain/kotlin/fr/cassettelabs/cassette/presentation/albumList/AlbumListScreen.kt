@@ -72,14 +72,10 @@ internal fun AlbumListScreen(
                         titleContentColor = MaterialTheme.colorScheme.onBackground,
                     ),
                 title = {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.album_list_title),
-                            style = MaterialTheme.typography.headlineLarge
-                        )
-                    }
+                    Text(
+                        text = stringResource(Res.string.album_list_title),
+                        style = MaterialTheme.typography.headlineLarge
+                    )
                 },
             )
         },
@@ -124,7 +120,6 @@ internal fun AlbumListScreen(
                                 bottom = innerPadding.calculateBottomPadding() + 16.dp,
                             )
                         ),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item(
