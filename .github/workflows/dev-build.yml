@@ -36,5 +36,8 @@ jobs:
       - name: Install Android SDK platform
         run: sdkmanager "platforms;android-36"
 
+      - name: Run static code checks
+        run: ./gradlew :androidApp:lintDebug
+
       - name: Build debug app
         run: ./gradlew :androidApp:assembleDebug
