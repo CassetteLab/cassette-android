@@ -33,7 +33,7 @@ internal fun LoadingMessage(
         CircularWavyProgressIndicator()
         Text(
             text = stringResource(message),
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
