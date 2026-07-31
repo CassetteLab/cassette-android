@@ -5,7 +5,9 @@ import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
 import fr.cassettelabs.cassette.data.local.CassetteDatabase
 import fr.cassettelabs.cassette.data.local.DatabaseBuilderFactory
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
+import fr.cassettelabs.cassette.data.local.dao.AlbumTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ArtistDao
+import fr.cassettelabs.cassette.data.local.dao.CoverArtDao
 import fr.cassettelabs.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
@@ -48,7 +50,9 @@ val dataModule =
         }
         single<ServerConfigurationDao> { get<CassetteDatabase>().serverConfigurationDao() }
         single<AlbumDao> { get<CassetteDatabase>().albumDao() }
+        single<AlbumTrackDao> { get<CassetteDatabase>().albumTrackDao() }
         single<ArtistDao> { get<CassetteDatabase>().artistDao() }
+        single<CoverArtDao> { get<CassetteDatabase>().coverArtDao() }
         single<TrackDao> { get<CassetteDatabase>().trackDao() }
         single<PlaylistDao> { get<CassetteDatabase>().playlistDao() }
         single<PlaylistTrackDao> { get<CassetteDatabase>().playlistTrackDao() }

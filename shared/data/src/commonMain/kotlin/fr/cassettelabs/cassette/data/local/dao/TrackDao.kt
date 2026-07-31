@@ -14,15 +14,10 @@ internal interface TrackDao {
     @Query("SELECT * FROM tracks WHERE id = :trackId LIMIT 1")
     suspend fun getTrack(trackId: String): TrackEntity?
 
-    @Query("SELECT * FROM tracks WHERE albumId = :albumId ORDER BY trackNumber, title")
-    suspend fun getAlbumTracks(albumId: String): List<TrackEntity>
-
     @Query("UPDATE tracks SET starredAt = :starredAt WHERE id = :trackId")
     suspend fun updateStarredAt(
         trackId: String,
         starredAt: String?,
     )
 
-    @Query("DELETE FROM tracks WHERE albumId = :albumId")
-    suspend fun deleteAlbumTracks(albumId: String)
 }

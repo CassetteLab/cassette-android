@@ -4,12 +4,21 @@ import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
+import fr.cassettelabs.cassette.data.local.dao.AlbumTrackDao
+import fr.cassettelabs.cassette.data.local.dao.AlbumDao
+import fr.cassettelabs.cassette.data.local.dao.CoverArtDao
+import fr.cassettelabs.cassette.data.local.embeddeds.PlaylistWithCoverArt
+import fr.cassettelabs.cassette.data.local.embeddeds.TrackWithAlbumAndCoverArt
+import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
+import fr.cassettelabs.cassette.data.local.entities.AlbumTrackEntity
+import fr.cassettelabs.cassette.data.local.entities.CoverArtEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaylistEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaylistTrackEntity
 import fr.cassettelabs.cassette.data.local.entities.TrackEntity
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassettelabs.cassette.data.remote.datasources.PlaylistRemoteDataSourceImpl
+import fr.cassettelabs.cassette.data.remote.ktor.currentTimeMillis
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
@@ -22,6 +31,9 @@ import kotlinx.coroutines.flow.map
 internal class PlaylistRepositoryImpl(
     private val playlistRemoteDataSource: PlaylistRemoteDataSourceImpl,
     private val albumRemoteDataSource: AlbumRemoteDataSourceImpl,
+    private val albumDao: AlbumDao,
+    private val albumTrackDao: AlbumTrackDao,
+    private val coverArtDao: CoverArtDao,
     private val playlistDao: PlaylistDao,
     private val playlistTrackDao: PlaylistTrackDao,
     private val trackDao: TrackDao,
@@ -29,12 +41,12 @@ internal class PlaylistRepositoryImpl(
     private val coverArtProcessor: CoverArtProcessor,
 ) : PlaylistRepository {
     override fun getAllPlaylists(): Flow<List<Playlist>> =
-        playlistDao.getAllPlaylists().map { entities ->
+        playlistDao.getAllPlaylists(COVER_ART_SIZE_KEY).map { entities ->
             entities.map { it.toDomain() }
         }
 
     override suspend fun getPlaylist(playlistId: String): Playlist {
-        val localPlaylist = playlistDao.getPlaylist(playlistId)
+        val localPlaylist = playlistDao.getPlaylistWithCoverArt(playlistId, COVER_ART_SIZE_KEY)
         val playlist =
             playlistRemoteDataSource
                 .getPlaylist(playlistId)
@@ -43,12 +55,12 @@ internal class PlaylistRepositoryImpl(
                     seedColor = localPlaylist?.seedColor,
                 )
         playlistDao.insertPlaylist(playlist.toEntity(localPlaylist?.serverConfigurationId ?: currentServerConfigurationId()))
-        return playlistDao.getPlaylist(playlistId)?.toDomain()
+        return playlistDao.getPlaylistWithCoverArt(playlistId, COVER_ART_SIZE_KEY)?.toDomain()
             ?: throw IllegalStateException("Playlist $playlistId was not stored")
     }
 
     override suspend fun getPlaylistTracks(playlistId: String): List<Track> {
-        val localPlaylist = playlistDao.getPlaylist(playlistId)
+        val localPlaylist = playlistDao.getPlaylistWithCoverArt(playlistId, COVER_ART_SIZE_KEY)
         try {
             val (remotePlaylist, remoteTracks) = playlistRemoteDataSource.getPlaylistWithTracks(playlistId)
             val playlistWithLocalData =
@@ -57,17 +69,19 @@ internal class PlaylistRepositoryImpl(
                     seedColor = localPlaylist?.seedColor,
                 )
             playlistDao.insertPlaylist(playlistWithLocalData.toEntity(localPlaylist?.serverConfigurationId ?: currentServerConfigurationId()))
+            insertTrackAlbums(remoteTracks)
             trackDao.insertTracks(remoteTracks.map { track -> track.toEntity() })
+            albumTrackDao.insertAlbumTracks(remoteTracks.mapNotNull { track -> track.toAlbumTrackEntityOrNull() })
             playlistTrackDao.replacePlaylistTracks(
                 playlistId = playlistId,
                 tracks = remoteTracks.mapIndexed { index, track -> track.toPlaylistTrackEntity(playlistId, index) },
             )
         } catch (exception: Exception) {
-            val localTracks = playlistTrackDao.getPlaylistTracks(playlistId)
+            val localTracks = playlistTrackDao.getPlaylistTracks(playlistId, COVER_ART_SIZE_KEY)
             if (localTracks.isEmpty() && localPlaylist?.trackCount != 0) throw exception
         }
 
-        return playlistTrackDao.getPlaylistTracks(playlistId).map { it.toDomain() }
+        return playlistTrackDao.getPlaylistTracks(playlistId, COVER_ART_SIZE_KEY).map { it.toDomain() }
     }
 
     override suspend fun refreshPlaylists() {
@@ -83,7 +97,7 @@ internal class PlaylistRepositoryImpl(
             playlistIds = remotePlaylists.map { it.id },
         )
         remotePlaylists.forEach { playlist ->
-            val localPlaylist = playlistDao.getPlaylist(playlist.id)
+            val localPlaylist = playlistDao.getPlaylistWithCoverArt(playlist.id, COVER_ART_SIZE_KEY)
             val playlistWithLocalData =
                 playlist.copy(
                     coverArtFilePath = localPlaylist?.validCoverArtFilePath(),
@@ -100,11 +114,10 @@ internal class PlaylistRepositoryImpl(
         size: Int?,
         playlistId: String?,
     ): Flow<CoverArtLoadingStatus> = flow {
-        playlistId?.let { id ->
-            playlistDao.getPlaylist(id)?.validCoverArtFilePath()?.let { filePath ->
-                emit(CoverArtLoadingStatus.Loaded(filePath))
-                return@flow
-            }
+        val serverConfigurationId = currentServerConfigurationId()
+        coverArtDao.getCoverArt(serverConfigurationId, coverArtId, size.toCoverArtSizeKey())?.validFilePath()?.let { filePath ->
+            emit(CoverArtLoadingStatus.Loaded(filePath))
+            return@flow
         }
 
         emit(CoverArtLoadingStatus.Loading)
@@ -112,8 +125,16 @@ internal class PlaylistRepositoryImpl(
         val coverArt = albumRemoteDataSource
             .getAlbumCoverArt(coverArtId = coverArtId, size = size)
             .also { coverArt ->
+                coverArtDao.insertCoverArt(
+                    CoverArtEntity(
+                        serverConfigurationId = serverConfigurationId,
+                        coverArtId = coverArtId,
+                        size = size.toCoverArtSizeKey(),
+                        filePath = coverArt.filePath,
+                        updatedAt = currentTimeMillis(),
+                    ),
+                )
                 playlistId?.let { id ->
-                    playlistDao.updateCoverArtFilePath(playlistId = id, coverArtFilePath = coverArt.filePath)
                     extractAndSaveSeedColor(id, coverArt.filePath)
                 }
             }
@@ -144,12 +165,11 @@ internal class PlaylistRepositoryImpl(
             name = name,
             trackCount = trackCount,
             coverArt = coverArt,
-            coverArtFilePath = coverArtFilePath,
             created = created,
             seedColor = seedColor,
         )
 
-    private fun PlaylistEntity.toDomain(): Playlist =
+    private fun PlaylistWithCoverArt.toDomain(): Playlist =
         Playlist(
             id = id,
             name = name,
@@ -173,21 +193,46 @@ internal class PlaylistRepositoryImpl(
     private fun Track.toEntity(): TrackEntity =
         TrackEntity(
             id = id,
-            albumId = albumId,
             title = title,
             artist = artist,
             artistId = artistId,
-            trackNumber = trackNumber,
             durationSeconds = durationSeconds,
             albumName = albumName,
             coverArt = coverArt,
-            coverArtFilePath = coverArtFilePath,
             starredAt = starredAt,
         )
 
-    private fun TrackEntity.toDomain(): Track =
+    private fun Track.toAlbumTrackEntityOrNull(): AlbumTrackEntity? {
+        val albumId = albumId ?: return null
+        return AlbumTrackEntity(
+            albumId = albumId,
+            trackId = id,
+            trackNumber = trackNumber,
+        )
+    }
+
+    private suspend fun insertTrackAlbums(tracks: List<Track>) {
+        val serverConfigurationId = currentServerConfigurationId()
+        tracks.forEach { track ->
+            val albumId = track.albumId ?: return@forEach
+            if (albumDao.getAlbum(albumId) != null) return@forEach
+
+            albumDao.insertAlbum(
+                AlbumEntity(
+                    id = albumId,
+                    serverConfigurationId = serverConfigurationId,
+                    name = track.albumName ?: albumId,
+                    artist = track.artist,
+                    artistId = track.artistId,
+                    coverArt = track.coverArt,
+                ),
+            )
+        }
+    }
+
+    private fun TrackWithAlbumAndCoverArt.toDomain(): Track =
         Track(
-            id = id,
+            id = trackId,
             title = title,
             artist = artist,
             artistId = artistId,
@@ -204,6 +249,16 @@ internal class PlaylistRepositoryImpl(
         serverConfigurationDao.getServerConfiguration()?.serverConfiguration?.id
             ?: throw IllegalStateException("No server configuration found")
 
-    private fun PlaylistEntity.validCoverArtFilePath(): String? =
+    private fun PlaylistWithCoverArt.validCoverArtFilePath(): String? =
         coverArtFilePath?.takeIf { filePath -> coverArtProcessor.fileExists(filePath) }
+
+    private fun CoverArtEntity.validFilePath(): String? =
+        filePath.takeIf { coverArtProcessor.fileExists(it) }
+
+    private fun Int?.toCoverArtSizeKey(): Int = this ?: ORIGINAL_COVER_ART_SIZE_KEY
+
+    private companion object {
+        const val COVER_ART_SIZE_KEY = 900
+        const val ORIGINAL_COVER_ART_SIZE_KEY = -1
+    }
 }

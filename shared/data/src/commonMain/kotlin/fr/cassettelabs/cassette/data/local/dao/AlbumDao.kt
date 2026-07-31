@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import fr.cassettelabs.cassette.data.local.embeddeds.AlbumWithCoverArt
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -18,20 +19,52 @@ internal interface AlbumDao {
     @Query("SELECT * FROM albums WHERE id = :albumId LIMIT 1")
     suspend fun getAlbum(albumId: String): AlbumEntity?
 
-    @Query("SELECT * FROM albums ORDER BY created DESC")
-    fun getAllAlbums(): Flow<List<AlbumEntity>>
+    @Query(
+        """
+        SELECT albums.*, cover_arts.filePath AS coverArtFilePath
+        FROM albums
+        LEFT JOIN cover_arts ON cover_arts.serverConfigurationId = albums.serverConfigurationId
+            AND cover_arts.coverArtId = albums.coverArt
+            AND cover_arts.size = :coverArtSize
+        WHERE albums.id = :albumId
+        LIMIT 1
+        """,
+    )
+    suspend fun getAlbumWithCoverArt(
+        albumId: String,
+        coverArtSize: Int,
+    ): AlbumWithCoverArt?
 
-    @Query("SELECT * FROM albums WHERE artistId = :artistId ORDER BY created DESC, name")
-    suspend fun getArtistAlbums(artistId: String): List<AlbumEntity>
+    @Query(
+        """
+        SELECT albums.*, cover_arts.filePath AS coverArtFilePath
+        FROM albums
+        LEFT JOIN cover_arts ON cover_arts.serverConfigurationId = albums.serverConfigurationId
+            AND cover_arts.coverArtId = albums.coverArt
+            AND cover_arts.size = :coverArtSize
+        ORDER BY albums.created DESC
+        """,
+    )
+    fun getAllAlbums(coverArtSize: Int): Flow<List<AlbumWithCoverArt>>
+
+    @Query(
+        """
+        SELECT albums.*, cover_arts.filePath AS coverArtFilePath
+        FROM albums
+        LEFT JOIN cover_arts ON cover_arts.serverConfigurationId = albums.serverConfigurationId
+            AND cover_arts.coverArtId = albums.coverArt
+            AND cover_arts.size = :coverArtSize
+        WHERE albums.artistId = :artistId
+        ORDER BY albums.created DESC, albums.name
+        """,
+    )
+    suspend fun getArtistAlbums(
+        artistId: String,
+        coverArtSize: Int,
+    ): List<AlbumWithCoverArt>
 
     @Query("DELETE FROM albums")
     suspend fun deleteAllAlbums()
-
-    @Query("UPDATE albums SET coverArtFilePath = :coverArtFilePath WHERE id = :albumId")
-    suspend fun updateCoverArtFilePath(
-        albumId: String,
-        coverArtFilePath: String,
-    )
 
     @Query("UPDATE albums SET seedColor = :seedColor WHERE id = :albumId")
     suspend fun updateSeedColor(

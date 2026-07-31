@@ -30,21 +30,28 @@ internal interface PlaybackQueueDao {
             tracks.title AS title,
             tracks.artist AS artist,
             tracks.artistId AS artistId,
-            tracks.trackNumber AS trackNumber,
+            album_tracks.trackNumber AS trackNumber,
             tracks.durationSeconds AS durationSeconds,
-            tracks.albumId AS albumId,
+            album_tracks.albumId AS albumId,
             COALESCE(albums.name, tracks.albumName) AS albumName,
             COALESCE(albums.coverArt, tracks.coverArt) AS coverArtId,
-            COALESCE(albums.coverArtFilePath, tracks.coverArtFilePath) AS coverArtFilePath,
+            cover_arts.filePath AS coverArtFilePath,
             tracks.starredAt AS starredAt
         FROM playback_queue_items AS queue
         INNER JOIN tracks ON tracks.id = queue.trackId
-        LEFT JOIN albums ON albums.id = tracks.albumId
+        LEFT JOIN album_tracks ON album_tracks.trackId = tracks.id
+        LEFT JOIN albums ON albums.id = album_tracks.albumId
+        LEFT JOIN cover_arts ON cover_arts.serverConfigurationId = albums.serverConfigurationId
+            AND cover_arts.coverArtId = COALESCE(albums.coverArt, tracks.coverArt)
+            AND cover_arts.size = :coverArtSize
         WHERE queue.sessionId = :sessionId
         ORDER BY queue.section, queue.position
         """,
     )
-    suspend fun getItemsWithTracks(sessionId: String): List<PlaybackQueueItemWithTrack>
+    suspend fun getItemsWithTracks(
+        sessionId: String,
+        coverArtSize: Int,
+    ): List<PlaybackQueueItemWithTrack>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(session: PlaybackSessionEntity)

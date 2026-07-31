@@ -9,7 +9,7 @@
     <string name="on_boarding_complete_start_listening">Start Listening</string>
     <string name="on_boarding_complete_subtitle">Your library is waiting.\nTime to press play.</string>
     <string name="on_boarding_complete_success_content_description">Configuration saved</string>
-    <string name="on_boarding_complete_title">You\'re all set.</string>
+    <string name="on_boarding_complete_title">You're all set.</string>
 
     <!-- ServerConfiguration -->
     <string name="server_configuration_add_header">Add Header</string>

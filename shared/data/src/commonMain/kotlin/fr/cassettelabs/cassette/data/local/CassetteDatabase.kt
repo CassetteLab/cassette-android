@@ -5,14 +5,18 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
+import fr.cassettelabs.cassette.data.local.dao.AlbumTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ArtistDao
+import fr.cassettelabs.cassette.data.local.dao.CoverArtDao
 import fr.cassettelabs.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
+import fr.cassettelabs.cassette.data.local.entities.AlbumTrackEntity
 import fr.cassettelabs.cassette.data.local.entities.ArtistEntity
+import fr.cassettelabs.cassette.data.local.entities.CoverArtEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaybackQueueItemEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaybackSessionEntity
 import fr.cassettelabs.cassette.data.local.entities.PlaylistEntity
@@ -28,7 +32,9 @@ import fr.cassettelabs.cassette.data.local.entities.TrackEntity
         ServerConfigurationEntity::class,
         ServerConfigurationCustomHeaderEntity::class,
         AlbumEntity::class,
+        AlbumTrackEntity::class,
         ArtistEntity::class,
+        CoverArtEntity::class,
         TrackEntity::class,
         PlaylistEntity::class,
         PlaylistTrackEntity::class,
@@ -37,7 +43,7 @@ import fr.cassettelabs.cassette.data.local.entities.TrackEntity
         PlaybackSessionEntity::class,
         PlaybackQueueItemEntity::class,
     ],
-    version = 6,
+    version = 7,
 )
 @ConstructedBy(CassetteDatabaseConstructor::class)
 internal abstract class CassetteDatabase : RoomDatabase() {
@@ -45,7 +51,11 @@ internal abstract class CassetteDatabase : RoomDatabase() {
 
     abstract fun albumDao(): AlbumDao
 
+    abstract fun albumTrackDao(): AlbumTrackDao
+
     abstract fun artistDao(): ArtistDao
+
+    abstract fun coverArtDao(): CoverArtDao
 
     abstract fun trackDao(): TrackDao
 

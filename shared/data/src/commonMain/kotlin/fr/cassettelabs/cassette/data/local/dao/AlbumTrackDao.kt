@@ -5,11 +5,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import fr.cassettelabs.cassette.data.local.embeddeds.TrackWithAlbumAndCoverArt
-import fr.cassettelabs.cassette.data.local.entities.PlaylistTrackEntity
+import fr.cassettelabs.cassette.data.local.embeddeds.AlbumTrackWithTrack
+import fr.cassettelabs.cassette.data.local.entities.AlbumTrackEntity
 
 @Dao
-internal interface PlaylistTrackDao {
+internal interface AlbumTrackDao {
     @Query(
         """
         SELECT
@@ -24,34 +24,33 @@ internal interface PlaylistTrackDao {
             COALESCE(albums.coverArt, tracks.coverArt) AS coverArt,
             cover_arts.filePath AS coverArtFilePath,
             tracks.starredAt AS starredAt
-        FROM playlist_tracks
-        INNER JOIN tracks ON tracks.id = playlist_tracks.trackId
-        LEFT JOIN album_tracks ON album_tracks.trackId = tracks.id
+        FROM album_tracks
+        INNER JOIN tracks ON tracks.id = album_tracks.trackId
         LEFT JOIN albums ON albums.id = album_tracks.albumId
         LEFT JOIN cover_arts ON cover_arts.serverConfigurationId = albums.serverConfigurationId
             AND cover_arts.coverArtId = COALESCE(albums.coverArt, tracks.coverArt)
             AND cover_arts.size = :coverArtSize
-        WHERE playlist_tracks.playlistId = :playlistId
-        ORDER BY playlist_tracks.position
+        WHERE album_tracks.albumId = :albumId
+        ORDER BY album_tracks.trackNumber, tracks.title
         """,
     )
-    suspend fun getPlaylistTracks(
-        playlistId: String,
+    suspend fun getAlbumTracks(
+        albumId: String,
         coverArtSize: Int,
-    ): List<TrackWithAlbumAndCoverArt>
+    ): List<AlbumTrackWithTrack>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlaylistTracks(tracks: List<PlaylistTrackEntity>)
+    suspend fun insertAlbumTracks(tracks: List<AlbumTrackEntity>)
 
-    @Query("DELETE FROM playlist_tracks WHERE playlistId = :playlistId")
-    suspend fun deletePlaylistTracks(playlistId: String)
+    @Query("DELETE FROM album_tracks WHERE albumId = :albumId")
+    suspend fun deleteAlbumTracks(albumId: String)
 
     @Transaction
-    suspend fun replacePlaylistTracks(
-        playlistId: String,
-        tracks: List<PlaylistTrackEntity>,
+    suspend fun replaceAlbumTracks(
+        albumId: String,
+        tracks: List<AlbumTrackEntity>,
     ) {
-        deletePlaylistTracks(playlistId)
-        insertPlaylistTracks(tracks)
+        deleteAlbumTracks(albumId)
+        insertAlbumTracks(tracks)
     }
 }

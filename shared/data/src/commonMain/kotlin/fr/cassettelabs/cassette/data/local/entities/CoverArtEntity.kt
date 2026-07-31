@@ -3,10 +3,10 @@ package fr.cassettelabs.cassette.data.local.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "playlists",
+    tableName = "cover_arts",
+    primaryKeys = ["serverConfigurationId", "coverArtId", "size"],
     foreignKeys = [
         ForeignKey(
             entity = ServerConfigurationEntity::class,
@@ -15,15 +15,12 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE,
         ),
     ],
-    indices = [Index("serverConfigurationId")],
+    indices = [Index("serverConfigurationId"), Index("coverArtId")],
 )
-internal data class PlaylistEntity(
-    @PrimaryKey
-    val id: String,
+internal data class CoverArtEntity(
     val serverConfigurationId: Long,
-    val name: String,
-    val trackCount: Int = 0,
-    val coverArt: String? = null,
-    val created: String? = null,
-    val seedColor: Int? = null,
+    val coverArtId: String,
+    val size: Int,
+    val filePath: String,
+    val updatedAt: Long,
 )
