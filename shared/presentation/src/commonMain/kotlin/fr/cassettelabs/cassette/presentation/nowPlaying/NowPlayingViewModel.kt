@@ -15,6 +15,7 @@ import fr.cassettelabs.cassette.domain.usecases.playback.SetPlaybackRepeatModeUs
 import fr.cassettelabs.cassette.domain.usecases.playback.SetPlaybackShuffleEnabledUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.SkipToNextTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.SkipToPreviousTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.starred.SetTrackStarredUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,6 +30,7 @@ internal class NowPlayingViewModel(
     private val setPlaybackShuffleEnabledUseCase: SetPlaybackShuffleEnabledUseCase,
     private val skipToNextTrackUseCase: SkipToNextTrackUseCase,
     private val skipToPreviousTrackUseCase: SkipToPreviousTrackUseCase,
+    private val setTrackStarredUseCase: SetTrackStarredUseCase,
     getCurrentTrackUseCase: GetCurrentTrackUseCase,
     getPlaybackStateUseCase: GetPlaybackStateUseCase,
     logger: Logger,
@@ -84,7 +86,7 @@ internal class NowPlayingViewModel(
                 val repeatMode = uiState.value.repeatMode.next()
                 viewModelScope.launch { setPlaybackRepeatModeUseCase(repeatMode) }
             }
-            NowPlayingEvent.OnStarredClicked -> updateState { it.copy(isStarred = !it.isStarred) }
+            NowPlayingEvent.OnStarredClicked -> setCurrentTrackStarred()
             NowPlayingEvent.OnQueueClicked -> Unit
             is NowPlayingEvent.OnSeekChanged -> {
                 val positionSeconds = (uiState.value.durationSeconds * event.progress).toInt()
@@ -105,6 +107,7 @@ internal class NowPlayingViewModel(
                 album = currentTrack.albumName,
                 durationSeconds = currentTrack.durationSeconds ?: 0,
                 coverArtStatus = currentTrack.coverArtFilePath?.let { filePath -> CoverArtLoadingStatus.Loaded(filePath) },
+                isStarred = if (it.trackId == currentTrack.id) it.isStarred else currentTrack.starredAt != null,
             )
         }
 
@@ -126,6 +129,22 @@ internal class NowPlayingViewModel(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun setCurrentTrackStarred() {
+        val trackId = uiState.value.trackId.takeIf { it.isNotBlank() } ?: return
+        val isStarred = !uiState.value.isStarred
+        updateState { it.copy(isStarred = isStarred) }
+        viewModelScope.launch {
+            runCatching {
+                setTrackStarredUseCase(trackId = trackId, isStarred = isStarred)
+            }.onFailure { exception ->
+                updateState { state ->
+                    if (state.trackId == trackId) state.copy(isStarred = !isStarred) else state
+                }
+                logger.w("Unable to update starred track $trackId" + ": " + exception.message)
+            }
+        }
     }
 
     private companion object {

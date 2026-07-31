@@ -458,4 +458,5 @@ private fun PlaybackQueueItemWithTrack.toDomain(): Track =
         albumName = albumName,
         coverArt = coverArtId,
         coverArtFilePath = coverArtFilePath,
+        starredAt = starredAt,
     )

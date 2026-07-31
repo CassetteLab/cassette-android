@@ -16,4 +16,5 @@ internal data class PlaybackQueueItemWithTrack(
     val albumName: String?,
     val coverArtId: String?,
     val coverArtFilePath: String?,
+    val starredAt: String?,
 )

@@ -34,7 +34,8 @@ internal interface PlaybackQueueDao {
             tracks.albumId AS albumId,
             COALESCE(albums.name, tracks.albumName) AS albumName,
             COALESCE(albums.coverArt, tracks.coverArt) AS coverArtId,
-            COALESCE(albums.coverArtFilePath, tracks.coverArtFilePath) AS coverArtFilePath
+            COALESCE(albums.coverArtFilePath, tracks.coverArtFilePath) AS coverArtFilePath,
+            tracks.starredAt AS starredAt
         FROM playback_queue_items AS queue
         INNER JOIN tracks ON tracks.id = queue.trackId
         LEFT JOIN albums ON albums.id = tracks.albumId
