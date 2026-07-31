@@ -13,7 +13,6 @@ import cassette.shared.presentation.generated.resources.now_playing_pause
 import cassette.shared.presentation.generated.resources.now_playing_play
 import cassette.shared.presentation.generated.resources.now_playing_next
 import cassette.shared.presentation.generated.resources.now_playing_repeat
-import cassette.shared.presentation.generated.resources.now_playing_output_this_device
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
@@ -322,34 +321,6 @@ internal fun NowPlayingScreen(
                                 imageVector = if (uiState.repeatMode == RepeatMode.One) Icons.Rounded.RepeatOne else Icons.Rounded.Repeat,
                                 contentDescription = stringResource(Res.string.now_playing_repeat),
                                 tint = if (uiState.repeatMode == RepeatMode.Off) playerContent.copy(alpha = 0.64f) else playerAccent,
-                            )
-                        }
-                    }
-
-                    Box(
-                        modifier =
-                            Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .clip(RoundedCornerShape(60.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.70f))
-                                .padding(horizontal = 18.dp, vertical = 10.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(18.dp),
-                                imageVector = Icons.Rounded.GraphicEq,
-                                contentDescription = null,
-                                tint = playerContent.copy(alpha = 0.72f),
-                            )
-                            Text(
-                                text = stringResource(Res.string.now_playing_output_this_device),
-                                color = playerContent.copy(alpha = 0.72f),
-                                fontSize = 13.sp,
-                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                     }
