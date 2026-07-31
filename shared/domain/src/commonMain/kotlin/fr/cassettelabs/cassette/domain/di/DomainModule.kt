@@ -6,6 +6,9 @@ import fr.cassettelabs.cassette.domain.usecases.albumDetail.GetAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.albumList.GetAllAlbumsUseCase
+import fr.cassettelabs.cassette.domain.usecases.artistDetail.GetArtistAlbumsUseCase
+import fr.cassettelabs.cassette.domain.usecases.artistDetail.GetArtistUseCase
+import fr.cassettelabs.cassette.domain.usecases.artistDetail.RefreshArtistUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistList.GetAllPlaylistsUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetCurrentTrackUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
@@ -53,6 +56,9 @@ val domainModule =
         singleOf(::RefreshAlbumsUseCase)
         singleOf(::GetStarredLibraryUseCase)
         singleOf(::SetTrackStarredUseCase)
+        singleOf(::GetArtistUseCase)
+        singleOf(::GetArtistAlbumsUseCase)
+        singleOf(::RefreshArtistUseCase)
 
         // Playlists
         singleOf(::GetAllPlaylistsUseCase)

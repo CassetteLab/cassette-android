@@ -16,6 +16,7 @@ import cassette.shared.presentation.generated.resources.now_playing_repeat
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -203,6 +204,9 @@ internal fun NowPlayingScreen(
                             )
                             Spacer(modifier = Modifier.height(3.dp))
                             Text(
+                                modifier = uiState.artistId?.let { artistId ->
+                                    Modifier.clickable { onEvent(NowPlayingEvent.OnArtistClicked(artistId)) }
+                                } ?: Modifier,
                                 text =
                                     uiState.artist?.takeIf { it.isNotBlank() }
                                         ?: stringResource(Res.string.now_playing_unknown_artist),

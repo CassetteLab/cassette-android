@@ -3,14 +3,17 @@ package fr.cassettelabs.cassette.data.repositories
 import fr.cassettelabs.cassette.core.coroutines.CoroutineDispatchers
 import fr.cassettelabs.cassette.core.logger.Logger
 import fr.cassettelabs.cassette.data.local.dao.AlbumDao
+import fr.cassettelabs.cassette.data.local.dao.ArtistDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
+import fr.cassettelabs.cassette.data.local.entities.ArtistEntity
 import fr.cassettelabs.cassette.data.local.entities.TrackEntity
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
 import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.Artist
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
@@ -25,6 +28,7 @@ internal class AlbumRepositoryImpl(
     private val logger: Logger,
     private val albumRemoteDataSource: AlbumRemoteDataSourceImpl,
     private val albumDao: AlbumDao,
+    private val artistDao: ArtistDao,
     private val trackDao: TrackDao,
     private val serverConfigurationDao: ServerConfigurationDao,
     private val coverArtProcessor: CoverArtProcessor,
@@ -157,6 +161,44 @@ internal class AlbumRepositoryImpl(
         }
     }
 
+    override suspend fun getArtist(artistId: String): Artist? {
+        val localArtist = artistDao.getArtist(artistId)
+        if (localArtist != null) {
+            return localArtist.toDomain()
+        }
+
+        return refreshArtist(artistId)
+    }
+
+    override suspend fun refreshArtist(artistId: String): Artist {
+        val localArtist = artistDao.getArtist(artistId)
+        val (artist, albums) = albumRemoteDataSource.getArtistWithAlbums(artistId)
+        val artistWithLocalData = artist.copy(coverArtFilePath = localArtist?.validCoverArtFilePath())
+        artistDao.insertArtist(artistWithLocalData.toEntity(localArtist?.serverConfigurationId))
+        insertAlbums(albums)
+        return artistWithLocalData
+    }
+
+    override suspend fun getArtistAlbums(artistId: String): List<Album> {
+        val localAlbums = albumDao.getArtistAlbums(artistId)
+        if (localAlbums.isNotEmpty()) {
+            return localAlbums.map { it.toDomain() }
+        }
+
+        val (_, albums) = albumRemoteDataSource.getArtistWithAlbums(artistId)
+        insertAlbums(albums)
+        return albums
+    }
+
+    private suspend fun insertAlbums(albums: List<Album>) {
+        val serverConfigurationId = currentServerConfigurationId()
+        albums.forEach { album ->
+            val localAlbum = albumDao.getAlbum(album.id)
+            val albumWithLocalData = album.withLocalAlbumData(localAlbum)
+            albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
+        }
+    }
+
     private fun Album.withLocalAlbumData(localAlbum: AlbumEntity?): Album {
         val canReuseLocalArtworkData = localAlbum?.coverArt == coverArt
         return copy(
@@ -171,6 +213,7 @@ internal class AlbumRepositoryImpl(
             serverConfigurationId = existingServerConfigurationId ?: currentServerConfigurationId(),
             name = name,
             artist = artist,
+            artistId = artistId,
             coverArt = coverArt,
             coverArtFilePath = coverArtFilePath,
             created = created,
@@ -182,6 +225,7 @@ internal class AlbumRepositoryImpl(
             id = id,
             name = name,
             artist = artist,
+            artistId = artistId,
             coverArt = coverArt,
             coverArtFilePath = validCoverArtFilePath(),
             created = created,
@@ -194,6 +238,7 @@ internal class AlbumRepositoryImpl(
             albumId = albumId,
             title = title,
             artist = artist,
+            artistId = artistId,
             trackNumber = trackNumber,
             durationSeconds = durationSeconds,
             albumName = albumName,
@@ -207,6 +252,7 @@ internal class AlbumRepositoryImpl(
             id = id,
             title = title,
             artist = artist,
+            artistId = artistId,
             trackNumber = trackNumber,
             durationSeconds = durationSeconds,
             albumId = albumId,
@@ -221,6 +267,28 @@ internal class AlbumRepositoryImpl(
             ?: throw IllegalStateException("No server configuration found")
 
     private fun AlbumEntity.validCoverArtFilePath(): String? =
+        coverArtFilePath?.takeIf { filePath -> coverArtProcessor.fileExists(filePath) }
+
+    private suspend fun Artist.toEntity(existingServerConfigurationId: Long?): ArtistEntity =
+        ArtistEntity(
+            id = id,
+            serverConfigurationId = existingServerConfigurationId ?: currentServerConfigurationId(),
+            name = name,
+            albumCount = albumCount,
+            coverArt = coverArt,
+            coverArtFilePath = coverArtFilePath,
+        )
+
+    private fun ArtistEntity.toDomain(): Artist =
+        Artist(
+            id = id,
+            name = name,
+            albumCount = albumCount,
+            coverArt = coverArt,
+            coverArtFilePath = validCoverArtFilePath(),
+        )
+
+    private fun ArtistEntity.validCoverArtFilePath(): String? =
         coverArtFilePath?.takeIf { filePath -> coverArtProcessor.fileExists(filePath) }
 
     private companion object {

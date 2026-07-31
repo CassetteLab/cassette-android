@@ -14,6 +14,7 @@ internal data class TrackEntity(
     val albumId: String? = null,
     val title: String,
     val artist: String? = null,
+    val artistId: String? = null,
     val trackNumber: Int? = null,
     val durationSeconds: Int? = null,
     val albumName: String? = null,

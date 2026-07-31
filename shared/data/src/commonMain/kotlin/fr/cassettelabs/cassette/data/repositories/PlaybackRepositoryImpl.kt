@@ -453,6 +453,7 @@ private fun PlaybackQueueItemWithTrack.toDomain(): Track =
         id = trackId,
         title = title,
         artist = artist,
+        artistId = artistId,
         trackNumber = trackNumber,
         durationSeconds = durationSeconds,
         albumName = albumName,

@@ -66,6 +66,14 @@
     <string name="album_detail_tracks_empty">No tracks found for this album.</string>
     <string name="album_detail_unknown_artist">Unknown artist</string>
 
+    <!-- Artist Detail -->
+    <string name="artist_detail_album_count_format">%1$d albums</string>
+    <string name="artist_detail_albums">Albums</string>
+    <string name="artist_detail_albums_loading_message">Loading artist albums</string>
+    <string name="artist_detail_loading_message">Loading artist</string>
+    <string name="artist_detail_no_albums">No albums found for this artist.</string>
+    <string name="artist_detail_unknown_artist">Unknown artist</string>
+
     <!-- Now Playing -->
     <string name="now_playing_back">Back</string>
     <string name="now_playing_starred">Starred</string>

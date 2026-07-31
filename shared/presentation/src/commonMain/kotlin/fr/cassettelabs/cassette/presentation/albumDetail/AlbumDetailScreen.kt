@@ -92,6 +92,9 @@ internal fun AlbumDetailScreen(
                                 album = uiState.album,
                                 coverArtStatus = uiState.coverArtStatus,
                                 height = maxHeaderHeight,
+                                onArtistClick = uiState.album?.artistId?.let { artistId ->
+                                    { onEvent(AlbumDetailEvent.OnArtistClicked(artistId)) }
+                                },
                                 onShuffleClick = {
                                     uiState.tracks.randomOrNull()?.let { track ->
                                         onEvent(AlbumDetailEvent.OnTrackClicked(track.id))
@@ -145,6 +148,7 @@ private fun AlbumDetailScreenPreview() {
                             id = "2YuwDgPuXhF5ir4SjAl6Iw",
                             name = "Discovery",
                             artist = "Daft Punk",
+                            artistId = "artist-1",
                             coverArt = "al-123",
                             coverArtFilePath = null,
                             created = "2026-07-15T12:00:00",

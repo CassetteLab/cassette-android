@@ -29,6 +29,7 @@ internal interface PlaybackQueueDao {
             queue.addedAt AS addedAt,
             tracks.title AS title,
             tracks.artist AS artist,
+            tracks.artistId AS artistId,
             tracks.trackNumber AS trackNumber,
             tracks.durationSeconds AS durationSeconds,
             tracks.albumId AS albumId,

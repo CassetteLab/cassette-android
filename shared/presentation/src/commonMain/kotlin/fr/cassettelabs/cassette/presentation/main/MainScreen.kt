@@ -45,6 +45,9 @@ import fr.cassettelabs.cassette.presentation.albumDetail.AlbumDetailViewModel
 import fr.cassettelabs.cassette.presentation.albumList.AlbumListEvent
 import fr.cassettelabs.cassette.presentation.albumList.AlbumListScreen
 import fr.cassettelabs.cassette.presentation.albumList.AlbumListViewModel
+import fr.cassettelabs.cassette.presentation.artistDetail.ArtistDetailEvent
+import fr.cassettelabs.cassette.presentation.artistDetail.ArtistDetailScreen
+import fr.cassettelabs.cassette.presentation.artistDetail.ArtistDetailViewModel
 import fr.cassettelabs.cassette.presentation.core.NowPlayingSnack
 import fr.cassettelabs.cassette.presentation.core.navigation.Screens
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
@@ -88,6 +91,7 @@ internal fun MainScreen() {
     val bottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true)
     val navController = rememberNavController(bottomSheetNavigator)
     var openPlaybackQueueAfterNowPlayingDismiss by remember { mutableStateOf(false) }
+    var openArtistDetailAfterNowPlayingDismiss by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(MainEvent.OnAppearing)
@@ -101,10 +105,20 @@ internal fun MainScreen() {
             }
         }
     }
+    LaunchedEffect(openArtistDetailAfterNowPlayingDismiss, bottomSheetNavigator.sheetEnabled) {
+        val artistId = openArtistDetailAfterNowPlayingDismiss
+        if (artistId != null && !bottomSheetNavigator.sheetEnabled) {
+            openArtistDetailAfterNowPlayingDismiss = null
+            navController.navigate(Screens.ArtistDetail(artistId = artistId)) {
+                launchSingleTop = true
+            }
+        }
+    }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val showBottomBar =
         currentDestination?.hasRoute<Screens.AlbumDetail>() != true &&
+            currentDestination?.hasRoute<Screens.ArtistDetail>() != true &&
             currentDestination?.hasRoute<Screens.PlaylistDetail>() != true &&
             currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true &&
             currentDestination?.hasRoute<Screens.NowPlaying>() != true &&
@@ -294,6 +308,37 @@ internal fun MainScreen() {
                             onEvent = { event ->
                                 when (event) {
                                     AlbumDetailEvent.OnBackClicked -> navController.navigateUp()
+                                    is AlbumDetailEvent.OnArtistClicked -> {
+                                        navController.navigate(Screens.ArtistDetail(artistId = event.artistId)) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+                                    else -> Unit
+                                }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.ArtistDetail> { backStackEntry ->
+                        val route = backStackEntry.toRoute<Screens.ArtistDetail>()
+                        val viewModel =
+                            koinViewModel<ArtistDetailViewModel>(
+                                parameters = { parametersOf(route.artistId) },
+                            )
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        ArtistDetailScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    ArtistDetailEvent.OnBackClicked -> navController.navigateUp()
+                                    is ArtistDetailEvent.OnAlbumClicked -> {
+                                        navController.navigate(Screens.AlbumDetail(albumId = event.albumId)) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                     else -> Unit
                                 }
                                 viewModel.onEvent(event)
@@ -372,6 +417,10 @@ internal fun MainScreen() {
                                     NowPlayingEvent.OnBackClicked -> navController.navigateUp()
                                     NowPlayingEvent.OnQueueClicked -> {
                                         openPlaybackQueueAfterNowPlayingDismiss = true
+                                        navController.navigateUp()
+                                    }
+                                    is NowPlayingEvent.OnArtistClicked -> {
+                                        openArtistDetailAfterNowPlayingDismiss = event.artistId
                                         navController.navigateUp()
                                     }
                                     else -> Unit

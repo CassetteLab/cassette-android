@@ -88,6 +88,7 @@ internal class NowPlayingViewModel(
             }
             NowPlayingEvent.OnStarredClicked -> setCurrentTrackStarred()
             NowPlayingEvent.OnQueueClicked -> Unit
+            is NowPlayingEvent.OnArtistClicked -> Unit
             is NowPlayingEvent.OnSeekChanged -> {
                 val positionSeconds = (uiState.value.durationSeconds * event.progress).toInt()
                 seekPlaybackUseCase(positionSeconds * MILLIS_PER_SECOND)
@@ -104,6 +105,7 @@ internal class NowPlayingViewModel(
                 trackId = currentTrack.id,
                 title = currentTrack.title,
                 artist = currentTrack.artist,
+                artistId = currentTrack.artistId,
                 album = currentTrack.albumName,
                 durationSeconds = currentTrack.durationSeconds ?: 0,
                 coverArtStatus = currentTrack.coverArtFilePath?.let { filePath -> CoverArtLoadingStatus.Loaded(filePath) },

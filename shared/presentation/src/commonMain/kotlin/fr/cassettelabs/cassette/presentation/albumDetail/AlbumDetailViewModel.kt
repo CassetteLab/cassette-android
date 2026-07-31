@@ -38,6 +38,7 @@ internal class AlbumDetailViewModel(
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
             AlbumDetailEvent.OnBackClicked -> Unit
+            is AlbumDetailEvent.OnArtistClicked -> Unit
             AlbumDetailEvent.OnAppearing -> {
                 loadAlbum()
                 loadAlbumTracks()

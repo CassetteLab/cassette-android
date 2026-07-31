@@ -8,6 +8,7 @@ internal data class NowPlayingUiState(
     val trackId: String = "",
     val title: String = "",
     val artist: String? = null,
+    val artistId: String? = null,
     val album: String? = null,
     val coverArtStatus: CoverArtLoadingStatus? = null,
     val currentPositionSeconds: Int = 0,

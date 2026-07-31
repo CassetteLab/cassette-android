@@ -43,6 +43,11 @@ sealed interface Screens {
     ) : Screens
 
     @Serializable
+    data class ArtistDetail(
+        val artistId: String,
+    ) : Screens
+
+    @Serializable
     data class PlaylistDetail(
         val playlistId: String,
     ) : Screens

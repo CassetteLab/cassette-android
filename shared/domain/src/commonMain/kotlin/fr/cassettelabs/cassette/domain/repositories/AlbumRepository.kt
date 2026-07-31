@@ -2,6 +2,7 @@ package fr.cassettelabs.cassette.domain.repositories
 
 import fr.cassettelabs.cassette.domain.aliases.AlbumId
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.Artist
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
@@ -29,4 +30,10 @@ interface AlbumRepository {
     fun getAllAlbums(): Flow<List<Album>>
 
     suspend fun refreshAlbums()
+
+    suspend fun getArtist(artistId: String): Artist?
+
+    suspend fun refreshArtist(artistId: String): Artist
+
+    suspend fun getArtistAlbums(artistId: String): List<Album>
 }

@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "albums",
+    tableName = "artists",
     foreignKeys = [
         ForeignKey(
             entity = ServerConfigurationEntity::class,
@@ -17,15 +17,12 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("serverConfigurationId")],
 )
-internal data class AlbumEntity(
+internal data class ArtistEntity(
     @PrimaryKey
     val id: String,
     val serverConfigurationId: Long,
     val name: String,
-    val artist: String? = null,
-    val artistId: String? = null,
+    val albumCount: Int = 0,
     val coverArt: String? = null,
     val coverArtFilePath: String? = null,
-    val created: String? = null,
-    val seedColor: Int? = null,
 )

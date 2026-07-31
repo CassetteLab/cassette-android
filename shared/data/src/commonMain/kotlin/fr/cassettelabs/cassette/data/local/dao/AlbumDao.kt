@@ -21,6 +21,9 @@ internal interface AlbumDao {
     @Query("SELECT * FROM albums ORDER BY created DESC")
     fun getAllAlbums(): Flow<List<AlbumEntity>>
 
+    @Query("SELECT * FROM albums WHERE artistId = :artistId ORDER BY created DESC, name")
+    suspend fun getArtistAlbums(artistId: String): List<AlbumEntity>
+
     @Query("DELETE FROM albums")
     suspend fun deleteAllAlbums()
 

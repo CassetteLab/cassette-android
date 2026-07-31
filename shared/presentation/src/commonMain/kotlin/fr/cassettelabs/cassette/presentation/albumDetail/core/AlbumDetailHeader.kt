@@ -5,6 +5,7 @@ import cassette.shared.presentation.generated.resources.album_detail_unknown_art
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ internal fun AlbumDetailHeader(
     album: Album?,
     coverArtStatus: CoverArtLoadingStatus?,
     height: Dp,
+    onArtistClick: (() -> Unit)? = null,
     onShuffleClick: () -> Unit,
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
@@ -86,6 +88,7 @@ internal fun AlbumDetailHeader(
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Text(
+                    modifier = onArtistClick?.let { Modifier.clickable(onClick = it) } ?: Modifier,
                     text = album?.artist ?: stringResource(Res.string.album_detail_unknown_artist),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
