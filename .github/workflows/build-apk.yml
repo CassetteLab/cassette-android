@@ -52,7 +52,7 @@ jobs:
           VERSION_NAME=$(jq -r '.elements[0].versionName' androidApp/build/outputs/apk/release/output-metadata.json)
           test -n "$VERSION_NAME"
           test "$VERSION_NAME" != "null"
-          TAG_NAME="v$VERSION_NAME"
+          TAG_NAME="$VERSION_NAME"
           printf 'version_name=%s\n' "$VERSION_NAME" >> "$GITHUB_OUTPUT"
           printf 'tag_name=%s\n' "$TAG_NAME" >> "$GITHUB_OUTPUT"
 
