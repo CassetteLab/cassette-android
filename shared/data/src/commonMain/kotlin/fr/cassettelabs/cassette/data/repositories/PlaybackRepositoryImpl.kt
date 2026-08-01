@@ -252,7 +252,7 @@ internal class PlaybackRepositoryImpl(
 
     private suspend fun restoreQueue() {
         val session = withContext(coroutineDispatchers.io) { playbackQueueDao.getSession(ACTIVE_SESSION_ID) } ?: return
-        val items = withContext(coroutineDispatchers.io) { playbackQueueDao.getItemsWithTracks(ACTIVE_SESSION_ID) }
+        val items = withContext(coroutineDispatchers.io) { playbackQueueDao.getItemsWithTracks(ACTIVE_SESSION_ID, COVER_ART_SIZE) }
         queueState =
             QueueState(
                 history = items.itemsIn(PlaybackQueueSection.History),
@@ -453,9 +453,11 @@ private fun PlaybackQueueItemWithTrack.toDomain(): Track =
         id = trackId,
         title = title,
         artist = artist,
+        artistId = artistId,
         trackNumber = trackNumber,
         durationSeconds = durationSeconds,
         albumName = albumName,
         coverArt = coverArtId,
         coverArtFilePath = coverArtFilePath,
+        starredAt = starredAt,
     )

@@ -6,11 +6,13 @@ import cassette.shared.presentation.generated.resources.server_configuration_pas
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,7 +32,7 @@ internal fun CredentialsSection(
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = stringResource(Res.string.server_configuration_username_label)) },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None),
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None, imeAction = ImeAction.Next),
         )
         OutlinedTextField(
             value = uiState.password,
@@ -39,7 +41,12 @@ internal fun CredentialsSection(
             label = { Text(text = stringResource(Res.string.server_configuration_password_label)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Send),
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    if (uiState.canSubmit)
+                        onEvent(ServerConfigurationEvent.OnConnectClicked)
+                })
         )
     }
 }

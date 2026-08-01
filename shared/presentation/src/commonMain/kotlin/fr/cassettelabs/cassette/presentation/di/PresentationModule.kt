@@ -2,6 +2,7 @@ package fr.cassettelabs.cassette.presentation.di
 
 import fr.cassettelabs.cassette.presentation.albumDetail.AlbumDetailViewModel
 import fr.cassettelabs.cassette.presentation.albumList.AlbumListViewModel
+import fr.cassettelabs.cassette.presentation.artistDetail.ArtistDetailViewModel
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
 import fr.cassettelabs.cassette.presentation.home.HomeViewModel
 import fr.cassettelabs.cassette.presentation.main.MainViewModel
@@ -27,6 +28,7 @@ val presentationModule =
         viewModelOf(::MainViewModel)
         viewModelOf(::SettingsViewModel)
         viewModelOf(::AlbumDetailViewModel)
+        viewModelOf(::ArtistDetailViewModel)
         viewModelOf(::NowPlayingViewModel)
         viewModelOf(::AlbumListViewModel)
         viewModelOf(::PlaylistListViewModel)

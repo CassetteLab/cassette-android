@@ -1,6 +1,7 @@
 package fr.cassettelabs.cassette.data.remote.dto
 
 import fr.cassettelabs.cassette.domain.models.Album
+import fr.cassettelabs.cassette.domain.models.Artist
 import fr.cassettelabs.cassette.domain.models.Track
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,6 +18,7 @@ internal data class AlbumListSubsonicResponseDto(
     val albumList2: AlbumListDto? = null,
     val starred2: StarredDto? = null,
     val album: AlbumDto? = null,
+    val artist: ArtistDto? = null,
 )
 
 @Serializable
@@ -35,6 +37,7 @@ internal data class AlbumDto(
     val id: String,
     val name: String,
     val artist: String? = null,
+    val artistId: String? = null,
     val coverArt: String? = null,
     val created: String? = null,
     val starred: String? = null,
@@ -45,6 +48,7 @@ internal data class AlbumDto(
             id = id,
             name = name,
             artist = artist?.takeIf { it.isNotBlank() },
+            artistId = artistId?.takeIf { it.isNotBlank() },
             coverArt = coverArt?.takeIf { it.isNotBlank() },
             coverArtFilePath = null,
             created = created?.takeIf { it.isNotBlank() },
@@ -59,6 +63,7 @@ internal data class SongDto(
     val id: String,
     val title: String,
     val artist: String? = null,
+    val artistId: String? = null,
     val albumId: String? = null,
     val album: String? = null,
     val coverArt: String? = null,
@@ -71,6 +76,7 @@ internal data class SongDto(
             id = id,
             title = title,
             artist = artist?.takeIf { it.isNotBlank() },
+            artistId = artistId?.takeIf { it.isNotBlank() },
             trackNumber = track,
             durationSeconds = duration,
             albumId = albumId?.takeIf { it.isNotBlank() },
@@ -78,4 +84,24 @@ internal data class SongDto(
             coverArt = coverArt?.takeIf { it.isNotBlank() },
             starredAt = starred?.takeIf { it.isNotBlank() },
         )
+}
+
+@Serializable
+internal data class ArtistDto(
+    val id: String,
+    val name: String,
+    val albumCount: Int = 0,
+    val coverArt: String? = null,
+    val album: List<AlbumDto> = emptyList(),
+) {
+    fun toDomain(): Artist =
+        Artist(
+            id = id,
+            name = name,
+            albumCount = albumCount,
+            coverArt = coverArt?.takeIf { it.isNotBlank() },
+            coverArtFilePath = null,
+        )
+
+    fun albumsToDomain(): List<Album> = album.map { it.toDomain().copy(artistId = id, artist = name) }
 }

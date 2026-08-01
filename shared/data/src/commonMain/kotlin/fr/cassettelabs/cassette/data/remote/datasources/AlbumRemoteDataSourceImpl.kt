@@ -7,6 +7,7 @@ import fr.cassettelabs.cassette.data.remote.dto.AlbumListResponseDto
 import fr.cassettelabs.cassette.data.remote.ktor.sha256
 import fr.cassettelabs.cassette.domain.models.Album
 import fr.cassettelabs.cassette.domain.models.AlbumCoverArt
+import fr.cassettelabs.cassette.domain.models.Artist
 import fr.cassettelabs.cassette.domain.models.StarredLibrary
 import fr.cassettelabs.cassette.domain.models.Track
 import io.ktor.client.HttpClient
@@ -87,6 +88,36 @@ internal class AlbumRemoteDataSourceImpl(
     }
 
     suspend fun getAlbumTracks(albumId: String): List<Track> = getAlbumDto(albumId).tracksToDomain()
+
+    suspend fun getArtistWithAlbums(artistId: String): Pair<Artist, List<Album>> {
+        val artist = getArtistDto(artistId)
+        return artist.toDomain() to artist.albumsToDomain()
+    }
+
+    private suspend fun getArtistDto(artistId: String) =
+        getArtistResponse(artistId).subsonicResponse.artist
+            ?: throw IllegalStateException("Subsonic getArtist returned no artist")
+
+    private suspend fun getArtistResponse(artistId: String): AlbumListResponseDto {
+        val configuration =
+            serverConfigurationDao.getServerConfiguration()
+                ?: throw IllegalStateException("No server configuration found")
+        val server = configuration.serverConfiguration
+
+        val response =
+            httpClient
+                .get("${server.serverUrl.trimEnd('/')}/rest/getArtist.view") {
+                    parameter("id", artistId)
+                    parameter("f", "json")
+                }.body<AlbumListResponseDto>()
+
+        val subsonicResponse = response.subsonicResponse
+        if (subsonicResponse.status != "ok") {
+            throw IllegalStateException("Subsonic getArtist failed")
+        }
+
+        return response
+    }
 
     private suspend fun getAlbumDto(albumId: String) =
         getAlbumResponse(albumId).subsonicResponse.album
