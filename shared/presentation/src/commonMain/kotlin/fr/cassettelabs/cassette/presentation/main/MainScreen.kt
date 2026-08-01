@@ -1,5 +1,9 @@
 package fr.cassettelabs.cassette.presentation.main
 
+import cassette.shared.presentation.generated.resources.Res
+import cassette.shared.presentation.generated.resources.home_artists_title
+import cassette.shared.presentation.generated.resources.home_downloads_title
+import cassette.shared.presentation.generated.resources.home_tracks_title
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,6 +59,8 @@ import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConf
 import fr.cassettelabs.cassette.presentation.home.HomeEvent
 import fr.cassettelabs.cassette.presentation.home.HomeScreen
 import fr.cassettelabs.cassette.presentation.home.HomeViewModel
+import fr.cassettelabs.cassette.presentation.libraryPlaceholder.LibraryPlaceholderEvent
+import fr.cassettelabs.cassette.presentation.libraryPlaceholder.LibraryPlaceholderScreen
 import fr.cassettelabs.cassette.presentation.main.core.MainTab
 import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingEvent
 import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingScreen
@@ -122,7 +128,10 @@ internal fun MainScreen() {
             currentDestination?.hasRoute<Screens.PlaylistDetail>() != true &&
             currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true &&
             currentDestination?.hasRoute<Screens.NowPlaying>() != true &&
-            currentDestination?.hasRoute<Screens.PlaybackQueue>() != true
+            currentDestination?.hasRoute<Screens.PlaybackQueue>() != true &&
+            currentDestination?.hasRoute<Screens.ArtistList>() != true &&
+            currentDestination?.hasRoute<Screens.TrackList>() != true &&
+            currentDestination?.hasRoute<Screens.Downloads>() != true
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -196,15 +205,104 @@ internal fun MainScreen() {
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
+                                    HomeEvent.OnArtistsClicked -> {
+                                        navController.navigate(Screens.ArtistList) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    HomeEvent.OnAlbumsClicked -> {
+                                        selectedDestination = MainTab.AlbumList
+                                        navController.navigate(Screens.AlbumList) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
                                     is HomeEvent.OnAlbumClicked -> {
                                         navController.navigate(Screens.AlbumDetail(albumId = event.albumId)) {
                                             launchSingleTop = true
                                         }
                                     }
 
-                                    else -> Unit
+                                    is HomeEvent.OnAlbumCoverArtAppeared -> Unit
+
+                                    HomeEvent.OnTracksClicked -> {
+                                        navController.navigate(Screens.TrackList) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    HomeEvent.OnPlaylistsClicked -> {
+                                        selectedDestination = MainTab.PlaylistList
+                                        navController.navigate(Screens.PlaylistList) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    is HomeEvent.OnPlaylistClicked -> {
+                                        navController.navigate(Screens.PlaylistDetail(playlistId = event.playlistId)) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    is HomeEvent.OnPlaylistCoverArtAppeared -> Unit
+
+                                    HomeEvent.OnStarredClicked -> {
+                                        selectedDestination = MainTab.Starred
+                                        navController.navigate(Screens.Starred) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    HomeEvent.OnDownloadsClicked -> {
+                                        navController.navigate(Screens.Downloads) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                    HomeEvent.OnQueueClicked -> {
+                                        navController.navigate(Screens.PlaybackQueue) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                 }
                                 viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.ArtistList> {
+                        LibraryPlaceholderScreen(
+                            title = Res.string.home_artists_title,
+                            contentPadding = subScreenContentPadding,
+                            onEvent = { event ->
+                                when (event) {
+                                    LibraryPlaceholderEvent.OnBackClicked -> navController.navigateUp()
+                                }
+                            },
+                        )
+                    }
+
+                    composable<Screens.TrackList> {
+                        LibraryPlaceholderScreen(
+                            title = Res.string.home_tracks_title,
+                            contentPadding = subScreenContentPadding,
+                            onEvent = { event ->
+                                when (event) {
+                                    LibraryPlaceholderEvent.OnBackClicked -> navController.navigateUp()
+                                }
+                            },
+                        )
+                    }
+
+                    composable<Screens.Downloads> {
+                        LibraryPlaceholderScreen(
+                            title = Res.string.home_downloads_title,
+                            contentPadding = subScreenContentPadding,
+                            onEvent = { event ->
+                                when (event) {
+                                    LibraryPlaceholderEvent.OnBackClicked -> navController.navigateUp()
+                                }
                             },
                         )
                     }
