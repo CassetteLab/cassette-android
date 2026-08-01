@@ -24,7 +24,6 @@ internal data class PlaylistEntity(
     val name: String,
     val trackCount: Int = 0,
     val coverArt: String? = null,
-    val coverArtFilePath: String? = null,
     val created: String? = null,
     val seedColor: Int? = null,
 )

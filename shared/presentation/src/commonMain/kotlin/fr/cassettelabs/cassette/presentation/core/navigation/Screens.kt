@@ -32,14 +32,28 @@ sealed interface Screens {
     data object AlbumList : Screens
 
     @Serializable
+    data object ArtistList : Screens
+
+    @Serializable
+    data object TrackList : Screens
+
+    @Serializable
     data object PlaylistList : Screens
 
     @Serializable
     data object Starred : Screens
 
     @Serializable
+    data object Downloads : Screens
+
+    @Serializable
     data class AlbumDetail(
         val albumId: String,
+    ) : Screens
+
+    @Serializable
+    data class ArtistDetail(
+        val artistId: String,
     ) : Screens
 
     @Serializable

@@ -19,6 +19,10 @@ internal sealed interface NowPlayingEvent : Event {
 
     data object OnQueueClicked : NowPlayingEvent
 
+    data class OnArtistClicked(
+        val artistId: String,
+    ) : NowPlayingEvent
+
     data class OnSeekChanged(
         val progress: Float,
     ) : NowPlayingEvent
