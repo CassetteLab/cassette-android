@@ -136,6 +136,14 @@
     <string name="settings_title">Settings</string>
     <string name="settings_version_code_title">Version code</string>
     <string name="settings_version_name_title">Version</string>
+    <string name="settings_application_information_title">Application information</string>
+    <string name="settings_application_information_subtitle">View all application information</string>
+    <string name="settings_configuration_title">Configuration</string>
+    <string name="settings_configuration_subtitle">Edit or delete your server configuration</string>
+    <string name="settings_local_storage_title">Local storage</string>
+    <string name="settings_local_storage_subtitle">View and clear application cache</string>
+    <string name="settings_logs_title">Logs</string>
+    <string name="settings_logs_subtitle">View logs files</string>
 
     <!-- Server Configuration Settings -->
     <string name="server_configuration_settings_title">Server configuration</string>

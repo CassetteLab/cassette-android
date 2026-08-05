@@ -56,6 +56,7 @@ import fr.cassettelabs.cassette.presentation.core.NowPlayingSnack
 import fr.cassettelabs.cassette.presentation.core.navigation.Screens
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
+import fr.cassettelabs.cassette.presentation.core.theme.CassetteBackgroundPrimary
 import fr.cassettelabs.cassette.presentation.home.HomeEvent
 import fr.cassettelabs.cassette.presentation.home.HomeScreen
 import fr.cassettelabs.cassette.presentation.home.HomeViewModel
@@ -141,6 +142,7 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                 AnimatedVisibility(visible = showBottomBar) {
                     BottomAppBar(
                         windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
+                        containerColor = CassetteBackgroundPrimary
                     ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             MainTab.entries.forEach { tab ->
