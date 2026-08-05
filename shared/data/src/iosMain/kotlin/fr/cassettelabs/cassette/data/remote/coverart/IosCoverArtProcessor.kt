@@ -19,6 +19,7 @@ class IosCoverArtProcessor : CoverArtProcessor {
     }
 
     override suspend fun saveCoverArt(bytes: ByteArray, cacheKey: String): String {
+        NSFileManager.defaultManager.createDirectoryAtPath(cacheDir, true, null, null)
         val filePath = "$cacheDir/${cacheKey}.img"
         if (NSFileManager.defaultManager.fileExistsAtPath(filePath)) {
             return filePath
@@ -35,4 +36,8 @@ class IosCoverArtProcessor : CoverArtProcessor {
     override fun extractSeedColor(filePath: String): Int? = null
 
     override fun fileExists(filePath: String): Boolean = NSFileManager.defaultManager.fileExistsAtPath(filePath)
+
+    override fun clearCache() {
+        NSFileManager.defaultManager.removeItemAtPath(cacheDir, null)
+    }
 }

@@ -130,8 +130,8 @@
     <string name="settings_build_type_debug">Debug</string>
     <string name="settings_build_type_release">Release</string>
     <string name="settings_build_type_title">Build type</string>
-    <string name="settings_server_configuration_description">Update your Subsonic URL, credentials, and custom headers.</string>
-    <string name="settings_server_configuration_title">Server configuration</string>
+    <string name="settings_logout_description">Remove this server configuration and local app data.</string>
+    <string name="settings_logout_title">Log out</string>
     <string name="settings_server_section_title">Server</string>
     <string name="settings_title">Settings</string>
     <string name="settings_version_code_title">Version code</string>

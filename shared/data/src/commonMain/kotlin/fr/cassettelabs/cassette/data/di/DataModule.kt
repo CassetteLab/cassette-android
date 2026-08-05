@@ -8,6 +8,7 @@ import fr.cassettelabs.cassette.data.local.dao.AlbumDao
 import fr.cassettelabs.cassette.data.local.dao.AlbumTrackDao
 import fr.cassettelabs.cassette.data.local.dao.ArtistDao
 import fr.cassettelabs.cassette.data.local.dao.CoverArtDao
+import fr.cassettelabs.cassette.data.local.dao.LocalDataDao
 import fr.cassettelabs.cassette.data.local.dao.PlaybackQueueDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistDao
 import fr.cassettelabs.cassette.data.local.dao.PlaylistTrackDao
@@ -48,6 +49,7 @@ val dataModule =
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
         }
+        single<LocalDataDao> { get<CassetteDatabase>().localDataDao() }
         single<ServerConfigurationDao> { get<CassetteDatabase>().serverConfigurationDao() }
         single<AlbumDao> { get<CassetteDatabase>().albumDao() }
         single<AlbumTrackDao> { get<CassetteDatabase>().albumTrackDao() }

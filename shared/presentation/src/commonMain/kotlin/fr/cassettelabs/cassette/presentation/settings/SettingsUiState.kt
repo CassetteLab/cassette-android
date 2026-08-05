@@ -6,4 +6,6 @@ internal data class SettingsUiState(
     val versionName: String = "",
     val versionCode: String = "",
     val isDebugBuild: Boolean = false,
+    val isLoggingOut: Boolean = false,
+    val isLoggedOut: Boolean = false,
 ) : UiState

@@ -89,7 +89,7 @@ import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MainScreen() {
+internal fun MainScreen(onLoggedOut: () -> Unit) {
     val viewModel: MainViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val startDestination = MainTab.Home
@@ -373,17 +373,18 @@ internal fun MainScreen() {
                     composable<Screens.Settings> {
                         val viewModel: SettingsViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.isLoggedOut) {
+                            if (uiState.isLoggedOut) {
+                                onLoggedOut()
+                            }
+                        }
+
                         SettingsScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
-                                    SettingsEvent.OnServerConfigurationClicked -> {
-                                        navController.navigate(Screens.SettingsServerConfiguration) {
-                                            launchSingleTop = true
-                                        }
-                                    }
-
                                     else -> Unit
                                 }
 

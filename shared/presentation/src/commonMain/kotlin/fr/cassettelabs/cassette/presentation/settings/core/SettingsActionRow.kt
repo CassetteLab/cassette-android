@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
@@ -25,10 +26,14 @@ internal fun SettingsActionRow(
     title: String,
     description: String,
     leadingIcon: ImageVector,
+    enabled: Boolean = true,
+    leadingIconTint: Color = MaterialTheme.colorScheme.primary,
+    showNavigationIndicator: Boolean = true,
     onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = RoundedCornerShape(10.dp),
@@ -45,7 +50,7 @@ internal fun SettingsActionRow(
                 imageVector = leadingIcon,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary,
+                tint = leadingIconTint,
             )
             Column(
                 modifier = Modifier.weight(1f),
@@ -62,12 +67,14 @@ internal fun SettingsActionRow(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Rounded.ChevronRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            if (showNavigationIndicator) {
+                Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Rounded.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }

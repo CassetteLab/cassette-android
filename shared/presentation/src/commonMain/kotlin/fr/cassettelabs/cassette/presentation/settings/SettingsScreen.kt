@@ -8,8 +8,8 @@ import cassette.shared.presentation.generated.resources.settings_app_build_type_
 import cassette.shared.presentation.generated.resources.settings_build_type_debug
 import cassette.shared.presentation.generated.resources.settings_build_type_release
 import cassette.shared.presentation.generated.resources.settings_server_section_title
-import cassette.shared.presentation.generated.resources.settings_server_configuration_title
-import cassette.shared.presentation.generated.resources.settings_server_configuration_description
+import cassette.shared.presentation.generated.resources.settings_logout_description
+import cassette.shared.presentation.generated.resources.settings_logout_title
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Storage
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -105,10 +105,13 @@ internal fun SettingsScreen(
             item {
                 SettingsSection(title = stringResource(Res.string.settings_server_section_title)) {
                     SettingsActionRow(
-                        title = stringResource(Res.string.settings_server_configuration_title),
-                        description = stringResource(Res.string.settings_server_configuration_description),
-                        leadingIcon = Icons.Rounded.Storage,
-                        onClick = { onEvent(SettingsEvent.OnServerConfigurationClicked) },
+                        title = stringResource(Res.string.settings_logout_title),
+                        description = stringResource(Res.string.settings_logout_description),
+                        leadingIcon = Icons.AutoMirrored.Rounded.Logout,
+                        enabled = !uiState.isLoggingOut,
+                        leadingIconTint = MaterialTheme.colorScheme.error,
+                        showNavigationIndicator = false,
+                        onClick = { onEvent(SettingsEvent.OnLogoutClicked) },
                     )
                 }
             }
