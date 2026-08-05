@@ -37,7 +37,7 @@ internal enum class SettingsDestinations(
     val iconShape: RoundedPolygon,
     val iconForegroundColor: Color,
     val iconBackgroundColor: Color,
-    val destination: Screens
+    val destination: Screens?
 ) {
     ApplicationInformation(
         title = Res.string.settings_application_information_title,
@@ -46,7 +46,7 @@ internal enum class SettingsDestinations(
         iconShape = MaterialShapes.PixelCircle,
         iconForegroundColor = ApplicationInformationForeground,
         iconBackgroundColor = ApplicationInformationBackground,
-        destination = Screens.PlaybackQueue
+        destination = Screens.SettingsApplicationInformation
     ),
     LocalStorage(
         title = Res.string.settings_local_storage_title,
@@ -55,7 +55,7 @@ internal enum class SettingsDestinations(
         iconShape = MaterialShapes.Cookie7Sided,
         iconForegroundColor = LocalStorageForeground,
         iconBackgroundColor = LocalStorageBackground,
-        destination = Screens.PlaybackQueue
+        destination = null
     ),
     Logs(
         title = Res.string.settings_logs_title,
@@ -64,7 +64,7 @@ internal enum class SettingsDestinations(
         iconShape = MaterialShapes.VerySunny,
         iconForegroundColor = LogsForeground,
         iconBackgroundColor = LogsBackground,
-        destination = Screens.PlaybackQueue
+        destination = null
     ),
     Configuration(
         title = Res.string.settings_configuration_title,
@@ -73,6 +73,6 @@ internal enum class SettingsDestinations(
         iconShape = MaterialShapes.Clover4Leaf,
         iconForegroundColor = ConfigurationForeground,
         iconBackgroundColor = ConfigurationBackground,
-        destination = Screens.PlaybackQueue
+        destination = Screens.SettingsConfiguration
     )
 }

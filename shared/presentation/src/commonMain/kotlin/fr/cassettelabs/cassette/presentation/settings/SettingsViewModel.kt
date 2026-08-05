@@ -38,6 +38,8 @@ internal class SettingsViewModel(
                     }
                 }
             }
+            SettingsEvent.OnBackClicked,
+            is SettingsEvent.OnDestinationClicked -> Unit
         }
     }
 }

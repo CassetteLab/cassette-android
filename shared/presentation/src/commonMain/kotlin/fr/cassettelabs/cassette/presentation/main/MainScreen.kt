@@ -75,6 +75,8 @@ import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewMo
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListEvent
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListScreen
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListViewModel
+import fr.cassettelabs.cassette.presentation.settings.ApplicationInformationScreen
+import fr.cassettelabs.cassette.presentation.settings.ConfigurationScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
@@ -389,6 +391,58 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
+                                    is SettingsEvent.OnDestinationClicked -> {
+                                        navController.navigate(event.destination) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+                                    else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsApplicationInformation> {
+                        val viewModel: SettingsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        ApplicationInformationScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    SettingsEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsConfiguration> {
+                        val viewModel: SettingsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.isLoggedOut) {
+                            if (uiState.isLoggedOut) {
+                                onLoggedOut()
+                            }
+                        }
+
+                        ConfigurationScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    SettingsEvent.OnBackClicked -> navController.navigateUp()
+                                    is SettingsEvent.OnDestinationClicked -> {
+                                        navController.navigate(event.destination) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                     else -> Unit
                                 }
 
