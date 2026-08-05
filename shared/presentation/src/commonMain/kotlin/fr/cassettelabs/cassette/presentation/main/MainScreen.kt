@@ -146,8 +146,10 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                     ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             MainTab.entries.forEach { tab ->
+                                val selected = tab == selectedDestination
+
                                 NavigationBarItem(
-                                    selected = tab == selectedDestination,
+                                    selected = selected,
                                     onClick = {
                                         if (selectedDestination == tab) return@NavigationBarItem
 
@@ -159,7 +161,7 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                                     },
                                     icon = {
                                         Icon(
-                                            imageVector = tab.iconRes,
+                                            imageVector = if (selected) tab.filledIconRes else tab.outlinedIconRes,
                                             contentDescription = stringResource(tab.labelRes),
                                         )
                                     },
