@@ -19,9 +19,16 @@ import cassette.shared.presentation.generated.resources.settings_local_storage_t
 import cassette.shared.presentation.generated.resources.settings_logs_subtitle
 import cassette.shared.presentation.generated.resources.settings_logs_title
 import fr.cassettelabs.cassette.presentation.core.navigation.Screens
-import fr.cassettelabs.cassette.presentation.core.theme.CassetteOnPrimary
-import fr.cassettelabs.cassette.presentation.core.theme.CassettePrimaryLight
 import org.jetbrains.compose.resources.StringResource
+
+private val ApplicationInformationForeground = Color(0xFF5B21B6)
+private val ApplicationInformationBackground = Color(0xFFEDE9FE)
+private val LocalStorageForeground = Color(0xFF0369A1)
+private val LocalStorageBackground = Color(0xFFE0F2FE)
+private val LogsForeground = Color(0xFFB45309)
+private val LogsBackground = Color(0xFFFEF3C7)
+private val ConfigurationForeground = Color(0xFF047857)
+private val ConfigurationBackground = Color(0xFFD1FAE5)
 
 internal enum class SettingsDestinations(
     val title: StringResource,
@@ -37,8 +44,8 @@ internal enum class SettingsDestinations(
         subTitle = Res.string.settings_application_information_subtitle,
         icon = Icons.Rounded.Info,
         iconShape = MaterialShapes.PixelCircle,
-        iconForegroundColor = CassetteOnPrimary,
-        iconBackgroundColor = CassettePrimaryLight,
+        iconForegroundColor = ApplicationInformationForeground,
+        iconBackgroundColor = ApplicationInformationBackground,
         destination = Screens.PlaybackQueue
     ),
     LocalStorage(
@@ -46,8 +53,8 @@ internal enum class SettingsDestinations(
         subTitle = Res.string.settings_local_storage_subtitle,
         icon = Icons.Rounded.Storage,
         iconShape = MaterialShapes.Cookie7Sided,
-        iconForegroundColor = CassetteOnPrimary,
-        iconBackgroundColor = CassettePrimaryLight,
+        iconForegroundColor = LocalStorageForeground,
+        iconBackgroundColor = LocalStorageBackground,
         destination = Screens.PlaybackQueue
     ),
     Logs(
@@ -55,8 +62,8 @@ internal enum class SettingsDestinations(
         subTitle = Res.string.settings_logs_subtitle,
         icon = Icons.Rounded.Filter,
         iconShape = MaterialShapes.VerySunny,
-        iconForegroundColor = CassetteOnPrimary,
-        iconBackgroundColor = CassettePrimaryLight,
+        iconForegroundColor = LogsForeground,
+        iconBackgroundColor = LogsBackground,
         destination = Screens.PlaybackQueue
     ),
     Configuration(
@@ -64,8 +71,8 @@ internal enum class SettingsDestinations(
         subTitle = Res.string.settings_configuration_subtitle,
         icon = Icons.Rounded.ImageAspectRatio,
         iconShape = MaterialShapes.Clover4Leaf,
-        iconForegroundColor = Color.White,
-        iconBackgroundColor = Color.Gray,
+        iconForegroundColor = ConfigurationForeground,
+        iconBackgroundColor = ConfigurationBackground,
         destination = Screens.PlaybackQueue
     )
 }
