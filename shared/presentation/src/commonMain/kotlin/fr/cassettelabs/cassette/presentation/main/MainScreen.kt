@@ -26,7 +26,6 @@ import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,7 +55,8 @@ import fr.cassettelabs.cassette.presentation.core.NowPlayingSnack
 import fr.cassettelabs.cassette.presentation.core.navigation.Screens
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
-import fr.cassettelabs.cassette.presentation.core.theme.CassetteBackgroundPrimary
+import fr.cassettelabs.cassette.presentation.core.theme.CassetteBottomBar
+import fr.cassettelabs.cassette.presentation.core.theme.CassetteBottomBarContent
 import fr.cassettelabs.cassette.presentation.home.HomeEvent
 import fr.cassettelabs.cassette.presentation.home.HomeScreen
 import fr.cassettelabs.cassette.presentation.home.HomeViewModel
@@ -144,7 +144,8 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                 AnimatedVisibility(visible = showBottomBar) {
                     BottomAppBar(
                         windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
-                        containerColor = CassetteBackgroundPrimary
+                        containerColor = CassetteBottomBar,
+                        contentColor = CassetteBottomBarContent
                     ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             MainTab.entries.forEach { tab ->
@@ -535,6 +536,7 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                         }
 
                         SettingsServerConfigurationScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {

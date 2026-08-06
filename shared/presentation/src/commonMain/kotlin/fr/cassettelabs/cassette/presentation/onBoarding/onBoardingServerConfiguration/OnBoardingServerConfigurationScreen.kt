@@ -6,11 +6,13 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import cassette.shared.presentation.generated.resources.Res
 import cassette.shared.presentation.generated.resources.server_configuration_title
@@ -27,19 +29,21 @@ internal fun OnBoardingServerConfigurationScreen(
     uiState: ServerConfigurationUiState,
     onEvent: (ServerConfigurationEvent) -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).imePadding(),
+        modifier = Modifier.imePadding(),
         topBar = {
-            LargeTopAppBar(
-                scrollBehavior = scrollBehavior,
+            TopAppBar(
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         titleContentColor = MaterialTheme.colorScheme.onBackground,
                     ),
-                title = { Text(text = stringResource(Res.string.server_configuration_title)) },
+                title = {
+                    Text(
+                        text = stringResource(Res.string.server_configuration_title),
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                },
             )
         },
         bottomBar = {

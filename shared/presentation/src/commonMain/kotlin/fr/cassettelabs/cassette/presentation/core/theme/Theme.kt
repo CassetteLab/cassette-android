@@ -14,7 +14,7 @@ private val LightColorScheme =
         background = CassetteBackgroundLight,
         onBackground = CassetteOnBackgroundLight, // Default text color
 
-        surface = CassetteSurfaceLight,
+        surfaceContainer = CassetteSurfaceLight,
 
 
         primaryContainer = CassetteLightAccentContainer,
@@ -23,7 +23,6 @@ private val LightColorScheme =
         tertiary = CassetteLightTextTertiary,
         onSurface = CassetteOnBackgroundLight,
         onSurfaceVariant = CassetteLightTextSecondary,
-        surfaceContainer = CassetteLightBackgroundSecondary,
         surfaceContainerHighest = CassetteLightBackgroundTertiary,
         outline = CassetteLightOutline,
         outlineVariant = CassetteLightSeparator,

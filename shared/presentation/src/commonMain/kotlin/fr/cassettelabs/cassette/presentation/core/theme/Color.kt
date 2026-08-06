@@ -11,7 +11,8 @@ val CassetteOnBackgroundLight = Color(0xFF1A1520)
 
 val CassetteSurfaceLight = Color(0xFFE4E4E7)
 
-
+val CassetteBottomBar = Color(0xFF191529)
+val CassetteBottomBarContent = Color(0xFFEDE8FF)
 val CassetteBackgroundPrimary = Color(0xFF0F0D1A)
 val CassetteBackgroundSecondary = Color(0xFF1A1728)
 val CassetteBackgroundTertiary = Color(0xFF231F35)
@@ -24,7 +25,6 @@ val CassetteTextTertiary = Color(0xFF5E5080)
 val CassetteSeparator = Color(0x268060F7)
 val CassetteOutline = Color(0x388060F7)
 
-val CassetteLightBackgroundSecondary = Color(0xFFEDEAFF)
 val CassetteLightBackgroundTertiary = Color(0xFFFFFFFF)
 val CassetteLightAccentContainer = Color(0xFFEDE9FE)
 val CassetteLightAccentForeground = Color(0xFF4C28D4)
