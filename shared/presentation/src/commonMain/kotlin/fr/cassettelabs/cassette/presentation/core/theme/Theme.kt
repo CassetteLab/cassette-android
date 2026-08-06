@@ -6,10 +6,31 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
+private val LightColorScheme =
+    lightColorScheme(
+        primary = CassettePrimaryLight,
+        onPrimary = CassetteOnPrimary,
+
+        background = CassetteBackgroundLight,
+        onBackground = CassetteOnBackgroundLight, // Default text color
+
+        surfaceContainer = CassetteSurfaceLight,
+
+
+        primaryContainer = CassetteLightAccentContainer,
+        onPrimaryContainer = CassetteLightAccentForeground,
+        secondary = CassetteLightTextSecondary,
+        tertiary = CassetteLightTextTertiary,
+        onSurface = CassetteOnBackgroundLight,
+        onSurfaceVariant = CassetteLightTextSecondary,
+        surfaceContainerHighest = CassetteLightBackgroundTertiary,
+        outline = CassetteLightOutline,
+        outlineVariant = CassetteLightSeparator,
+    )
+
 private val DarkColorScheme =
     darkColorScheme(
         primary = CassetteAccent,
-        onPrimary = CassetteOnAccent,
         primaryContainer = CassetteAccentContainer,
         onPrimaryContainer = CassetteAccentForeground,
         secondary = CassetteTextSecondary,
@@ -24,26 +45,6 @@ private val DarkColorScheme =
         surfaceContainerHighest = CassetteBackgroundTertiary,
         outline = CassetteOutline,
         outlineVariant = CassetteSeparator,
-    )
-
-private val LightColorScheme =
-    lightColorScheme(
-        primary = CassetteLightAccent,
-        onPrimary = CassetteOnAccent,
-        primaryContainer = CassetteLightAccentContainer,
-        onPrimaryContainer = CassetteLightAccentForeground,
-        secondary = CassetteLightTextSecondary,
-        onSecondary = CassetteLightBackgroundPrimary,
-        tertiary = CassetteLightTextTertiary,
-        background = CassetteLightBackgroundPrimary,
-        onBackground = CassetteLightTextPrimary,
-        surface = CassetteLightBackgroundPrimary,
-        onSurface = CassetteLightTextPrimary,
-        onSurfaceVariant = CassetteLightTextSecondary,
-        surfaceContainer = CassetteLightBackgroundSecondary,
-        surfaceContainerHighest = CassetteLightBackgroundTertiary,
-        outline = CassetteLightOutline,
-        outlineVariant = CassetteLightSeparator,
     )
 
 @Composable

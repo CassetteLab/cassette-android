@@ -19,6 +19,7 @@ import fr.cassettelabs.cassette.domain.usecases.GetPlaylistUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetRecentlyAddedAlbumsUseCase
 import fr.cassettelabs.cassette.domain.usecases.configuration.GetServerConfigurationUseCase
 import fr.cassettelabs.cassette.domain.usecases.configuration.HasServerConfigurationUseCase
+import fr.cassettelabs.cassette.domain.usecases.configuration.LogoutUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PausePlaybackUseCase
 import fr.cassettelabs.cassette.domain.usecases.configuration.PingServerUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayCurrentTrackUseCase
@@ -44,6 +45,7 @@ val domainModule =
         singleOf(::GetServerConfigurationUseCase)
         singleOf(::SaveServerConfigurationUseCase)
         singleOf(::HasServerConfigurationUseCase)
+        singleOf(::LogoutUseCase)
 
         // Albums
         singleOf(::GetAlbumUseCase)

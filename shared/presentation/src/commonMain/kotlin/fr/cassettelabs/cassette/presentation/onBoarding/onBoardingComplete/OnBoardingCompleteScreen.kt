@@ -1,12 +1,15 @@
 package fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
@@ -17,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +44,7 @@ internal fun OnBoardingCompleteScreen(
     uiState: OnBoardingCompleteUiState,
     onEvent: (OnBoardingCompleteEvent) -> Unit,
 ) {
-    val checkContentDescription = stringResource(Res.string.on_boarding_complete_success_content_description)
+    val hapticFeedback = LocalHapticFeedback.current
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -50,7 +55,10 @@ internal fun OnBoardingCompleteScreen(
             ) {
                 PrimaryButton(
                     isLoading = uiState.isLoading,
-                    onClick = { onEvent(OnBoardingCompleteEvent.OnStartListeningClicked) },
+                    onClick = {
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                        onEvent(OnBoardingCompleteEvent.OnStartListeningClicked)
+                    },
                     text = stringResource(Res.string.on_boarding_complete_start_listening),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -58,13 +66,14 @@ internal fun OnBoardingCompleteScreen(
         },
     ) { contentPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(contentPadding).padding(horizontal = 32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding.plus(PaddingValues(horizontal = 32.dp))),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-
             Surface(
-                modifier = Modifier.size(80.dp).semantics { contentDescription = checkContentDescription },
+                modifier = Modifier.size(80.dp),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -76,21 +85,22 @@ internal fun OnBoardingCompleteScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 Text(
                     text = stringResource(Res.string.on_boarding_complete_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.headlineLarge,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(Res.string.on_boarding_complete_subtitle),
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(Res.string.on_boarding_complete_settings_hint),
                     color = MaterialTheme.colorScheme.tertiary,
@@ -98,8 +108,6 @@ internal fun OnBoardingCompleteScreen(
                     textAlign = TextAlign.Center,
                 )
             }
-
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

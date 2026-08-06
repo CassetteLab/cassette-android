@@ -1,10 +1,12 @@
 package fr.cassettelabs.cassette.data.repositories
 
 import fr.cassettelabs.cassette.core.helpers.CipherHelper
+import fr.cassettelabs.cassette.data.local.dao.LocalDataDao
 import fr.cassettelabs.cassette.data.local.dao.ServerConfigurationDao
 import fr.cassettelabs.cassette.data.local.embeddeds.ServerConfigurationWithCustomHeaders
 import fr.cassettelabs.cassette.data.local.entities.ServerConfigurationCustomHeaderEntity
 import fr.cassettelabs.cassette.data.local.entities.ServerConfigurationEntity
+import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.dto.PingResponseDto
 import fr.cassettelabs.cassette.data.remote.ktor.currentTimeMillis
 import fr.cassettelabs.cassette.data.remote.ktor.md5
@@ -18,9 +20,11 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 
 internal class ServerConfigurationRepositoryImpl(
+    private val localDataDao: LocalDataDao,
     private val serverConfigurationDao: ServerConfigurationDao,
     private val cipherHelper: CipherHelper,
     private val httpClient: HttpClient,
+    private val coverArtProcessor: CoverArtProcessor,
 ) : ServerConfigurationRepository {
     override suspend fun pingServer(serverConfiguration: ServerConfiguration) {
         val salt = currentTimeMillis().toString(16)
@@ -66,6 +70,11 @@ internal class ServerConfigurationRepositoryImpl(
     }
 
     override suspend fun hasServerConfiguration(): Boolean = serverConfigurationDao.hasServerConfiguration()
+
+    override suspend fun logout() {
+        localDataDao.deleteAllLocalData()
+        coverArtProcessor.clearCache()
+    }
 
     private fun ServerConfigurationWithCustomHeaders.toDomain(): ServerConfiguration =
         ServerConfiguration(

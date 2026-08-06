@@ -90,7 +90,13 @@ fun CassetteNavigation(
         }
 
         composable<Screens.Main> {
-            MainScreen()
+            MainScreen(
+                onLoggedOut = {
+                    navController.navigate(Screens.OnBoardingScreens.OnBoardingScreensServerConfigurationScreen) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                },
+            )
         }
     }
 }

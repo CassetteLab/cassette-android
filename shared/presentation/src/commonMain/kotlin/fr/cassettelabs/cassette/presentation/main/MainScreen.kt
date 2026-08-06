@@ -26,7 +26,6 @@ import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +55,8 @@ import fr.cassettelabs.cassette.presentation.core.NowPlayingSnack
 import fr.cassettelabs.cassette.presentation.core.navigation.Screens
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationEvent
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationViewModel
+import fr.cassettelabs.cassette.presentation.core.theme.CassetteBottomBar
+import fr.cassettelabs.cassette.presentation.core.theme.CassetteBottomBarContent
 import fr.cassettelabs.cassette.presentation.home.HomeEvent
 import fr.cassettelabs.cassette.presentation.home.HomeScreen
 import fr.cassettelabs.cassette.presentation.home.HomeViewModel
@@ -74,6 +75,8 @@ import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewMo
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListEvent
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListScreen
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListViewModel
+import fr.cassettelabs.cassette.presentation.settings.ApplicationInformationScreen
+import fr.cassettelabs.cassette.presentation.settings.ConfigurationScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
@@ -89,7 +92,7 @@ import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MainScreen() {
+internal fun MainScreen(onLoggedOut: () -> Unit) {
     val viewModel: MainViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val startDestination = MainTab.Home
@@ -141,11 +144,15 @@ internal fun MainScreen() {
                 AnimatedVisibility(visible = showBottomBar) {
                     BottomAppBar(
                         windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
+                        containerColor = CassetteBottomBar,
+                        contentColor = CassetteBottomBarContent
                     ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             MainTab.entries.forEach { tab ->
+                                val selected = tab == selectedDestination
+
                                 NavigationBarItem(
-                                    selected = tab == selectedDestination,
+                                    selected = selected,
                                     onClick = {
                                         if (selectedDestination == tab) return@NavigationBarItem
 
@@ -157,7 +164,7 @@ internal fun MainScreen() {
                                     },
                                     icon = {
                                         Icon(
-                                            imageVector = tab.iconRes,
+                                            imageVector = if (selected) tab.filledIconRes else tab.outlinedIconRes,
                                             contentDescription = stringResource(tab.labelRes),
                                         )
                                     },
@@ -373,17 +380,70 @@ internal fun MainScreen() {
                     composable<Screens.Settings> {
                         val viewModel: SettingsViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.isLoggedOut) {
+                            if (uiState.isLoggedOut) {
+                                onLoggedOut()
+                            }
+                        }
+
                         SettingsScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
-                                    SettingsEvent.OnServerConfigurationClicked -> {
-                                        navController.navigate(Screens.SettingsServerConfiguration) {
+                                    is SettingsEvent.OnDestinationClicked -> {
+                                        navController.navigate(event.destination) {
                                             launchSingleTop = true
                                         }
                                     }
+                                    else -> Unit
+                                }
 
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsApplicationInformation> {
+                        val viewModel: SettingsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        ApplicationInformationScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    SettingsEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsConfiguration> {
+                        val viewModel: SettingsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.isLoggedOut) {
+                            if (uiState.isLoggedOut) {
+                                onLoggedOut()
+                            }
+                        }
+
+                        ConfigurationScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    SettingsEvent.OnBackClicked -> navController.navigateUp()
+                                    is SettingsEvent.OnDestinationClicked -> {
+                                        navController.navigate(event.destination) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                     else -> Unit
                                 }
 
@@ -476,6 +536,7 @@ internal fun MainScreen() {
                         }
 
                         SettingsServerConfigurationScreen(
+                            contentPadding = subScreenContentPadding,
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
