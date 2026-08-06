@@ -1,5 +1,6 @@
 package fr.cassettelabs.cassette.presentation.core
 
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -81,7 +82,8 @@ internal fun NowPlayingSnack(
                         modifier = Modifier.weight(1f),
                     ) {
                         Text(
-                            track,
+                            text = track,
+                            modifier = Modifier.basicMarquee(),
                             maxLines = 1,
                         )
                         Text(

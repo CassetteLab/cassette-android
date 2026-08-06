@@ -10,4 +10,6 @@ interface ServerConfigurationRepository {
     suspend fun saveServerConfiguration(serverConfiguration: ServerConfiguration)
 
     suspend fun hasServerConfiguration(): Boolean
+
+    suspend fun logout()
 }

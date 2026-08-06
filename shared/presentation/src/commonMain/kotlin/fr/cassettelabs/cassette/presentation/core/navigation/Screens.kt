@@ -26,6 +26,12 @@ sealed interface Screens {
     data object Settings : Screens
 
     @Serializable
+    data object SettingsApplicationInformation : Screens
+
+    @Serializable
+    data object SettingsConfiguration : Screens
+
+    @Serializable
     data object SettingsServerConfiguration : Screens
 
     @Serializable

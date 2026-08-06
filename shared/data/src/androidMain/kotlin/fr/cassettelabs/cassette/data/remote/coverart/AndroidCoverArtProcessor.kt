@@ -36,4 +36,10 @@ class AndroidCoverArtProcessor(private val cacheDir: File) : CoverArtProcessor {
     }
 
     override fun fileExists(filePath: String): Boolean = File(filePath).exists()
+
+    override fun clearCache() {
+        cacheDir
+            .listFiles { file -> file.extension == "img" || file.name.endsWith(".img.tmp") }
+            ?.forEach { it.delete() }
+    }
 }

@@ -6,4 +6,6 @@ interface CoverArtProcessor {
     fun extractSeedColor(filePath: String): Int?
 
     fun fileExists(filePath: String): Boolean
+
+    fun clearCache()
 }

@@ -33,6 +33,10 @@ class DesktopCoverArtProcessor : CoverArtProcessor {
 
     override fun fileExists(filePath: String): Boolean = File(filePath).exists()
 
+    override fun clearCache() {
+        File(System.getProperty("user.home"), ".cassette/cover_art").deleteRecursively()
+    }
+
     private fun getDominantColor(image: BufferedImage): Int {
         val colorCounts = mutableMapOf<Int, Int>()
         val stepX = maxOf(1, image.width / 10)

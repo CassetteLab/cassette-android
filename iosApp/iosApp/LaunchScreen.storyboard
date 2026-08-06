@@ -14,54 +14,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cassette-border">
-                                <rect key="frame" x="130.5" y="380" width="132" height="92"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cassette-body">
-                                        <rect key="frame" x="2" y="2" width="128" height="88"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="left-reel">
-                                                <rect key="frame" x="22" y="30" width="28" height="28"/>
-                                                <color key="backgroundColor" red="0.062745098039215685" green="0.062745098039215685" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="28" id="left-reel-width"/>
-                                                    <constraint firstAttribute="height" constant="28" id="left-reel-height"/>
-                                                </constraints>
-                                            </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="right-reel">
-                                                <rect key="frame" x="78" y="30" width="28" height="28"/>
-                                                <color key="backgroundColor" red="0.062745098039215685" green="0.062745098039215685" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="28" id="right-reel-width"/>
-                                                    <constraint firstAttribute="height" constant="28" id="right-reel-height"/>
-                                                </constraints>
-                                            </view>
-                                        </subviews>
-                                        <color key="backgroundColor" red="0.14901960784313725" green="0.14117647058823529" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="128" id="cassette-body-width"/>
-                                            <constraint firstAttribute="height" constant="88" id="cassette-body-height"/>
-                                            <constraint firstItem="left-reel" firstAttribute="centerY" secondItem="cassette-body" secondAttribute="centerY" id="left-reel-center-y"/>
-                                            <constraint firstItem="left-reel" firstAttribute="leading" secondItem="cassette-body" secondAttribute="leading" constant="22" id="left-reel-leading"/>
-                                            <constraint firstItem="right-reel" firstAttribute="centerY" secondItem="cassette-body" secondAttribute="centerY" id="right-reel-center-y"/>
-                                            <constraint firstItem="right-reel" firstAttribute="trailing" secondItem="cassette-body" secondAttribute="trailing" constant="-22" id="right-reel-trailing"/>
-                                        </constraints>
-                                    </view>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="0.69411764705882351" blue="0.36078431372549019" alpha="1" colorSpace="calibratedRGB"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CassetteIcon" translatesAutoresizingMaskIntoConstraints="NO" id="cassette-icon">
+                                <rect key="frame" x="106.5" y="336" width="180" height="180"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="132" id="cassette-border-width"/>
-                                    <constraint firstAttribute="height" constant="92" id="cassette-border-height"/>
-                                    <constraint firstItem="cassette-body" firstAttribute="centerX" secondItem="cassette-border" secondAttribute="centerX" id="cassette-body-center-x"/>
-                                    <constraint firstItem="cassette-body" firstAttribute="centerY" secondItem="cassette-border" secondAttribute="centerY" id="cassette-body-center-y"/>
+                                    <constraint firstAttribute="width" constant="180" id="cassette-icon-width"/>
+                                    <constraint firstAttribute="height" constant="180" id="cassette-icon-height"/>
                                 </constraints>
-                            </view>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="safe-area"/>
                         <color key="backgroundColor" red="0.062745098039215685" green="0.062745098039215685" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="cassette-border" firstAttribute="centerX" secondItem="launch-root-view" secondAttribute="centerX" id="cassette-center-x"/>
-                            <constraint firstItem="cassette-border" firstAttribute="centerY" secondItem="launch-root-view" secondAttribute="centerY" id="cassette-center-y"/>
+                            <constraint firstItem="cassette-icon" firstAttribute="centerX" secondItem="launch-root-view" secondAttribute="centerX" id="cassette-icon-center-x"/>
+                            <constraint firstItem="cassette-icon" firstAttribute="centerY" secondItem="launch-root-view" secondAttribute="centerY" id="cassette-icon-center-y"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -69,4 +34,7 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="CassetteIcon" width="1024" height="1024"/>
+    </resources>
 </document>
