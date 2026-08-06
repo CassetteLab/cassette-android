@@ -17,6 +17,7 @@ import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -71,7 +73,7 @@ import fr.cassettelabs.cassette.presentation.core.AlbumCoverArt
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.nowPlaying.core.PlayerControlButton
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun NowPlayingScreen(
     uiState: NowPlayingUiState,
@@ -195,11 +197,12 @@ internal fun NowPlayingScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
+                                modifier = Modifier.basicMarquee(),
                                 text = uiState.title.ifBlank { stringResource(Res.string.now_playing_unknown_title) },
                                 color = playerContent,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                                overflow = TextOverflow.Clip,
                                 style = MaterialTheme.typography.headlineSmall,
                             )
                             Spacer(modifier = Modifier.height(3.dp))

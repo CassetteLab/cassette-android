@@ -96,7 +96,7 @@ internal fun PlaybackQueueCurrentTrackCard(
                         ?: stringResource(Res.string.playback_queue_unknown_title),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleLarge,
                 )
