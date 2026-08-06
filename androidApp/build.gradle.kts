@@ -31,7 +31,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 2
-        versionName = "2026.07.1"
+        versionName = "2026.08.1"
     }
     packaging {
         resources {
