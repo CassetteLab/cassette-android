@@ -182,6 +182,7 @@
     <string name="starred_tracks_section_title">Starred tracks</string>
 
     <!-- Playlist List -->
+    <string name="playlist_list_create_playlist">Create playlist</string>
     <string name="playlist_list_empty_description">Your playlists will appear here.</string>
     <string name="playlist_list_empty_title">No playlists yet</string>
     <string name="playlist_list_error_description">Check your server connection and try again.</string>
@@ -194,6 +195,10 @@
         <item quantity="one">%1$d track</item>
         <item quantity="other">%1$d tracks</item>
     </plurals>
+
+    <!-- Playlist Create -->
+    <string name="playlist_create_back">Back</string>
+    <string name="playlist_create_title">Create playlist</string>
 
     <!-- Playlist Detail -->
     <string name="playlist_detail_loading_message">Loading playlist</string>

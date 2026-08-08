@@ -50,6 +50,9 @@ sealed interface Screens {
     data object PlaylistList : Screens
 
     @Serializable
+    data object PlaylistCreate : Screens
+
+    @Serializable
     data object Starred : Screens
 
     @Serializable

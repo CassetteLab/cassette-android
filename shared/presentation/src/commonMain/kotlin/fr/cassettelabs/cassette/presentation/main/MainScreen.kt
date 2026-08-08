@@ -69,6 +69,8 @@ import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingViewModel
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueEvent
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueScreen
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueViewModel
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateEvent
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateScreen
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailEvent
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailScreen
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewModel
@@ -135,6 +137,7 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
             currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true &&
             currentDestination?.hasRoute<Screens.NowPlaying>() != true &&
             currentDestination?.hasRoute<Screens.PlaybackQueue>() != true &&
+            currentDestination?.hasRoute<Screens.PlaylistCreate>() != true &&
             currentDestination?.hasRoute<Screens.ArtistList>() != true &&
             currentDestination?.hasRoute<Screens.TrackList>() != true &&
             currentDestination?.hasRoute<Screens.Downloads>() != true
@@ -346,6 +349,12 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
+                                    PlaylistListEvent.OnCreatePlaylistClicked -> {
+                                        navController.navigate(Screens.PlaylistCreate) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
                                     is PlaylistListEvent.OnPlaylistClicked -> {
                                         navController.navigate(Screens.PlaylistDetail(playlistId = event.playlistId)) {
                                             launchSingleTop = true
@@ -355,6 +364,17 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                                     else -> Unit
                                 }
                                 viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.PlaylistCreate> {
+                        PlaylistCreateScreen(
+                            contentPadding = subScreenContentPadding,
+                            onEvent = { event ->
+                                when (event) {
+                                    PlaylistCreateEvent.OnBackClicked -> navController.navigateUp()
+                                }
                             },
                         )
                     }

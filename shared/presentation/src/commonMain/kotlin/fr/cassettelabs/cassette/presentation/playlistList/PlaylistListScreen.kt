@@ -1,11 +1,11 @@
 package fr.cassettelabs.cassette.presentation.playlistList
 
+import cassette.shared.presentation.generated.resources.Res
+import cassette.shared.presentation.generated.resources.playlist_list_create_playlist
+import cassette.shared.presentation.generated.resources.playlist_list_empty_description
+import cassette.shared.presentation.generated.resources.playlist_list_empty_title
 import cassette.shared.presentation.generated.resources.playlist_list_title
 import cassette.shared.presentation.generated.resources.playlist_list_loading_playlists
-import cassette.shared.presentation.generated.resources.playlist_list_empty_title
-import cassette.shared.presentation.generated.resources.playlist_list_empty_description
-import cassette.shared.presentation.generated.resources.Res
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,8 +19,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -74,6 +78,17 @@ internal fun PlaylistListScreen(
                     )
                 },
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                modifier = Modifier.padding(contentPadding),
+                onClick = { onEvent(PlaylistListEvent.OnCreatePlaylistClicked) },
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = stringResource(Res.string.playlist_list_create_playlist),
+                )
+            }
         },
     ) { innerPadding ->
         PullToRefreshBox(
