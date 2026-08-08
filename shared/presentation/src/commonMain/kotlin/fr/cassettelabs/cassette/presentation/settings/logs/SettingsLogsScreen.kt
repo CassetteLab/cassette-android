@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import cassette.shared.presentation.generated.resources.settings_logs_export_fai
 import cassette.shared.presentation.generated.resources.settings_logs_exporting
 import cassette.shared.presentation.generated.resources.settings_logs_loading
 import cassette.shared.presentation.generated.resources.settings_logs_title
+import fr.cassettelabs.cassette.presentation.core.PrimaryButton
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.settings.core.SettingsGenericItem
 import fr.cassettelabs.cassette.presentation.settings.core.SettingsItemGroup
@@ -42,7 +44,7 @@ internal fun SettingsLogsScreen(
     uiState: SettingsLogsUiState,
     onEvent: (SettingsLogsEvent) -> Unit,
 ) {
-    androidx.compose.runtime.LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
         onEvent(SettingsLogsEvent.OnAppearing)
     }
 
@@ -111,22 +113,13 @@ internal fun SettingsLogsScreen(
             }
 
             item {
-                Button(
+                PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !uiState.isLoading && !uiState.isExporting && uiState.logFiles.isNotEmpty(),
+                    isEnabled = !uiState.isLoading && !uiState.isExporting && uiState.logFiles.isNotEmpty(),
                     onClick = { onEvent(SettingsLogsEvent.OnExportLogDirectoryClicked) },
-                ) {
-                    Text(
-                        text =
-                            stringResource(
-                                if (uiState.isExporting) {
-                                    Res.string.settings_logs_exporting
-                                } else {
-                                    Res.string.settings_logs_export
-                                },
-                            ),
-                    )
-                }
+                    isLoading = uiState.isExporting,
+                    text = stringResource(Res.string.settings_logs_export),
+                )
             }
 
             if (uiState.exportFailed) {
