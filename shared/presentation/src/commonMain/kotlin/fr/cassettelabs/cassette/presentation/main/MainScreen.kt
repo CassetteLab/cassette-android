@@ -485,6 +485,7 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                             onEvent = { event ->
                                 when (event) {
                                     SettingsLogsEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
                                 }
 
                                 viewModel.onEvent(event)
