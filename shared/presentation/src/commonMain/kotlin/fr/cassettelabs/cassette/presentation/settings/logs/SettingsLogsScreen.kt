@@ -6,24 +6,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import fr.cassettelabs.cassette.presentation.core.CassetteTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import cassette.shared.presentation.generated.resources.Res
-import cassette.shared.presentation.generated.resources.settings_back
 import cassette.shared.presentation.generated.resources.settings_logs_empty_description
 import cassette.shared.presentation.generated.resources.settings_logs_empty_title
 import cassette.shared.presentation.generated.resources.settings_logs_export
@@ -37,7 +29,6 @@ import fr.cassettelabs.cassette.presentation.settings.core.SettingsGenericItem
 import fr.cassettelabs.cassette.presentation.settings.core.SettingsItemGroup
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsLogsScreen(
     contentPadding: PaddingValues = PaddingValues(),
@@ -52,26 +43,9 @@ internal fun SettingsLogsScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.settings_logs_title),
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onEvent(SettingsLogsEvent.OnBackClicked) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(Res.string.settings_back),
-                        )
-                    }
-                },
+            CassetteTopAppBar(
+                title = Res.string.settings_logs_title,
+                onBackClicked = { onEvent(SettingsLogsEvent.OnBackClicked) },
             )
         },
     ) { innerPadding ->

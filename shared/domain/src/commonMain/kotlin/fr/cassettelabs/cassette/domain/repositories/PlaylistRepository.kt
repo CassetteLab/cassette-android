@@ -19,4 +19,6 @@ interface PlaylistRepository {
         size: Int? = null,
         playlistId: String? = null,
     ): Flow<CoverArtLoadingStatus>
+
+    suspend fun createPlaylist(name: String): Playlist
 }

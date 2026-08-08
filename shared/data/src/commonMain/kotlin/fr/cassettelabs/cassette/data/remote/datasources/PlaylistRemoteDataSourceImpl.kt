@@ -47,6 +47,28 @@ internal class PlaylistRemoteDataSourceImpl(
         getPlaylistResponse(playlistId).subsonicResponse.playlist
             ?: throw IllegalStateException("Subsonic getPlaylist returned no playlist")
 
+    suspend fun createPlaylist(name: String): Playlist {
+        val configuration =
+            serverConfigurationDao.getServerConfiguration()
+                ?: throw IllegalStateException("No server configuration found")
+        val server = configuration.serverConfiguration
+
+        val response =
+            httpClient
+                .get("${server.serverUrl.trimEnd('/')}/rest/createPlaylist.view") {
+                    parameter("name", name)
+                    parameter("f", "json")
+                }.body<PlaylistListResponseDto>()
+
+        val subsonicResponse = response.subsonicResponse
+        if (subsonicResponse.status != "ok") {
+            throw IllegalStateException("Subsonic createPlaylist failed")
+        }
+
+        return subsonicResponse.playlist?.toDomain()
+            ?: throw IllegalStateException("Subsonic createPlaylist returned no playlist")
+    }
+
     private suspend fun getPlaylistResponse(playlistId: String): PlaylistListResponseDto {
         val configuration =
             serverConfigurationDao.getServerConfiguration()

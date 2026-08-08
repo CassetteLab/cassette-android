@@ -10,6 +10,7 @@ import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingCache.OnBoardingCacheViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingComplete.OnBoardingCompleteViewModel
 import fr.cassettelabs.cassette.presentation.onBoarding.onBoardingWelcome.OnBoardingWelcomeViewModel
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateViewModel
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewModel
 import fr.cassettelabs.cassette.presentation.playlistList.PlaylistListViewModel
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueViewModel
@@ -33,6 +34,7 @@ val presentationModule =
         viewModelOf(::ArtistDetailViewModel)
         viewModelOf(::NowPlayingViewModel)
         viewModelOf(::AlbumListViewModel)
+        viewModelOf(::PlaylistCreateViewModel)
         viewModelOf(::PlaylistListViewModel)
         viewModelOf(::PlaylistDetailViewModel)
         viewModelOf(::PlaybackQueueViewModel)

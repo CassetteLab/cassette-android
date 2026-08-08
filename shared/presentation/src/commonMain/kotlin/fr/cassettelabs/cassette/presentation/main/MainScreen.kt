@@ -71,6 +71,7 @@ import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueScreen
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueViewModel
 import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateEvent
 import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateScreen
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateViewModel
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailEvent
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailScreen
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewModel
@@ -369,12 +370,17 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                     }
 
                     composable<Screens.PlaylistCreate> {
+                        val viewModel: PlaylistCreateViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                         PlaylistCreateScreen(
                             contentPadding = subScreenContentPadding,
+                            uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
                                     PlaylistCreateEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
                                 }
+                                viewModel.onEvent(event)
                             },
                         )
                     }
