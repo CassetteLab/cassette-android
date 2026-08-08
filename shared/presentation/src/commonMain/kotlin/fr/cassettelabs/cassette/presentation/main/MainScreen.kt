@@ -80,6 +80,9 @@ import fr.cassettelabs.cassette.presentation.settings.ConfigurationScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
+import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsEvent
+import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsScreen
+import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsViewModel
 import fr.cassettelabs.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
 import fr.cassettelabs.cassette.presentation.starred.StarredEvent
 import fr.cassettelabs.cassette.presentation.starred.StarredScreen
@@ -445,6 +448,23 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                                         }
                                     }
                                     else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsLogs> {
+                        val viewModel: SettingsLogsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        SettingsLogsScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    SettingsLogsEvent.OnBackClicked -> navController.navigateUp()
                                 }
 
                                 viewModel.onEvent(event)

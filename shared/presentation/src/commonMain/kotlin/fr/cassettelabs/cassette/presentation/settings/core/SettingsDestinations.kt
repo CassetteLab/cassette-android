@@ -64,7 +64,7 @@ internal enum class SettingsDestinations(
         iconShape = MaterialShapes.VerySunny,
         iconForegroundColor = LogsForeground,
         iconBackgroundColor = LogsBackground,
-        destination = null
+        destination = Screens.SettingsLogs
     ),
     Configuration(
         title = Res.string.settings_configuration_title,

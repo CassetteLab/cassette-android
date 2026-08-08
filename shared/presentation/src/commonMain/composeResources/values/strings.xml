@@ -147,7 +147,9 @@
     <string name="settings_local_storage_title">Local storage</string>
     <string name="settings_logout_description">Remove this server configuration and local app data.</string>
     <string name="settings_logout_title">Log out</string>
-    <string name="settings_logs_subtitle">View logs files</string>
+    <string name="settings_logs_placeholder_description">Log file actions and details will be added here.</string>
+    <string name="settings_logs_placeholder_title">Logs are ready</string>
+    <string name="settings_logs_subtitle">View log files</string>
     <string name="settings_logs_title">Logs</string>
     <string name="settings_report_bug_subtitle">Send an email</string>
     <string name="settings_report_bug_title">Report a bug</string>
