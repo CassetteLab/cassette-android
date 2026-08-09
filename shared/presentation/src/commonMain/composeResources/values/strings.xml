@@ -204,6 +204,10 @@
     <string name="playlist_create_back">Back</string>
     <string name="playlist_create_title">Create playlist</string>
     <string name="playlist_create_name_label">Playlist name</string>
+    <string name="playlist_create_button_label">Create</string>
+    <string name="playlist_create_tracks_loading">Loading tracks</string>
+    <string name="playlist_create_tracks_empty_title">No tracks available</string>
+    <string name="playlist_create_tracks_empty_description">Browse your albums to discover tracks you can add to a playlist.</string>
 
     <!-- Playlist Detail -->
     <string name="playlist_detail_loading_message">Loading playlist</string>

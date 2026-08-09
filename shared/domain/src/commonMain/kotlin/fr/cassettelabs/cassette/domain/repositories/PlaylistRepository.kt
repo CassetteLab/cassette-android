@@ -20,5 +20,8 @@ interface PlaylistRepository {
         playlistId: String? = null,
     ): Flow<CoverArtLoadingStatus>
 
-    suspend fun createPlaylist(name: String): Playlist
+    suspend fun createPlaylist(
+        name: String,
+        trackIds: List<String> = emptyList(),
+    ): Playlist
 }

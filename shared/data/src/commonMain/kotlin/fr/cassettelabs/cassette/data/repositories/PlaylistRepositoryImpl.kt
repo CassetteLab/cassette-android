@@ -109,8 +109,11 @@ internal class PlaylistRepositoryImpl(
         }
     }
 
-    override suspend fun createPlaylist(name: String): Playlist {
-        val playlist = playlistRemoteDataSource.createPlaylist(name)
+    override suspend fun createPlaylist(
+        name: String,
+        trackIds: List<String>,
+    ): Playlist {
+        val playlist = playlistRemoteDataSource.createPlaylist(name, trackIds)
         val serverConfigurationId = currentServerConfigurationId()
         playlistDao.insertPlaylist(playlist.toEntity(serverConfigurationId))
         return playlist
