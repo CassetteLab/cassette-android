@@ -13,4 +13,5 @@ internal data class PlaylistDetailUiState(
     val trackCoverArtStatuses: Map<String, CoverArtLoadingStatus> = emptyMap(),
     val isLoading: Boolean = false,
     val isTracksLoading: Boolean = false,
+    val isDeleting: Boolean = false,
 ) : UiState

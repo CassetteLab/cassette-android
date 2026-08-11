@@ -119,6 +119,12 @@ internal class PlaylistRepositoryImpl(
         return playlist
     }
 
+    override suspend fun deletePlaylist(playlistId: String) {
+        playlistRemoteDataSource.deletePlaylist(playlistId)
+        playlistTrackDao.deletePlaylistTracks(playlistId)
+        playlistDao.deletePlaylist(playlistId)
+    }
+
     override fun getPlaylistCoverArt(
         coverArtId: String,
         size: Int?,

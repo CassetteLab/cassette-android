@@ -559,6 +559,12 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                             )
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                        LaunchedEffect(uiState.isDeleting) {
+                            if (uiState.isDeleting) {
+                                navController.navigateUp()
+                            }
+                        }
+
                         PlaylistDetailScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,

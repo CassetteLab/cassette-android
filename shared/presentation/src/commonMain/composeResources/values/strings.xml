@@ -213,6 +213,8 @@
     <string name="playlist_detail_loading_message">Loading playlist</string>
     <string name="playlist_detail_tracks_loading_message">Loading playlist tracks</string>
     <string name="playlist_detail_title">Playlist</string>
+    <string name="playlist_detail_menu">Menu</string>
+    <string name="playlist_detail_delete">Delete playlist</string>
     <plurals name="playlist_detail_tracks_count">
         <item quantity="one">%1$d track</item>
         <item quantity="other">%1$d tracks</item>

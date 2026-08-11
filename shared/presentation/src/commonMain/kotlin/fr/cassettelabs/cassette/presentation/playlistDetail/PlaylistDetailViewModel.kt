@@ -10,6 +10,7 @@ import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistDetail.GetPlaylistTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistUseCase
+import fr.cassettelabs.cassette.domain.usecases.DeletePlaylistUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -23,6 +24,7 @@ internal class PlaylistDetailViewModel(
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     private val getPlaylistCoverArtUseCase: GetPlaylistCoverArtUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
+    private val deletePlaylistUseCase: DeletePlaylistUseCase,
     logger: Logger,
 ) : BaseViewModel<PlaylistDetailUiState, PlaylistDetailEvent>(
         viewModelName = "PlaylistDetailViewModel",
@@ -37,6 +39,8 @@ internal class PlaylistDetailViewModel(
             }
             PlaylistDetailEvent.OnBackClicked -> Unit
             is PlaylistDetailEvent.OnTrackClicked -> playTrack(event.trackId)
+            PlaylistDetailEvent.OnMenuClicked -> Unit
+            PlaylistDetailEvent.OnDeletePlaylist -> deletePlaylist()
         }
     }
 
@@ -74,6 +78,18 @@ internal class PlaylistDetailViewModel(
             } catch (exception: Exception) {
                 logger.w("Unable to load playlist $playlistId" + ": " + exception.message)
                 updateState { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun deletePlaylist() {
+        viewModelScope.launch {
+            updateState { it.copy(isDeleting = true) }
+            try {
+                deletePlaylistUseCase(playlistId)
+            } catch (exception: Exception) {
+                logger.w("Unable to delete playlist $playlistId" + ": " + exception.message)
+                updateState { it.copy(isDeleting = false) }
             }
         }
     }

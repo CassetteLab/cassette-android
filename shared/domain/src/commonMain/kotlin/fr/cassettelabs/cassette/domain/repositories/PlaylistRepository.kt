@@ -24,4 +24,6 @@ interface PlaylistRepository {
         name: String,
         trackIds: List<String> = emptyList(),
     ): Playlist
+
+    suspend fun deletePlaylist(playlistId: String)
 }

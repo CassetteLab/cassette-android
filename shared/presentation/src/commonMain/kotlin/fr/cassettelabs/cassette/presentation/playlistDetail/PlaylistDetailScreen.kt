@@ -3,6 +3,7 @@ package fr.cassettelabs.cassette.presentation.playlistDetail
 import cassette.shared.presentation.generated.resources.playlist_detail_loading_message
 import cassette.shared.presentation.generated.resources.playlist_detail_tracks_loading_message
 import cassette.shared.presentation.generated.resources.Res
+import cassette.shared.presentation.generated.resources.playlist_detail_menu
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,11 +13,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,8 +39,10 @@ import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
+import fr.cassettelabs.cassette.presentation.playlistDetail.core.PlaylistDetailBottomSheet
 import fr.cassettelabs.cassette.presentation.playlistDetail.core.PlaylistDetailHeader
 import fr.cassettelabs.cassette.presentation.playlistDetail.core.PlaylistDetailTrackItem
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun PlaylistDetailScreen(
@@ -40,6 +53,8 @@ internal fun PlaylistDetailScreen(
     LaunchedEffect(Unit) {
         onEvent(PlaylistDetailEvent.OnAppearing)
     }
+
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     AlbumArtworkTheme(albumArt = (uiState.coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath) {
         when {
@@ -111,9 +126,36 @@ internal fun PlaylistDetailScreen(
                     }
 
                     AlbumDetailBackButton(onClick = { onEvent(PlaylistDetailEvent.OnBackClicked) })
+
+                    FilledIconButton(
+                        onClick = { showBottomSheet = true },
+                        colors =
+                            IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.86f),
+                            ),
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .statusBarsPadding()
+                                .padding(end = 12.dp, top = 4.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = stringResource(Res.string.playlist_detail_menu),
+                        )
+                    }
                 }
             }
         }
+    }
+
+    if (showBottomSheet) {
+        PlaylistDetailBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            onDeleteClick = {
+                onEvent(PlaylistDetailEvent.OnDeletePlaylist)
+            },
+        )
     }
 }
 
