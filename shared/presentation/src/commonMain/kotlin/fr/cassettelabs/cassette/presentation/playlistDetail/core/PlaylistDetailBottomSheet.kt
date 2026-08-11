@@ -36,37 +36,23 @@ internal fun PlaylistDetailBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(vertical = 8.dp),
         ) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onDismissRequest()
-                            onDeleteClick()
-                        }
-                        .padding(vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Delete,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = stringResource(Res.string.playlist_detail_delete),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
+            PlaylistDetailBottomSheetItem(
+                title = stringResource(Res.string.playlist_detail_delete),
+                icon = Icons.Rounded.Delete,
+                color = MaterialTheme.colorScheme.error,
+                onClick = {
+                    onDismissRequest()
+                    onDeleteClick()
+                }
+            )
         }
     }
 }

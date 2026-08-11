@@ -147,15 +147,15 @@ internal fun PlaylistDetailScreen(
                 }
             }
         }
-    }
 
-    if (showBottomSheet) {
-        PlaylistDetailBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            onDeleteClick = {
-                onEvent(PlaylistDetailEvent.OnDeletePlaylist)
-            },
-        )
+        if (showBottomSheet) {
+            PlaylistDetailBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                onDeleteClick = {
+                    onEvent(PlaylistDetailEvent.OnDeletePlaylist)
+                },
+            )
+        }
     }
 }
 
