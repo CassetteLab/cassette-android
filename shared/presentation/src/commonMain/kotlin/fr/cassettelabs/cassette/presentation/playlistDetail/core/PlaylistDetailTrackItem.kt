@@ -1,41 +1,28 @@
 package fr.cassettelabs.cassette.presentation.playlistDetail.core
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Album
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import cassette.shared.presentation.generated.resources.Res
-import cassette.shared.presentation.generated.resources.playlist_detail_menu
 import coil3.compose.AsyncImage
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.core.CoverArtLoading
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
-import org.jetbrains.compose.resources.stringResource
+import fr.cassettelabs.cassette.presentation.core.track.TrackButton
+import fr.cassettelabs.cassette.presentation.core.track.TrackMoreButton
 
 @Composable
 internal fun PlaylistDetailTrackItem(
@@ -45,84 +32,45 @@ internal fun PlaylistDetailTrackItem(
     onClick: () -> Unit,
     onMoreClick: () -> Unit = {},
 ) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.extraLarge)
-                .clickable(onClick = onClick)
-                .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.76f))
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier =
-                Modifier
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            val loadedCoverArtPath = (coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath ?: track.coverArtFilePath
-            if (loadedCoverArtPath != null) {
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    model = loadedCoverArtPath,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                )
-            } else if (coverArtStatus == CoverArtLoadingStatus.Loading) {
-                CoverArtLoading()
-            } else {
-                Icon(
-                    imageVector = Icons.Rounded.Album,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.48f),
-                )
+    TrackButton(
+        modifier = modifier,
+        track = track,
+        onClick = onClick,
+        leading = {
+            Box(
+                modifier =
+                    Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                val loadedCoverArtPath = (coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath ?: track.coverArtFilePath
+                if (loadedCoverArtPath != null) {
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        model = loadedCoverArtPath,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                    )
+                } else if (coverArtStatus == CoverArtLoadingStatus.Loading) {
+                    CoverArtLoading()
+                } else {
+                    Icon(
+                        imageVector = Icons.Rounded.Album,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.48f),
+                    )
+                }
             }
-        }
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            Text(
-                text = track.title,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyLarge,
+        },
+        trailing = {
+            TrackMoreButton(
+                onClick = onMoreClick
             )
-            track.artist?.let { artist ->
-                Text(
-                    text = artist,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-        }
-
-        FilledIconButton(
-            onClick = onMoreClick,
-            colors =
-                IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
-            modifier =
-                Modifier
-                    .size(36.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.MoreVert,
-                contentDescription = stringResource(Res.string.playlist_detail_menu),
-            )
-        }
-    }
+        },
+    )
 }
 
 @Preview
