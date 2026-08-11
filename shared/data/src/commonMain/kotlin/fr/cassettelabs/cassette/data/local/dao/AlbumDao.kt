@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import fr.cassettelabs.cassette.data.local.embeddeds.AlbumWithCoverArt
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
+import fr.cassettelabs.cassette.data.local.entities.StarredAlbumEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -71,4 +72,10 @@ internal interface AlbumDao {
         albumId: String,
         seedColor: Int,
     )
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertStarredAlbum(starredAlbum: StarredAlbumEntity)
+
+    @Query("DELETE FROM starred_albums WHERE albumId = :albumId AND starredAt IS NULL")
+    suspend fun deleteUnstarredAlbum(albumId: String)
 }

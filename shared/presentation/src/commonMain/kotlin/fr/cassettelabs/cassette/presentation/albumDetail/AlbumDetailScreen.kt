@@ -176,7 +176,7 @@ internal fun AlbumDetailScreen(
                 AlbumDetailTrackBottomSheet(
                     track = track,
                     coverArtStatus = uiState.coverArtStatus,
-                    isLiked = false,
+                    isLiked = uiState.trackStarredStatuses[id] ?: (track.starredAt != null),
                     onDismiss = { selectedTrackId = null },
                     onLikeClick = {
                         onEvent(AlbumDetailEvent.OnLikeTrack(id))
@@ -199,7 +199,7 @@ internal fun AlbumDetailScreen(
                 albumName = uiState.album?.name ?: "",
                 artist = uiState.album?.artist ?: "",
                 coverArtStatus = uiState.coverArtStatus,
-                isLiked = false,
+                isLiked = uiState.albumStarred || uiState.album?.starredAt != null,
                 onDismissRequest = { showBottomSheet = false },
                 onLikeClick = {
                     showBottomSheet = false

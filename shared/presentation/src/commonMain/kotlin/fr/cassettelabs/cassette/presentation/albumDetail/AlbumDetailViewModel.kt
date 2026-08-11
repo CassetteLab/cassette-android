@@ -14,6 +14,8 @@ import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumTracksUs
 import fr.cassettelabs.cassette.domain.usecases.albumDetail.RefreshAlbumUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.GetPlaybackStateUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.starred.SetAlbumStarredUseCase
+import fr.cassettelabs.cassette.domain.usecases.starred.SetTrackStarredUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,11 +31,13 @@ internal class AlbumDetailViewModel(
     private val getCurrentTrackUseCase: GetCurrentTrackUseCase,
     private val getPlaybackStateUseCase: GetPlaybackStateUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
+    private val setTrackStarredUseCase: SetTrackStarredUseCase,
+    private val setAlbumStarredUseCase: SetAlbumStarredUseCase,
     logger: Logger,
 ) : BaseViewModel<AlbumDetailUiState, AlbumDetailEvent>(
     viewModelName = "AlbumDetailViewModel",
     logger = logger,
-    initialState = AlbumDetailUiState(),
+    initialState = AlbumDetailUiState(albumId = albumId),
 ) {
     override fun handleEvent(event: AlbumDetailEvent) {
         when (event) {
@@ -56,11 +60,11 @@ internal class AlbumDetailViewModel(
             AlbumDetailEvent.OnRefresh -> refreshAlbumDetail()
             is AlbumDetailEvent.OnTrackClicked -> playTrack(event.trackId)
             is AlbumDetailEvent.OnTrackMoreClicked -> Unit
-            is AlbumDetailEvent.OnLikeTrack -> Unit
+            is AlbumDetailEvent.OnLikeTrack -> toggleTrackStarred(event.trackId)
             is AlbumDetailEvent.OnAddToPlaylist -> Unit
             is AlbumDetailEvent.OnAddToQueue -> Unit
             AlbumDetailEvent.OnMenuClicked -> Unit
-            AlbumDetailEvent.OnLikeAlbum -> Unit
+            AlbumDetailEvent.OnLikeAlbum -> toggleAlbumStarred()
             AlbumDetailEvent.OnAddAlbumToPlaylist -> Unit
         }
     }
@@ -148,6 +152,35 @@ internal class AlbumDetailViewModel(
             } catch (exception: Exception) {
                 logger.w("Unable to load album tracks $albumId" + ": " + exception.message)
                 updateState { it.copy(isTracksLoading = false) }
+            }
+        }
+    }
+
+    private fun toggleTrackStarred(trackId: String) {
+        viewModelScope.launch {
+            val currentTrack = uiState.value.tracks.firstOrNull { it.id == trackId } ?: return@launch
+            val currentStatus = uiState.value.trackStarredStatuses[trackId] ?: (currentTrack.starredAt != null)
+            val newStatus = !currentStatus
+            updateState { it.copy(trackStarredStatuses = it.trackStarredStatuses + (trackId to newStatus)) }
+            try {
+                setTrackStarredUseCase(trackId = trackId, isStarred = newStatus)
+            } catch (exception: Exception) {
+                logger.w("Unable to toggle track starred $trackId" + ": " + exception.message)
+                updateState { it.copy(trackStarredStatuses = it.trackStarredStatuses + (trackId to currentStatus)) }
+            }
+        }
+    }
+
+    private fun toggleAlbumStarred() {
+        viewModelScope.launch {
+            val currentStatus = uiState.value.albumStarred || uiState.value.album?.starredAt != null
+            val newStatus = !currentStatus
+            updateState { it.copy(albumStarred = newStatus) }
+            try {
+                setAlbumStarredUseCase(albumId = albumId, isStarred = newStatus)
+            } catch (exception: Exception) {
+                logger.w("Unable to toggle album starred $albumId" + ": " + exception.message)
+                updateState { it.copy(albumStarred = currentStatus) }
             }
         }
     }

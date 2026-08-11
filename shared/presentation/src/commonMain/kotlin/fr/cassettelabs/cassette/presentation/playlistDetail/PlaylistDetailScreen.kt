@@ -170,7 +170,7 @@ internal fun PlaylistDetailScreen(
                     track = track,
                     coverArtStatus = uiState.trackCoverArtStatuses[id]
                         ?: track.coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
-                    isLiked = false,
+                    isLiked = uiState.trackStarredStatuses[id] ?: (track.starredAt != null),
                     onDismiss = { selectedTrackId = null },
                     onLikeClick = {
                         onEvent(PlaylistDetailEvent.OnLikeTrack(id))
