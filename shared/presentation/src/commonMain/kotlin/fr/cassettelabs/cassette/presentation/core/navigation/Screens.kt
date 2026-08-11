@@ -32,6 +32,9 @@ sealed interface Screens {
     data object SettingsConfiguration : Screens
 
     @Serializable
+    data object SettingsAppearance : Screens
+
+    @Serializable
     data object SettingsLogs : Screens
 
     @Serializable

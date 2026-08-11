@@ -122,6 +122,13 @@
 
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
+    <string name="settings_appearance_title">Appearance</string>
+    <string name="settings_appearance_subtitle">Choose between light, dark or system theme</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_theme_title">Theme</string>
+    <string name="appearance_theme_system">System</string>
+    <string name="appearance_theme_light">Light</string>
+    <string name="appearance_theme_dark">Dark</string>
     <string name="settings_app_build_type_format">Build: %1$s</string>
     <string name="settings_app_name">Cassette</string>
     <string name="settings_app_name_title">Name</string>

@@ -115,10 +115,16 @@ internal fun PlaylistCreateScreen(
                             items = uiState.tracks,
                             key = { it.id },
                         ) { track ->
+                            LaunchedEffect(track.id) {
+                                if (track.coverArtFilePath.isNullOrBlank()) {
+                                    onEvent(PlaylistCreateEvent.OnTrackCoverArtAppeared(track.id))
+                                }
+                            }
                             PlaylistCreateTrackItem(
                                 track = track,
                                 isSelected = track.id in uiState.selectedTrackIds,
                                 onToggle = { onEvent(PlaylistCreateEvent.OnTrackToggled(track.id)) },
+                                coverArtStatus = uiState.trackCoverArtStatuses[track.id],
                             )
                         }
                     }

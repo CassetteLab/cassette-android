@@ -27,7 +27,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
+import fr.cassettelabs.cassette.presentation.core.CoverArtLoading
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
@@ -36,6 +38,7 @@ internal fun PlaylistCreateTrackItem(
     isSelected: Boolean,
     onToggle: () -> Unit,
     modifier: Modifier = Modifier,
+    coverArtStatus: CoverArtLoadingStatus? = track.coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
 ) {
     Row(
         modifier =
@@ -63,13 +66,16 @@ internal fun PlaylistCreateTrackItem(
                     .background(MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center,
         ) {
-            if (track.coverArtFilePath != null) {
+            val loadedCoverArtPath = (coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath ?: track.coverArtFilePath
+            if (loadedCoverArtPath != null) {
                 AsyncImage(
-                    model = track.coverArtFilePath,
+                    model = loadedCoverArtPath,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
                 )
+            } else if (coverArtStatus == CoverArtLoadingStatus.Loading) {
+                CoverArtLoading()
             } else {
                 Icon(
                     imageVector = Icons.Rounded.Album,

@@ -83,6 +83,9 @@ import fr.cassettelabs.cassette.presentation.settings.ConfigurationScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
+import fr.cassettelabs.cassette.presentation.settings.appearance.AppearanceSettingsEvent
+import fr.cassettelabs.cassette.presentation.settings.appearance.AppearanceSettingsScreen
+import fr.cassettelabs.cassette.presentation.settings.appearance.AppearanceSettingsViewModel
 import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsEvent
 import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsScreen
 import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsViewModel
@@ -501,6 +504,24 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                             onEvent = { event ->
                                 when (event) {
                                     SettingsLogsEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsAppearance> {
+                        val viewModel: AppearanceSettingsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        AppearanceSettingsScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    AppearanceSettingsEvent.OnBackClicked -> navController.navigateUp()
                                     else -> Unit
                                 }
 
