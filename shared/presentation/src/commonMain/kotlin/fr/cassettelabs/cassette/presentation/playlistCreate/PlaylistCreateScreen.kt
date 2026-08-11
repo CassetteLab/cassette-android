@@ -45,12 +45,6 @@ internal fun PlaylistCreateScreen(
     uiState: PlaylistCreateUiState,
     onEvent: (PlaylistCreateEvent) -> Unit,
 ) {
-    LaunchedEffect(uiState.isCreated) {
-        if (uiState.isCreated) {
-            onEvent(PlaylistCreateEvent.OnBackClicked)
-        }
-    }
-
     LaunchedEffect(Unit) {
         onEvent(PlaylistCreateEvent.OnAppearing)
     }

@@ -372,6 +372,16 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                     composable<Screens.PlaylistCreate> {
                         val viewModel: PlaylistCreateViewModel = koinViewModel()
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.createdPlaylist != null){
+                            uiState.createdPlaylist?.let { playlist ->
+                                navController.navigate(Screens.PlaylistDetail(playlist.id)){
+                                    launchSingleTop = true
+                                    popUpTo(Screens.PlaylistList)
+                                }
+                            }
+                        }
+
                         PlaylistCreateScreen(
                             contentPadding = subScreenContentPadding,
                             uiState = uiState,

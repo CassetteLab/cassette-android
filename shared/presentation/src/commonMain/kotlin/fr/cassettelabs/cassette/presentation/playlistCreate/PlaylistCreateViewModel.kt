@@ -62,8 +62,8 @@ internal class PlaylistCreateViewModel(
         viewModelScope.launch {
             updateState { it.copy(isLoading = true) }
             try {
-                createPlaylistUseCase(state.name, state.selectedTrackIds.toList())
-                updateState { it.copy(isLoading = false, isCreated = true) }
+                val createdPlaylist = createPlaylistUseCase(state.name, state.selectedTrackIds.toList())
+                updateState { it.copy(isLoading = false, createdPlaylist = createdPlaylist) }
             } catch (e: Exception) {
                 logger.w("Unable to create playlist: ${e.message}")
                 updateState { it.copy(isLoading = false) }
