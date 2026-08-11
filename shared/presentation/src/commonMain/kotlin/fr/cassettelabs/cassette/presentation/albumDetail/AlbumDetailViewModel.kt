@@ -59,6 +59,9 @@ internal class AlbumDetailViewModel(
             is AlbumDetailEvent.OnLikeTrack -> Unit
             is AlbumDetailEvent.OnAddToPlaylist -> Unit
             is AlbumDetailEvent.OnAddToQueue -> Unit
+            AlbumDetailEvent.OnMenuClicked -> Unit
+            AlbumDetailEvent.OnLikeAlbum -> Unit
+            AlbumDetailEvent.OnAddAlbumToPlaylist -> Unit
         }
     }
 

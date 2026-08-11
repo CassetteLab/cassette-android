@@ -32,4 +32,10 @@ internal sealed interface AlbumDetailEvent : Event {
     data class OnAddToQueue(
         val trackId: String,
     ) : AlbumDetailEvent
+
+    data object OnMenuClicked : AlbumDetailEvent
+
+    data object OnLikeAlbum : AlbumDetailEvent
+
+    data object OnAddAlbumToPlaylist : AlbumDetailEvent
 }

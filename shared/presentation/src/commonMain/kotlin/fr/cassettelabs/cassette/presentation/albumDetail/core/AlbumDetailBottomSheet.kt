@@ -1,7 +1,9 @@
-package fr.cassettelabs.cassette.presentation.playlistDetail.core
+package fr.cassettelabs.cassette.presentation.albumDetail.core
 
-import cassette.shared.presentation.generated.resources.playlist_detail_delete
-import cassette.shared.presentation.generated.resources.playlist_detail_tracks_count
+import cassette.shared.presentation.generated.resources.album_detail_add_to_playlist
+import cassette.shared.presentation.generated.resources.album_detail_dislike
+import cassette.shared.presentation.generated.resources.album_detail_like
+import cassette.shared.presentation.generated.resources.album_detail_unknown_artist
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
@@ -16,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.PlaylistAdd
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -35,17 +39,18 @@ import coil3.compose.AsyncImage
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.presentation.core.BottomSheetItem
 import fr.cassettelabs.cassette.presentation.core.CoverArtLoading
-import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PlaylistDetailBottomSheet(
-    playlistName: String,
-    tracksCount: Int,
+internal fun AlbumDetailBottomSheet(
+    albumName: String,
+    artist: String,
     coverArtStatus: CoverArtLoadingStatus?,
+    isLiked: Boolean,
     onDismissRequest: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onLikeClick: () -> Unit,
+    onAddToPlaylistClick: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -101,7 +106,7 @@ internal fun PlaylistDetailBottomSheet(
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        text = playlistName,
+                        text = albumName,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
@@ -109,7 +114,7 @@ internal fun PlaylistDetailBottomSheet(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        text = pluralStringResource(Res.plurals.playlist_detail_tracks_count, tracksCount, tracksCount),
+                        text = artist.ifEmpty { stringResource(Res.string.album_detail_unknown_artist) },
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -123,12 +128,25 @@ internal fun PlaylistDetailBottomSheet(
             Spacer(modifier = Modifier.height(8.dp))
 
             BottomSheetItem(
-                title = stringResource(Res.string.playlist_detail_delete),
-                icon = Icons.Rounded.Delete,
-                color = MaterialTheme.colorScheme.error,
+                title = stringResource(
+                    if (isLiked) Res.string.album_detail_dislike
+                    else Res.string.album_detail_like
+                ),
+                icon = if (isLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                color = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
                 onClick = {
                     onDismissRequest()
-                    onDeleteClick()
+                    onLikeClick()
+                },
+            )
+
+            BottomSheetItem(
+                title = stringResource(Res.string.album_detail_add_to_playlist),
+                icon = Icons.Rounded.PlaylistAdd,
+                color = MaterialTheme.colorScheme.onSurface,
+                onClick = {
+                    onDismissRequest()
+                    onAddToPlaylistClick()
                 },
             )
         }

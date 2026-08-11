@@ -89,6 +89,10 @@
     <string name="album_detail_track_dislike">Dislike</string>
     <string name="album_detail_track_add_to_playlist">Add to playlist</string>
     <string name="album_detail_track_add_to_queue">Add to queue</string>
+    <string name="album_detail_menu">Menu</string>
+    <string name="album_detail_like">Like album</string>
+    <string name="album_detail_dislike">Dislike album</string>
+    <string name="album_detail_add_to_playlist">Add to playlist</string>
 
     <!-- Artist Detail -->
     <string name="artist_detail_album_count_format">%1$d albums</string>

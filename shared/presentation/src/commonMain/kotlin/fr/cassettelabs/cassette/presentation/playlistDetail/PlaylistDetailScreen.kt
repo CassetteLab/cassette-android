@@ -153,6 +153,9 @@ internal fun PlaylistDetailScreen(
 
         if (showBottomSheet) {
             PlaylistDetailBottomSheet(
+                playlistName = uiState.playlist?.name ?: "",
+                tracksCount = uiState.tracks.size,
+                coverArtStatus = uiState.coverArtStatus,
                 onDismissRequest = { showBottomSheet = false },
                 onDeleteClick = {
                     onEvent(PlaylistDetailEvent.OnDeletePlaylist)
