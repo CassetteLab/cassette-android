@@ -85,6 +85,10 @@
     <string name="album_detail_tracks">Tracks</string>
     <string name="album_detail_tracks_empty">No tracks found for this album.</string>
     <string name="album_detail_unknown_artist">Unknown artist</string>
+    <string name="album_detail_track_like">Like</string>
+    <string name="album_detail_track_dislike">Dislike</string>
+    <string name="album_detail_track_add_to_playlist">Add to playlist</string>
+    <string name="album_detail_track_add_to_queue">Add to queue</string>
 
     <!-- Artist Detail -->
     <string name="artist_detail_album_count_format">%1$d albums</string>

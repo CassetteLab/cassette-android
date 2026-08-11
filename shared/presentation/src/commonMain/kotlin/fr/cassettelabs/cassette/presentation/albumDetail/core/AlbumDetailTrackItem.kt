@@ -39,6 +39,7 @@ internal fun AlbumDetailTrackItem(
     isCurrentTrack: Boolean = false,
     isPlaying: Boolean = false,
     onClick: () -> Unit,
+    onMoreClick: () -> Unit = {},
 ) {
     Row(
         modifier =
@@ -107,7 +108,7 @@ internal fun AlbumDetailTrackItem(
         }
 
         FilledIconButton(
-            onClick = { },
+            onClick = onMoreClick,
             colors =
                 IconButtonDefaults.filledIconButtonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -160,6 +161,5 @@ private fun AlbumDetailTrackItemPreview() {
                 onClick = {},
             )
         }
-
     }
 }

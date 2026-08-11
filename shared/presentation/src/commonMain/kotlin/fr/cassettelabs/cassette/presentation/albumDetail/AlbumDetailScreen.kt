@@ -21,6 +21,10 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +35,7 @@ import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailHeader
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackBottomSheet
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackItem
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
@@ -45,6 +50,8 @@ internal fun AlbumDetailScreen(
     LaunchedEffect(Unit) {
         onEvent(AlbumDetailEvent.OnAppearing)
     }
+
+    var selectedTrackId by remember { mutableStateOf<String?>(null) }
 
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -125,12 +132,37 @@ internal fun AlbumDetailScreen(
                                 isCurrentTrack = track.id == uiState.currentTrackId,
                                 isPlaying = uiState.isPlaying,
                                 onClick = { onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
+                                onMoreClick = { selectedTrackId = track.id },
                             )
                         }
                     }
 
                     AlbumDetailBackButton(onClick = { onEvent(AlbumDetailEvent.OnBackClicked) })
                 }
+            }
+        }
+
+        selectedTrackId?.let { id ->
+            val track = uiState.tracks.firstOrNull { it.id == id }
+            if (track != null) {
+                AlbumDetailTrackBottomSheet(
+                    track = track,
+                    coverArtStatus = uiState.coverArtStatus,
+                    isLiked = false,
+                    onDismiss = { selectedTrackId = null },
+                    onLikeClick = {
+                        onEvent(AlbumDetailEvent.OnLikeTrack(id))
+                        selectedTrackId = null
+                    },
+                    onAddToPlaylistClick = {
+                        onEvent(AlbumDetailEvent.OnAddToPlaylist(id))
+                        selectedTrackId = null
+                    },
+                    onAddToQueueClick = {
+                        onEvent(AlbumDetailEvent.OnAddToQueue(id))
+                        selectedTrackId = null
+                    },
+                )
             }
         }
     }

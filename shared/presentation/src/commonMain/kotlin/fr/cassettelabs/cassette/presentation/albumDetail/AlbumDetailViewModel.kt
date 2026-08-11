@@ -55,6 +55,10 @@ internal class AlbumDetailViewModel(
             }
             AlbumDetailEvent.OnRefresh -> refreshAlbumDetail()
             is AlbumDetailEvent.OnTrackClicked -> playTrack(event.trackId)
+            is AlbumDetailEvent.OnTrackMoreClicked -> Unit
+            is AlbumDetailEvent.OnLikeTrack -> Unit
+            is AlbumDetailEvent.OnAddToPlaylist -> Unit
+            is AlbumDetailEvent.OnAddToQueue -> Unit
         }
     }
 

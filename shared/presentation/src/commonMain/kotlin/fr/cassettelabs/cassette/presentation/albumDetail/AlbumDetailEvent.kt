@@ -16,4 +16,20 @@ internal sealed interface AlbumDetailEvent : Event {
     data class OnArtistClicked(
         val artistId: String,
     ) : AlbumDetailEvent
+
+    data class OnTrackMoreClicked(
+        val trackId: String,
+    ) : AlbumDetailEvent
+
+    data class OnLikeTrack(
+        val trackId: String,
+    ) : AlbumDetailEvent
+
+    data class OnAddToPlaylist(
+        val trackId: String,
+    ) : AlbumDetailEvent
+
+    data class OnAddToQueue(
+        val trackId: String,
+    ) : AlbumDetailEvent
 }

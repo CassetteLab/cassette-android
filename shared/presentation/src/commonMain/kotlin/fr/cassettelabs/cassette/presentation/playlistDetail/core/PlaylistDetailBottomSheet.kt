@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import fr.cassettelabs.cassette.presentation.core.BottomSheetItem
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +45,7 @@ internal fun PlaylistDetailBottomSheet(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
         ) {
-            PlaylistDetailBottomSheetItem(
+            BottomSheetItem(
                 title = stringResource(Res.string.playlist_detail_delete),
                 icon = Icons.Rounded.Delete,
                 color = MaterialTheme.colorScheme.error,
