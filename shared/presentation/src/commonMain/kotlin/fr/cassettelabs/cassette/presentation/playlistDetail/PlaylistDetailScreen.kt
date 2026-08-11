@@ -37,6 +37,7 @@ import fr.cassettelabs.cassette.domain.models.Playlist
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackBottomSheet
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 import fr.cassettelabs.cassette.presentation.playlistDetail.core.PlaylistDetailBottomSheet
@@ -55,6 +56,7 @@ internal fun PlaylistDetailScreen(
     }
 
     var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedTrackId by remember { mutableStateOf<String?>(null) }
 
     AlbumArtworkTheme(albumArt = (uiState.coverArtStatus as? CoverArtLoadingStatus.Loaded)?.filePath) {
         when {
@@ -121,6 +123,7 @@ internal fun PlaylistDetailScreen(
                                 track = track,
                                 coverArtStatus = uiState.trackCoverArtStatuses[track.id],
                                 onClick = { onEvent(PlaylistDetailEvent.OnTrackClicked(track.id)) },
+                                onMoreClick = { selectedTrackId = track.id },
                             )
                         }
                     }
@@ -155,6 +158,31 @@ internal fun PlaylistDetailScreen(
                     onEvent(PlaylistDetailEvent.OnDeletePlaylist)
                 },
             )
+        }
+
+        selectedTrackId?.let { id ->
+            val track = uiState.tracks.firstOrNull { it.id == id }
+            if (track != null) {
+                AlbumDetailTrackBottomSheet(
+                    track = track,
+                    coverArtStatus = uiState.trackCoverArtStatuses[id]
+                        ?: track.coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
+                    isLiked = false,
+                    onDismiss = { selectedTrackId = null },
+                    onLikeClick = {
+                        onEvent(PlaylistDetailEvent.OnLikeTrack(id))
+                        selectedTrackId = null
+                    },
+                    onAddToPlaylistClick = {
+                        onEvent(PlaylistDetailEvent.OnAddToPlaylist(id))
+                        selectedTrackId = null
+                    },
+                    onAddToQueueClick = {
+                        onEvent(PlaylistDetailEvent.OnAddToQueue(id))
+                        selectedTrackId = null
+                    },
+                )
+            }
         }
     }
 }

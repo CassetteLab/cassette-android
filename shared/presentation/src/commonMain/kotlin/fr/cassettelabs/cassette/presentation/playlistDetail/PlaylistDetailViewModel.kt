@@ -41,6 +41,9 @@ internal class PlaylistDetailViewModel(
             is PlaylistDetailEvent.OnTrackClicked -> playTrack(event.trackId)
             PlaylistDetailEvent.OnMenuClicked -> Unit
             PlaylistDetailEvent.OnDeletePlaylist -> deletePlaylist()
+            is PlaylistDetailEvent.OnLikeTrack -> Unit
+            is PlaylistDetailEvent.OnAddToPlaylist -> Unit
+            is PlaylistDetailEvent.OnAddToQueue -> Unit
         }
     }
 

@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Album
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,11 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cassette.shared.presentation.generated.resources.Res
+import cassette.shared.presentation.generated.resources.playlist_detail_menu
 import coil3.compose.AsyncImage
 import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.core.CoverArtLoading
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun PlaylistDetailTrackItem(
@@ -38,6 +43,7 @@ internal fun PlaylistDetailTrackItem(
     track: Track,
     coverArtStatus: CoverArtLoadingStatus? = track.coverArtFilePath?.let { CoverArtLoadingStatus.Loaded(it) },
     onClick: () -> Unit,
+    onMoreClick: () -> Unit = {},
 ) {
     Row(
         modifier =
@@ -101,20 +107,22 @@ internal fun PlaylistDetailTrackItem(
             }
         }
 
-        track.durationSeconds?.let { durationSeconds ->
-            Text(
-                text = formatDuration(durationSeconds),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium,
+        FilledIconButton(
+            onClick = onMoreClick,
+            colors =
+                IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
+            modifier =
+                Modifier
+                    .size(36.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.MoreVert,
+                contentDescription = stringResource(Res.string.playlist_detail_menu),
             )
         }
     }
-}
-
-private fun formatDuration(durationSeconds: Int): String {
-    val minutes = durationSeconds / 60
-    val seconds = durationSeconds % 60
-    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }
 
 @Preview

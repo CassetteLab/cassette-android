@@ -14,4 +14,16 @@ internal sealed interface PlaylistDetailEvent : Event {
     data class OnTrackClicked(
         val trackId: String,
     ) : PlaylistDetailEvent
+
+    data class OnLikeTrack(
+        val trackId: String,
+    ) : PlaylistDetailEvent
+
+    data class OnAddToPlaylist(
+        val trackId: String,
+    ) : PlaylistDetailEvent
+
+    data class OnAddToQueue(
+        val trackId: String,
+    ) : PlaylistDetailEvent
 }
