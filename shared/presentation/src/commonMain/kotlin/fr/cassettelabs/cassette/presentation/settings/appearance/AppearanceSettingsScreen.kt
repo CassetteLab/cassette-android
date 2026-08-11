@@ -36,6 +36,7 @@ internal fun AppearanceSettingsScreen(
         topBar = {
             CassetteTopAppBar(
                 title = Res.string.appearance_title,
+                onBackClicked = { onEvent(AppearanceSettingsEvent.OnBackClicked) }
             )
         },
     ) { innerPadding ->

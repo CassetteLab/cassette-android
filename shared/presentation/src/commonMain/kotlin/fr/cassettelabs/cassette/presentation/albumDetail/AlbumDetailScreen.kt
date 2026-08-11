@@ -31,7 +31,7 @@ import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailHeader
-import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackRow
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackItem
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
@@ -119,7 +119,7 @@ internal fun AlbumDetailScreen(
                         }
 
                         items(uiState.tracks, key = { track -> track.id }) { track ->
-                            AlbumDetailTrackRow(
+                            AlbumDetailTrackItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 track = track,
                                 isCurrentTrack = track.id == uiState.currentTrackId,
