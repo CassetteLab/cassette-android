@@ -145,25 +145,25 @@ internal fun AlbumDetailTrackBottomSheet(
                 }
             )
 
-            BottomSheetItem(
-                title = stringResource(Res.string.album_detail_track_add_to_playlist),
-                icon = Icons.Rounded.PlaylistAdd,
-                color = MaterialTheme.colorScheme.onSurface,
-                onClick = {
-                    onDismiss()
-                    onAddToPlaylistClick()
-                }
-            )
-
-            BottomSheetItem(
-                title = stringResource(Res.string.album_detail_track_add_to_queue),
-                icon = Icons.Rounded.QueueMusic,
-                color = MaterialTheme.colorScheme.onSurface,
-                onClick = {
-                    onDismiss()
-                    onAddToQueueClick()
-                }
-            )
+//            BottomSheetItem(
+//                title = stringResource(Res.string.album_detail_track_add_to_playlist),
+//                icon = Icons.Rounded.PlaylistAdd,
+//                color = MaterialTheme.colorScheme.onSurface,
+//                onClick = {
+//                    onDismiss()
+//                    onAddToPlaylistClick()
+//                }
+//            )
+//
+//            BottomSheetItem(
+//                title = stringResource(Res.string.album_detail_track_add_to_queue),
+//                icon = Icons.Rounded.QueueMusic,
+//                color = MaterialTheme.colorScheme.onSurface,
+//                onClick = {
+//                    onDismiss()
+//                    onAddToQueueClick()
+//                }
+//            )
         }
     }
 }

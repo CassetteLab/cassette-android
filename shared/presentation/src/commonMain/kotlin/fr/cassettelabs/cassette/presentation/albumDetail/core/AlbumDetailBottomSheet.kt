@@ -140,15 +140,15 @@ internal fun AlbumDetailBottomSheet(
                 },
             )
 
-            BottomSheetItem(
-                title = stringResource(Res.string.album_detail_add_to_playlist),
-                icon = Icons.Rounded.PlaylistAdd,
-                color = MaterialTheme.colorScheme.onSurface,
-                onClick = {
-                    onDismissRequest()
-                    onAddToPlaylistClick()
-                },
-            )
+//            BottomSheetItem(
+//                title = stringResource(Res.string.album_detail_add_to_playlist),
+//                icon = Icons.Rounded.PlaylistAdd,
+//                color = MaterialTheme.colorScheme.onSurface,
+//                onClick = {
+//                    onDismissRequest()
+//                    onAddToPlaylistClick()
+//                },
+//            )
         }
     }
 }
