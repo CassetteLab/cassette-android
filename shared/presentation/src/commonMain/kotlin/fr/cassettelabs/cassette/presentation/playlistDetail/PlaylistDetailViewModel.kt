@@ -10,7 +10,9 @@ import fr.cassettelabs.cassette.domain.usecases.GetAlbumCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistCoverArtUseCase
 import fr.cassettelabs.cassette.domain.usecases.playlistDetail.GetPlaylistTracksUseCase
 import fr.cassettelabs.cassette.domain.usecases.GetPlaylistUseCase
+import fr.cassettelabs.cassette.domain.usecases.DeletePlaylistUseCase
 import fr.cassettelabs.cassette.domain.usecases.playback.PlayTrackUseCase
+import fr.cassettelabs.cassette.domain.usecases.starred.SetTrackStarredUseCase
 import fr.cassettelabs.cassette.presentation.core.mvi.BaseViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,6 +25,8 @@ internal class PlaylistDetailViewModel(
     private val getAlbumCoverArtUseCase: GetAlbumCoverArtUseCase,
     private val getPlaylistCoverArtUseCase: GetPlaylistCoverArtUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
+    private val deletePlaylistUseCase: DeletePlaylistUseCase,
+    private val setTrackStarredUseCase: SetTrackStarredUseCase,
     logger: Logger,
 ) : BaseViewModel<PlaylistDetailUiState, PlaylistDetailEvent>(
         viewModelName = "PlaylistDetailViewModel",
@@ -37,6 +41,11 @@ internal class PlaylistDetailViewModel(
             }
             PlaylistDetailEvent.OnBackClicked -> Unit
             is PlaylistDetailEvent.OnTrackClicked -> playTrack(event.trackId)
+            PlaylistDetailEvent.OnMenuClicked -> Unit
+            PlaylistDetailEvent.OnDeletePlaylist -> deletePlaylist()
+            is PlaylistDetailEvent.OnLikeTrack -> toggleTrackStarred(event.trackId)
+            is PlaylistDetailEvent.OnAddToPlaylist -> Unit
+            is PlaylistDetailEvent.OnAddToQueue -> Unit
         }
     }
 
@@ -74,6 +83,18 @@ internal class PlaylistDetailViewModel(
             } catch (exception: Exception) {
                 logger.w("Unable to load playlist $playlistId" + ": " + exception.message)
                 updateState { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun deletePlaylist() {
+        viewModelScope.launch {
+            updateState { it.copy(isDeleting = true) }
+            try {
+                deletePlaylistUseCase(playlistId)
+            } catch (exception: Exception) {
+                logger.w("Unable to delete playlist $playlistId" + ": " + exception.message)
+                updateState { it.copy(isDeleting = false) }
             }
         }
     }
@@ -134,6 +155,21 @@ internal class PlaylistDetailViewModel(
             }
             updateState { it.copy(coverArtStatus = status) }
         }.launchIn(viewModelScope)
+    }
+
+    private fun toggleTrackStarred(trackId: String) {
+        viewModelScope.launch {
+            val currentTrack = uiState.value.tracks.firstOrNull { it.id == trackId } ?: return@launch
+            val currentStatus = uiState.value.trackStarredStatuses[trackId] ?: (currentTrack.starredAt != null)
+            val newStatus = !currentStatus
+            updateState { it.copy(trackStarredStatuses = it.trackStarredStatuses + (trackId to newStatus)) }
+            try {
+                setTrackStarredUseCase(trackId = trackId, isStarred = newStatus)
+            } catch (exception: Exception) {
+                logger.w("Unable to toggle track starred $trackId" + ": " + exception.message)
+                updateState { it.copy(trackStarredStatuses = it.trackStarredStatuses + (trackId to currentStatus)) }
+            }
+        }
     }
 
     private companion object {

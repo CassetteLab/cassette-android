@@ -7,6 +7,8 @@ internal sealed interface PlaylistListEvent : Event {
 
     data object OnRefresh : PlaylistListEvent
 
+    data object OnCreatePlaylistClicked : PlaylistListEvent
+
     data class OnPlaylistClicked(
         val playlistId: String,
     ) : PlaylistListEvent

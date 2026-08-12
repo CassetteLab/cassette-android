@@ -5,26 +5,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import fr.cassettelabs.cassette.presentation.core.CassetteTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cassette.shared.presentation.generated.resources.Res
 import cassette.shared.presentation.generated.resources.settings_application_information_title
-import cassette.shared.presentation.generated.resources.settings_back
 import cassette.shared.presentation.generated.resources.settings_build_type_debug
 import cassette.shared.presentation.generated.resources.settings_build_type_release
 import cassette.shared.presentation.generated.resources.settings_build_type_title
@@ -43,7 +34,6 @@ import fr.cassettelabs.cassette.presentation.settings.core.SettingsGenericItem
 import fr.cassettelabs.cassette.presentation.settings.core.SettingsItemGroup
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ApplicationInformationScreen(
     contentPadding: PaddingValues = PaddingValues(),
@@ -60,28 +50,9 @@ internal fun ApplicationInformationScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.settings_application_information_title),
-                        style = MaterialTheme.typography.headlineLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onEvent(SettingsEvent.OnBackClicked) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(Res.string.settings_back),
-                        )
-                    }
-                },
+            CassetteTopAppBar(
+                title = Res.string.settings_application_information_title,
+                onBackClicked = { onEvent(SettingsEvent.OnBackClicked) },
             )
         },
     ) { innerPadding ->

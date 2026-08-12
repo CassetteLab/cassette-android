@@ -4,12 +4,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Filter
 import androidx.compose.material.icons.rounded.ImageAspectRatio
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.graphics.shapes.RoundedPolygon
 import cassette.shared.presentation.generated.resources.Res
+import cassette.shared.presentation.generated.resources.settings_appearance_subtitle
+import cassette.shared.presentation.generated.resources.settings_appearance_title
 import cassette.shared.presentation.generated.resources.settings_application_information_subtitle
 import cassette.shared.presentation.generated.resources.settings_application_information_title
 import cassette.shared.presentation.generated.resources.settings_configuration_subtitle
@@ -29,6 +32,8 @@ private val LogsForeground = Color(0xFFB45309)
 private val LogsBackground = Color(0xFFFEF3C7)
 private val ConfigurationForeground = Color(0xFF047857)
 private val ConfigurationBackground = Color(0xFFD1FAE5)
+private val AppearanceForeground = Color(0xFF7C3AED)
+private val AppearanceBackground = Color(0xFFEDE9FE)
 
 internal enum class SettingsDestinations(
     val title: StringResource,
@@ -57,6 +62,15 @@ internal enum class SettingsDestinations(
         iconBackgroundColor = LocalStorageBackground,
         destination = null
     ),
+    Appearance(
+        title = Res.string.settings_appearance_title,
+        subTitle = Res.string.settings_appearance_subtitle,
+        icon = Icons.Rounded.Palette,
+        iconShape = MaterialShapes.PixelCircle,
+        iconForegroundColor = AppearanceForeground,
+        iconBackgroundColor = AppearanceBackground,
+        destination = Screens.SettingsAppearance
+    ),
     Logs(
         title = Res.string.settings_logs_title,
         subTitle = Res.string.settings_logs_subtitle,
@@ -64,7 +78,7 @@ internal enum class SettingsDestinations(
         iconShape = MaterialShapes.VerySunny,
         iconForegroundColor = LogsForeground,
         iconBackgroundColor = LogsBackground,
-        destination = null
+        destination = Screens.SettingsLogs
     ),
     Configuration(
         title = Res.string.settings_configuration_title,

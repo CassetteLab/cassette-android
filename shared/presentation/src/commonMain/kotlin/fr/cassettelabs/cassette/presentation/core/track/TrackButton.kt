@@ -1,16 +1,13 @@
-package fr.cassettelabs.cassette.presentation.albumDetail.core
+package fr.cassettelabs.cassette.presentation.core.track
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,19 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import fr.cassettelabs.cassette.domain.models.Track
-import fr.cassettelabs.cassette.presentation.core.PlayingEqIcon
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
 
 @Composable
-internal fun AlbumDetailTrackRow(
+internal fun TrackButton(
     modifier: Modifier = Modifier,
     track: Track,
-    isCurrentTrack: Boolean = false,
-    isPlaying: Boolean = false,
     onClick: () -> Unit,
+    leading: @Composable RowScope.() -> Unit = { },
+    trailing: @Composable RowScope.() -> Unit = { }
 ) {
     Row(
         modifier =
@@ -44,21 +40,7 @@ internal fun AlbumDetailTrackRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.62f)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = track.trackNumber?.toString() ?: "-",
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
+        leading()
 
         Column(
             modifier = Modifier.weight(1f),
@@ -90,45 +72,23 @@ internal fun AlbumDetailTrackRow(
             }
         }
 
-        if (isCurrentTrack) {
-            PlayingEqIcon(
-                modifier = Modifier.size(width = 26.dp, height = 18.dp),
-                isPlaying = isPlaying,
-            )
-        }
-
-        track.durationSeconds?.let { durationSeconds ->
-            Text(
-                text = formatDuration(durationSeconds),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
+        trailing()
     }
 }
 
-private fun formatDuration(durationSeconds: Int): String {
-    val minutes = durationSeconds / 60
-    val seconds = durationSeconds % 60
-    return "$minutes:${seconds.toString().padStart(2, '0')}"
-}
-
-@Preview
 @Composable
-private fun AlbumDetailTrackRowPreview() {
+@PreviewLightDark
+private fun TrackButtonPreview(){
     CassetteTheme {
-        AlbumDetailTrackRow(
-            track =
-                Track(
-                    id = "",
-                    title = "Hand It Over",
-                    artist = "MGMT",
-                    trackNumber = 1,
-                    durationSeconds = 146,
+        TrackButton(
+            track = Track(
+                id = "",
+                title = "Hand It Over",
+                artist = "MGMT",
+                trackNumber = 1,
+                durationSeconds = 146,
             ),
-            isCurrentTrack = true,
-            isPlaying = true,
-            onClick = {},
+            onClick = {}
         )
     }
 }

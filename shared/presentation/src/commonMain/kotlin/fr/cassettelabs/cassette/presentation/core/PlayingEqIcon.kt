@@ -79,6 +79,8 @@ internal fun PlayingEqIcon(
         val tentativeBarWidth = size.width / (bars + (bars - 1) * (1f + gapFraction))
         val gap = tentativeBarWidth * gapFraction
         val corner = CornerRadius(tentativeBarWidth / 2f, tentativeBarWidth / 2f)
+        val totalDrawnWidth = bars * tentativeBarWidth + (bars - 1) * gap
+        val startX = (size.width - totalDrawnWidth) / 2f
 
         repeat(bars) { index ->
             val slowShift = 0.6f * sin(wanderAnim.value + index * 0.4f)
@@ -92,7 +94,7 @@ internal fun PlayingEqIcon(
 
             drawRoundRect(
                 color = color,
-                topLeft = Offset(x = index * (tentativeBarWidth + gap), y = (size.height - blendedHeight) / 2f),
+                topLeft = Offset(x = startX + index * (tentativeBarWidth + gap), y = (size.height - blendedHeight) / 2f),
                 size = Size(width = tentativeBarWidth, height = blendedHeight),
                 cornerRadius = corner,
             )

@@ -1,11 +1,11 @@
 package fr.cassettelabs.cassette.presentation.playlistList
 
+import cassette.shared.presentation.generated.resources.Res
+import cassette.shared.presentation.generated.resources.playlist_list_create_playlist
+import cassette.shared.presentation.generated.resources.playlist_list_empty_description
+import cassette.shared.presentation.generated.resources.playlist_list_empty_title
 import cassette.shared.presentation.generated.resources.playlist_list_title
 import cassette.shared.presentation.generated.resources.playlist_list_loading_playlists
-import cassette.shared.presentation.generated.resources.playlist_list_empty_title
-import cassette.shared.presentation.generated.resources.playlist_list_empty_description
-import cassette.shared.presentation.generated.resources.Res
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,17 +19,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearWavyProgressIndicator
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import fr.cassettelabs.cassette.presentation.core.CassetteTopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -60,21 +64,10 @@ internal fun PlaylistListScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        scrolledContainerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.playlist_list_title),
-                        style = MaterialTheme.typography.headlineLarge
-                    )
-                },
+            CassetteTopAppBar(
+                title = Res.string.playlist_list_title,
             )
-        },
+        }
     ) { innerPadding ->
         PullToRefreshBox(
             state = pullToRefreshState,
@@ -98,51 +91,69 @@ internal fun PlaylistListScreen(
                         message = Res.string.playlist_list_loading_playlists,
                     )
                 }
-            } else if (uiState.playlists.isEmpty()) {
-                HomeMessage(
-                    title = stringResource(Res.string.playlist_list_empty_title),
-                    description = stringResource(Res.string.playlist_list_empty_description),
-                )
             } else {
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxSize(),
-                    columns = GridCells.Adaptive(minSize = 160.dp),
-                    contentPadding =
-                        contentPadding.plus(
-                            PaddingValues(
-                                top = 16.dp,
-                                bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                            )
-                        ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    item(
-                        span = { GridItemSpan(maxLineSpan) }
+                if (uiState.playlists.isEmpty()) {
+                    HomeMessage(
+                        title = stringResource(Res.string.playlist_list_empty_title),
+                        description = stringResource(Res.string.playlist_list_empty_description),
+                    )
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier.fillMaxSize(),
+                        columns = GridCells.Adaptive(minSize = 160.dp),
+                        contentPadding =
+                            contentPadding.plus(
+                                PaddingValues(
+                                    top = 16.dp,
+                                    bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                                )
+                            ),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        AnimatedVisibility(uiState.isRefreshing) {
-                            LinearWavyProgressIndicator(
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-                        }
-                    }
-
-                    items(
-                        items = uiState.playlists,
-                        key = { playlist -> playlist.id },
-                    ) { playlist ->
-                        LaunchedEffect(playlist.id) {
-                            if (playlist.coverArtFilePath.isNullOrBlank()) {
-                                onEvent(PlaylistListEvent.OnPlaylistCoverArtAppeared(playlist.id))
+                        item(
+                            span = { GridItemSpan(maxLineSpan) }
+                        ) {
+                            AnimatedVisibility(uiState.isRefreshing) {
+                                LinearWavyProgressIndicator(
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
                             }
                         }
 
-                        PlaylistListItem(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            playlist = playlist,
-                            coverArtStatus = uiState.playlistCoverArtStatuses[playlist.id],
-                            onClick = { onEvent(PlaylistListEvent.OnPlaylistClicked(playlist.id)) },
-                        )
+                        items(
+                            items = uiState.playlists,
+                            key = { playlist -> playlist.id },
+                        ) { playlist ->
+                            LaunchedEffect(playlist.id) {
+                                if (playlist.coverArtFilePath.isNullOrBlank()) {
+                                    onEvent(PlaylistListEvent.OnPlaylistCoverArtAppeared(playlist.id))
+                                }
+                            }
+
+                            PlaylistListItem(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                playlist = playlist,
+                                coverArtStatus = uiState.playlistCoverArtStatuses[playlist.id],
+                                onClick = { onEvent(PlaylistListEvent.OnPlaylistClicked(playlist.id)) },
+                            )
+                        }
                     }
+                }
+
+                FloatingActionButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(contentPadding)
+                        .padding(end = 16.dp, bottom = 16.dp),
+                    onClick = { onEvent(PlaylistListEvent.OnCreatePlaylistClicked) },
+                    shape = MaterialShapes.Cookie7Sided.toShape(),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = stringResource(Res.string.playlist_list_create_playlist),
+                    )
                 }
             }
         }

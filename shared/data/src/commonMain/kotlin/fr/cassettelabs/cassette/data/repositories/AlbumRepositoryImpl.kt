@@ -15,6 +15,7 @@ import fr.cassettelabs.cassette.data.local.entities.AlbumTrackEntity
 import fr.cassettelabs.cassette.data.local.entities.AlbumEntity
 import fr.cassettelabs.cassette.data.local.entities.ArtistEntity
 import fr.cassettelabs.cassette.data.local.entities.CoverArtEntity
+import fr.cassettelabs.cassette.data.local.entities.StarredAlbumEntity
 import fr.cassettelabs.cassette.data.local.entities.TrackEntity
 import fr.cassettelabs.cassette.data.remote.coverart.CoverArtProcessor
 import fr.cassettelabs.cassette.data.remote.datasources.AlbumRemoteDataSourceImpl
@@ -71,6 +72,19 @@ internal class AlbumRepositoryImpl(
             albumDao.insertAlbum(albumWithLocalData.toEntity(localAlbum?.serverConfigurationId ?: serverConfigurationId))
         }
         return starredLibrary
+    }
+
+    override suspend fun setAlbumStarred(
+        albumId: AlbumId,
+        isStarred: Boolean,
+    ) {
+        albumRemoteDataSource.setAlbumStarred(albumId = albumId, isStarred = isStarred)
+        albumDao.upsertStarredAlbum(
+            StarredAlbumEntity(
+                albumId = albumId,
+                starredAt = currentTimeMillis().toString().takeIf { isStarred },
+            ),
+        )
     }
 
     override suspend fun getAlbum(albumId: AlbumId): Album? {

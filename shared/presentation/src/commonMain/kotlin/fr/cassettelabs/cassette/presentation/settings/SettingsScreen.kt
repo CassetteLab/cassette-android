@@ -6,12 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import fr.cassettelabs.cassette.presentation.core.CassetteTopAppBar
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +23,6 @@ import fr.cassettelabs.cassette.presentation.settings.core.SettingsItem
 import fr.cassettelabs.cassette.presentation.settings.core.SettingsItemGroup
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsScreen(
     contentPadding: PaddingValues = PaddingValues(),
@@ -42,18 +38,8 @@ internal fun SettingsScreen(
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.settings_title),
-                        style = MaterialTheme.typography.headlineLarge
-                    )
-                },
+            CassetteTopAppBar(
+                title = Res.string.settings_title,
             )
         },
     ) { innerPadding ->

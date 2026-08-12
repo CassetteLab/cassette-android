@@ -144,6 +144,29 @@ internal class AlbumRemoteDataSourceImpl(
         return response
     }
 
+    suspend fun setAlbumStarred(
+        albumId: String,
+        isStarred: Boolean,
+    ) {
+        val configuration =
+            serverConfigurationDao.getServerConfiguration()
+                ?: throw IllegalStateException("No server configuration found")
+        val server = configuration.serverConfiguration
+        val endpoint = if (isStarred) "star" else "unstar"
+
+        val response =
+            httpClient
+                .get("${server.serverUrl.trimEnd('/')}/rest/$endpoint.view") {
+                    parameter("id", albumId)
+                    parameter("f", "json")
+                }.body<AlbumListResponseDto>()
+
+        val subsonicResponse = response.subsonicResponse
+        if (subsonicResponse.status != "ok") {
+            throw IllegalStateException("Subsonic $endpoint failed")
+        }
+    }
+
     suspend fun getAlbumCoverArt(
         coverArtId: String,
         size: Int?,

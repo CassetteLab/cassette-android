@@ -32,6 +32,12 @@ sealed interface Screens {
     data object SettingsConfiguration : Screens
 
     @Serializable
+    data object SettingsAppearance : Screens
+
+    @Serializable
+    data object SettingsLogs : Screens
+
+    @Serializable
     data object SettingsServerConfiguration : Screens
 
     @Serializable
@@ -45,6 +51,9 @@ sealed interface Screens {
 
     @Serializable
     data object PlaylistList : Screens
+
+    @Serializable
+    data object PlaylistCreate : Screens
 
     @Serializable
     data object Starred : Screens

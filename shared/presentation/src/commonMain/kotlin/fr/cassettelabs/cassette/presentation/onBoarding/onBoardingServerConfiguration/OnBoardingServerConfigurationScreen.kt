@@ -1,18 +1,10 @@
 package fr.cassettelabs.cassette.presentation.onBoarding.onBoardingServerConfiguration
 
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import fr.cassettelabs.cassette.presentation.core.CassetteTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import cassette.shared.presentation.generated.resources.Res
 import cassette.shared.presentation.generated.resources.server_configuration_title
@@ -21,9 +13,7 @@ import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConf
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.ServerConfigurationUiState
 import fr.cassettelabs.cassette.presentation.core.serverConfiguration.core.ServerConfigurationConnectBottomBar
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
-import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun OnBoardingServerConfigurationScreen(
     uiState: ServerConfigurationUiState,
@@ -32,18 +22,8 @@ internal fun OnBoardingServerConfigurationScreen(
     Scaffold(
         modifier = Modifier.imePadding(),
         topBar = {
-            TopAppBar(
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.server_configuration_title),
-                        style = MaterialTheme.typography.headlineLarge
-                    )
-                },
+            CassetteTopAppBar(
+                title = Res.string.server_configuration_title,
             )
         },
         bottomBar = {

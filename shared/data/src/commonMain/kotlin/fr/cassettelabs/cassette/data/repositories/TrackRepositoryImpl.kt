@@ -3,6 +3,7 @@ package fr.cassettelabs.cassette.data.repositories
 import fr.cassettelabs.cassette.data.local.dao.TrackDao
 import fr.cassettelabs.cassette.data.remote.datasources.TrackRemoteDataSourceImpl
 import fr.cassettelabs.cassette.data.remote.ktor.currentTimeMillis
+import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.domain.repositories.TrackRepository
 
 internal class TrackRepositoryImpl(
@@ -18,5 +19,12 @@ internal class TrackRepositoryImpl(
             trackId = trackId,
             starredAt = currentTimeMillis().toString().takeIf { isStarred },
         )
+    }
+
+    override suspend fun getAllTracks(): List<Track> =
+        trackDao.getAllTracks(COVER_ART_SIZE)
+
+    private companion object {
+        const val COVER_ART_SIZE = 900
     }
 }

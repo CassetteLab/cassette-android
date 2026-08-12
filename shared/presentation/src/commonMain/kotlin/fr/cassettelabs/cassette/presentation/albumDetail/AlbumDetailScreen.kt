@@ -2,6 +2,7 @@ package fr.cassettelabs.cassette.presentation.albumDetail
 
 import cassette.shared.presentation.generated.resources.album_detail_loading_message
 import cassette.shared.presentation.generated.resources.album_detail_tracks_loading_message
+import cassette.shared.presentation.generated.resources.album_detail_menu
 import cassette.shared.presentation.generated.resources.Res
 
 import androidx.compose.foundation.background
@@ -12,15 +13,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,10 +41,13 @@ import fr.cassettelabs.cassette.domain.models.CoverArtLoadingStatus
 import fr.cassettelabs.cassette.domain.models.Track
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumArtworkTheme
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBackButton
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailBottomSheet
 import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailHeader
-import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackRow
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackBottomSheet
+import fr.cassettelabs.cassette.presentation.albumDetail.core.AlbumDetailTrackItem
 import fr.cassettelabs.cassette.presentation.core.LoadingMessage
 import fr.cassettelabs.cassette.presentation.core.theme.CassetteTheme
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +59,9 @@ internal fun AlbumDetailScreen(
     LaunchedEffect(Unit) {
         onEvent(AlbumDetailEvent.OnAppearing)
     }
+
+    var selectedTrackId by remember { mutableStateOf<String?>(null) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -119,19 +136,80 @@ internal fun AlbumDetailScreen(
                         }
 
                         items(uiState.tracks, key = { track -> track.id }) { track ->
-                            AlbumDetailTrackRow(
+                            AlbumDetailTrackItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 track = track,
                                 isCurrentTrack = track.id == uiState.currentTrackId,
                                 isPlaying = uiState.isPlaying,
                                 onClick = { onEvent(AlbumDetailEvent.OnTrackClicked(track.id)) },
+                                onMoreClick = { selectedTrackId = track.id },
                             )
                         }
                     }
 
                     AlbumDetailBackButton(onClick = { onEvent(AlbumDetailEvent.OnBackClicked) })
+
+                    FilledIconButton(
+                        onClick = { showBottomSheet = true },
+                        colors =
+                            IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.86f),
+                            ),
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .statusBarsPadding()
+                                .padding(end = 12.dp, top = 4.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = stringResource(Res.string.album_detail_menu),
+                        )
+                    }
                 }
             }
+        }
+
+        selectedTrackId?.let { id ->
+            val track = uiState.tracks.firstOrNull { it.id == id }
+            if (track != null) {
+                AlbumDetailTrackBottomSheet(
+                    track = track,
+                    coverArtStatus = uiState.coverArtStatus,
+                    isLiked = uiState.trackStarredStatuses[id] ?: (track.starredAt != null),
+                    onDismiss = { selectedTrackId = null },
+                    onLikeClick = {
+                        onEvent(AlbumDetailEvent.OnLikeTrack(id))
+                        selectedTrackId = null
+                    },
+                    onAddToPlaylistClick = {
+                        onEvent(AlbumDetailEvent.OnAddToPlaylist(id))
+                        selectedTrackId = null
+                    },
+                    onAddToQueueClick = {
+                        onEvent(AlbumDetailEvent.OnAddToQueue(id))
+                        selectedTrackId = null
+                    },
+                )
+            }
+        }
+
+        if (showBottomSheet) {
+            AlbumDetailBottomSheet(
+                albumName = uiState.album?.name ?: "",
+                artist = uiState.album?.artist ?: "",
+                coverArtStatus = uiState.coverArtStatus,
+                isLiked = uiState.albumStarred || uiState.album?.starredAt != null,
+                onDismissRequest = { showBottomSheet = false },
+                onLikeClick = {
+                    showBottomSheet = false
+                    onEvent(AlbumDetailEvent.OnLikeAlbum)
+                },
+                onAddToPlaylistClick = {
+                    showBottomSheet = false
+                    onEvent(AlbumDetailEvent.OnAddAlbumToPlaylist)
+                },
+            )
         }
     }
 }
