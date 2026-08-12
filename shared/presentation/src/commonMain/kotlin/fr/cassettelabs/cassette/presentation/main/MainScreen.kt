@@ -69,6 +69,9 @@ import fr.cassettelabs.cassette.presentation.nowPlaying.NowPlayingViewModel
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueEvent
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueScreen
 import fr.cassettelabs.cassette.presentation.playbackQueue.PlaybackQueueViewModel
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateEvent
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateScreen
+import fr.cassettelabs.cassette.presentation.playlistCreate.PlaylistCreateViewModel
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailEvent
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailScreen
 import fr.cassettelabs.cassette.presentation.playlistDetail.PlaylistDetailViewModel
@@ -80,6 +83,12 @@ import fr.cassettelabs.cassette.presentation.settings.ConfigurationScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsEvent
 import fr.cassettelabs.cassette.presentation.settings.SettingsScreen
 import fr.cassettelabs.cassette.presentation.settings.SettingsViewModel
+import fr.cassettelabs.cassette.presentation.settings.appearance.AppearanceSettingsEvent
+import fr.cassettelabs.cassette.presentation.settings.appearance.AppearanceSettingsScreen
+import fr.cassettelabs.cassette.presentation.settings.appearance.AppearanceSettingsViewModel
+import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsEvent
+import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsScreen
+import fr.cassettelabs.cassette.presentation.settings.logs.SettingsLogsViewModel
 import fr.cassettelabs.cassette.presentation.settings.serverConfiguration.SettingsServerConfigurationScreen
 import fr.cassettelabs.cassette.presentation.starred.StarredEvent
 import fr.cassettelabs.cassette.presentation.starred.StarredScreen
@@ -132,6 +141,7 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
             currentDestination?.hasRoute<Screens.SettingsServerConfiguration>() != true &&
             currentDestination?.hasRoute<Screens.NowPlaying>() != true &&
             currentDestination?.hasRoute<Screens.PlaybackQueue>() != true &&
+            currentDestination?.hasRoute<Screens.PlaylistCreate>() != true &&
             currentDestination?.hasRoute<Screens.ArtistList>() != true &&
             currentDestination?.hasRoute<Screens.TrackList>() != true &&
             currentDestination?.hasRoute<Screens.Downloads>() != true
@@ -343,12 +353,44 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                             uiState = uiState,
                             onEvent = { event ->
                                 when (event) {
+                                    PlaylistListEvent.OnCreatePlaylistClicked -> {
+                                        navController.navigate(Screens.PlaylistCreate) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+
                                     is PlaylistListEvent.OnPlaylistClicked -> {
                                         navController.navigate(Screens.PlaylistDetail(playlistId = event.playlistId)) {
                                             launchSingleTop = true
                                         }
                                     }
 
+                                    else -> Unit
+                                }
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.PlaylistCreate> {
+                        val viewModel: PlaylistCreateViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.createdPlaylist != null){
+                            uiState.createdPlaylist?.let { playlist ->
+                                navController.navigate(Screens.PlaylistDetail(playlist.id)){
+                                    launchSingleTop = true
+                                    popUpTo(Screens.PlaylistList)
+                                }
+                            }
+                        }
+
+                        PlaylistCreateScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    PlaylistCreateEvent.OnBackClicked -> navController.navigateUp()
                                     else -> Unit
                                 }
                                 viewModel.onEvent(event)
@@ -452,6 +494,42 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                         )
                     }
 
+                    composable<Screens.SettingsLogs> {
+                        val viewModel: SettingsLogsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        SettingsLogsScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    SettingsLogsEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
+                    composable<Screens.SettingsAppearance> {
+                        val viewModel: AppearanceSettingsViewModel = koinViewModel()
+                        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        AppearanceSettingsScreen(
+                            contentPadding = subScreenContentPadding,
+                            uiState = uiState,
+                            onEvent = { event ->
+                                when (event) {
+                                    AppearanceSettingsEvent.OnBackClicked -> navController.navigateUp()
+                                    else -> Unit
+                                }
+
+                                viewModel.onEvent(event)
+                            },
+                        )
+                    }
+
                     composable<Screens.AlbumDetail> { backStackEntry ->
                         val route = backStackEntry.toRoute<Screens.AlbumDetail>()
                         val viewModel =
@@ -511,6 +589,12 @@ internal fun MainScreen(onLoggedOut: () -> Unit) {
                                 parameters = { parametersOf(route.playlistId) },
                             )
                         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(uiState.isDeleting) {
+                            if (uiState.isDeleting) {
+                                navController.navigateUp()
+                            }
+                        }
 
                         PlaylistDetailScreen(
                             contentPadding = subScreenContentPadding,

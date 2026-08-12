@@ -85,6 +85,14 @@
     <string name="album_detail_tracks">Tracks</string>
     <string name="album_detail_tracks_empty">No tracks found for this album.</string>
     <string name="album_detail_unknown_artist">Unknown artist</string>
+    <string name="album_detail_track_like">Like</string>
+    <string name="album_detail_track_dislike">Dislike</string>
+    <string name="album_detail_track_add_to_playlist">Add to playlist</string>
+    <string name="album_detail_track_add_to_queue">Add to queue</string>
+    <string name="album_detail_menu">Menu</string>
+    <string name="album_detail_like">Like album</string>
+    <string name="album_detail_dislike">Dislike album</string>
+    <string name="album_detail_add_to_playlist">Add to playlist</string>
 
     <!-- Artist Detail -->
     <string name="artist_detail_album_count_format">%1$d albums</string>
@@ -122,6 +130,13 @@
 
     <!-- Settings -->
     <string name="settings_about_section_title">About</string>
+    <string name="settings_appearance_title">Appearance</string>
+    <string name="settings_appearance_subtitle">Choose between light, dark or system theme</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_theme_title">Theme</string>
+    <string name="appearance_theme_system">System</string>
+    <string name="appearance_theme_light">Light</string>
+    <string name="appearance_theme_dark">Dark</string>
     <string name="settings_app_build_type_format">Build: %1$s</string>
     <string name="settings_app_name">Cassette</string>
     <string name="settings_app_name_title">Name</string>
@@ -147,7 +162,13 @@
     <string name="settings_local_storage_title">Local storage</string>
     <string name="settings_logout_description">Remove this server configuration and local app data.</string>
     <string name="settings_logout_title">Log out</string>
-    <string name="settings_logs_subtitle">View logs files</string>
+    <string name="settings_logs_empty_description">Log files will appear here after the app writes its first logs.</string>
+    <string name="settings_logs_empty_title">No log files yet</string>
+    <string name="settings_logs_export">Export log folder</string>
+    <string name="settings_logs_export_failed">Unable to export log files.</string>
+    <string name="settings_logs_exporting">Preparing export...</string>
+    <string name="settings_logs_loading">Loading log files</string>
+    <string name="settings_logs_subtitle">View log files</string>
     <string name="settings_logs_title">Logs</string>
     <string name="settings_report_bug_subtitle">Send an email</string>
     <string name="settings_report_bug_title">Report a bug</string>
@@ -180,6 +201,7 @@
     <string name="starred_tracks_section_title">Starred tracks</string>
 
     <!-- Playlist List -->
+    <string name="playlist_list_create_playlist">Create playlist</string>
     <string name="playlist_list_empty_description">Your playlists will appear here.</string>
     <string name="playlist_list_empty_title">No playlists yet</string>
     <string name="playlist_list_error_description">Check your server connection and try again.</string>
@@ -193,10 +215,21 @@
         <item quantity="other">%1$d tracks</item>
     </plurals>
 
+    <!-- Playlist Create -->
+    <string name="playlist_create_back">Back</string>
+    <string name="playlist_create_title">Create playlist</string>
+    <string name="playlist_create_name_label">Playlist name</string>
+    <string name="playlist_create_button_label">Create</string>
+    <string name="playlist_create_tracks_loading">Loading tracks</string>
+    <string name="playlist_create_tracks_empty_title">No tracks available</string>
+    <string name="playlist_create_tracks_empty_description">Browse your albums to discover tracks you can add to a playlist.</string>
+
     <!-- Playlist Detail -->
     <string name="playlist_detail_loading_message">Loading playlist</string>
     <string name="playlist_detail_tracks_loading_message">Loading playlist tracks</string>
     <string name="playlist_detail_title">Playlist</string>
+    <string name="playlist_detail_menu">Menu</string>
+    <string name="playlist_detail_delete">Delete playlist</string>
     <plurals name="playlist_detail_tracks_count">
         <item quantity="one">%1$d track</item>
         <item quantity="other">%1$d tracks</item>

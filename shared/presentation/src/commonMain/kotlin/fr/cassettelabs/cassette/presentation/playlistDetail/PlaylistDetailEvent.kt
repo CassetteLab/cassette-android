@@ -7,7 +7,23 @@ internal sealed interface PlaylistDetailEvent : Event {
 
     data object OnBackClicked : PlaylistDetailEvent
 
+    data object OnMenuClicked : PlaylistDetailEvent
+
+    data object OnDeletePlaylist : PlaylistDetailEvent
+
     data class OnTrackClicked(
+        val trackId: String,
+    ) : PlaylistDetailEvent
+
+    data class OnLikeTrack(
+        val trackId: String,
+    ) : PlaylistDetailEvent
+
+    data class OnAddToPlaylist(
+        val trackId: String,
+    ) : PlaylistDetailEvent
+
+    data class OnAddToQueue(
         val trackId: String,
     ) : PlaylistDetailEvent
 }

@@ -50,6 +50,7 @@ internal class PlaylistListViewModel(
                     }
                 }
             }
+            PlaylistListEvent.OnCreatePlaylistClicked -> Unit
             is PlaylistListEvent.OnPlaylistClicked -> Unit
             is PlaylistListEvent.OnPlaylistCoverArtAppeared -> downloadPlaylistCoverArtIfNeeded(event.playlistId)
             PlaylistListEvent.OnRefresh -> {

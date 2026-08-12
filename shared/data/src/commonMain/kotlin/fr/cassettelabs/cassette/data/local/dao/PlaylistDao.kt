@@ -56,6 +56,9 @@ internal interface PlaylistDao {
         playlistIds: List<String>,
     )
 
+    @Query("DELETE FROM playlists WHERE id = :playlistId")
+    suspend fun deletePlaylist(playlistId: String)
+
     @Query("UPDATE playlists SET seedColor = :seedColor WHERE id = :playlistId")
     suspend fun updateSeedColor(
         playlistId: String,

@@ -1,6 +1,8 @@
-package fr.cassettelabs.cassette.core.logger
+package fr.cassettelabs.cassette.core.logger.implementations
 
-class NoOpLogger : Logger {
+import fr.cassettelabs.cassette.core.logger.Logger
+
+class NoOpLoggerImpl : Logger {
     override fun init(tag: String) = Unit
     override fun d(message: String) = Unit
     override fun i(message: String) = Unit

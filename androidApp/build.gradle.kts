@@ -30,8 +30,8 @@ android {
         applicationId = "fr.cassettelabs.cassette"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "2026.08.1"
+        versionCode = 3
+        versionName = "2026.08.2"
     }
     packaging {
         resources {
