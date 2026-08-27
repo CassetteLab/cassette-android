@@ -112,11 +112,12 @@ public open class BottomSheetNavigator(
                 }
         }
 
-        if (retainedEntry != null) {
+        val entry = retainedEntry
+        if (entry != null) {
             val currentOnSheetShown by rememberUpdatedState {
                 transitionsInProgressEntries.forEach(state::markTransitionComplete)
             }
-            LaunchedEffect(sheetState, retainedEntry) {
+            LaunchedEffect(sheetState, entry) {
                 snapshotFlow { sheetState.isVisible }
                     .distinctUntilChanged()
                     .drop(1)
@@ -127,32 +128,32 @@ public open class BottomSheetNavigator(
                     }
             }
             val scope = rememberCoroutineScope()
-            LaunchedEffect(key1 = retainedEntry) {
+            LaunchedEffect(key1 = entry) {
                 sheetEnabled = true
 
                 sheetContent = {
-                    retainedEntry!!.LocalOwnersProvider(saveableStateHolder) {
+                    entry.LocalOwnersProvider(saveableStateHolder) {
                         val content =
-                            (retainedEntry!!.destination as Destination).content
-                        content(retainedEntry!!)
+                            (entry.destination as Destination).content
+                        content(entry)
                     }
                 }
-                onDismissRequest = {
+                val dismissRequest = {
                     sheetEnabled = false
 
-                    if (transitionsInProgressEntries.contains(retainedEntry)) {
-                        state.markTransitionComplete(retainedEntry!!)
-                    } else {
-                        state.pop(popUpTo = retainedEntry!!, saveState = false)
+                    if (state.transitionsInProgress.value.contains(entry)) {
+                        state.markTransitionComplete(entry)
+                    } else if (state.backStack.value.contains(entry)) {
+                        state.pop(popUpTo = entry, saveState = false)
                     }
                 }
+                onDismissRequest = dismissRequest
 
                 animateToDismiss = {
-                    scope
-                        .launch { sheetState.hide() }
-                        .invokeOnCompletion {
-                            onDismissRequest()
-                        }
+                    scope.launch {
+                        sheetState.hide()
+                        dismissRequest()
+                    }
                 }
 
             }
