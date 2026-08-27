@@ -85,11 +85,14 @@ internal fun NowPlayingSnack(
                             text = track,
                             modifier = Modifier.basicMarquee(),
                             maxLines = 1,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+
                         )
                         Text(
                             text = artist,
                             style = MaterialTheme.typography.titleSmall,
                             maxLines = 1,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f)
                         )
                     }
                 }
